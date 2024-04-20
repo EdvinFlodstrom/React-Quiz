@@ -1,30 +1,14 @@
-using Backend.Data;
-using Microsoft.EntityFrameworkCore;
+namespace Backend;
 
-var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+public class Program()
 {
+    public static void Main(string[] args)
+    {
+        CreateHostBuilder(args).Build().Run();
+    }
 
+    public static IHostBuilder CreateHostBuilder(string[] args) =>
+        Host.CreateDefaultBuilder(args)
+            .ConfigureWebHostDefaults(webBuilder =>
+                webBuilder.UseStartup<Startup>());
 }
-
-builder.Services.AddDbContext<QuizDbContext>(options =>
-{
-    options.UseSqlServer(Environment.GetEnvironmentVariable("React-Quiz"));
-});
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
