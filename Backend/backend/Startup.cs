@@ -44,8 +44,14 @@ public class Startup(IConfiguration configuration)
 
         app.UseHttpsRedirection();
 
+        app.UseRouting();
+
         app.UseAuthorization();
 
-        app.UseRouting();
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+            endpoints.MapFallbackToFile("/index.html");
+        });
     }
 }
