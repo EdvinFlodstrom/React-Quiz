@@ -7,6 +7,7 @@ public class QuizDbContext(DbContextOptions<QuizDbContext> options) : DbContext(
 {
     public DbSet<FourOptionQuestion> FourOptionQuestions { get; set; }
     public DbSet<PlayerStatistics> PlayerStatistics { get; set; }
+    public DbSet<FloatingIds> FloatingIds { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -15,6 +16,9 @@ public class QuizDbContext(DbContextOptions<QuizDbContext> options) : DbContext(
 
         modelBuilder.Entity<PlayerStatistics>()
             .ToTable(nameof(PlayerStatistics));
+
+        modelBuilder.Entity<FloatingIds>()
+            .ToTable(nameof(FloatingIds));
 
         base.OnModelCreating(modelBuilder);
     }

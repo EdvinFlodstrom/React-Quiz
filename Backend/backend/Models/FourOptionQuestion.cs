@@ -2,7 +2,7 @@
 
 public class FourOptionQuestion
 {
-    public required int Id { get; set; }
+    public int Id { get; set; }
     
     public required string Question { get; set; }
     
