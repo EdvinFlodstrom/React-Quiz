@@ -1,5 +1,7 @@
 ﻿using Backend.Data;
+using Backend.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace Backend;
 
@@ -14,14 +16,32 @@ public class Startup(IConfiguration configuration)
         services.AddControllers();
         services.AddEndpointsApiExplorer();
 
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+
+        services.AddAutoMapper(typeof(MappingProfile));
+
+        services.AddScoped<QuizService>();
+
         services.AddDbContext<QuizDbContext>(options =>
         {
             options.UseSqlServer(Environment.GetEnvironmentVariable("React-Quiz"));
+        });
+
+        services.AddCors(options =>
+        {
+            options.AddPolicy("CorsPolicy",
+                builder => builder
+                    .WithOrigins("http://localhost:5500", "http://localhost:3000")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials());
         });
     }
 
     public void Configure(IApplicationBuilder app)
     {
+        app.UseCors("CorsPolicy");
+
         app.UseHttpsRedirection();
 
         app.UseAuthorization();
