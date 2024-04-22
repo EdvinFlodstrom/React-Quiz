@@ -13,15 +13,13 @@ public class CreateQuestionCommand : IRequest<CreateQuestionCommandResponse>
 public class CreateQuestionCommandHandler(QuizService quizService) : IRequestHandler<CreateQuestionCommand, CreateQuestionCommandResponse>
 {
     private readonly QuizService _quizService = quizService;
-    public Task<CreateQuestionCommandResponse> Handle(CreateQuestionCommand request, CancellationToken cancellationToken)
+    public async Task<CreateQuestionCommandResponse> Handle(CreateQuestionCommand request, CancellationToken cancellationToken)
     {
         CreateQuestionCommandResponse response = new();
 
         try
         {
-            // Call QuizService and handle response...
-
-
+            response = await _quizService.CreateQuestion(request.FourOptionQuestion);
         }
         catch (Exception ex)
         {
@@ -29,15 +27,15 @@ public class CreateQuestionCommandHandler(QuizService quizService) : IRequestHan
             response.Error = ex;
         }
 
-        return Task.FromResult(response);
+        return response;
     }
 }
 
 public class CreateQuestionCommandResponse
 {
+    public FourOptionQuestionDto? Question { get; set; }
+    
     public bool Success { get; set; }
 
     public Exception? Error { get; set; }
-
-    public FourOptionQuestionDto? Question { get; set; }
 }

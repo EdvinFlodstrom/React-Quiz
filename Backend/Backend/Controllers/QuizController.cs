@@ -10,11 +10,12 @@ namespace Backend.Controllers;
 [Route("api/[controller]")]
 public class QuizController(IMediator mediator, ILogger<QuizController> logger) : ControllerBase
 {
+    private readonly IMediator _mediator = mediator;
+    private readonly ILogger<QuizController> _logger = logger;
+
     private const string BadRequestMessageTemplate = "Invalid request data";
     private const string WarningMessageTemplate = "Error: ";
     private const string ErrorMessageTemplate = "An unexpected error occured: ";
-    private readonly IMediator _mediator = mediator;
-    private readonly ILogger<QuizController> _logger = logger;
 
     [HttpPost("create")]
     public async Task<ActionResult<FourOptionQuestionDto>> CreateQuestion([FromBody] FourOptionQuestion fourOptionQuestion)
@@ -35,8 +36,8 @@ public class QuizController(IMediator mediator, ILogger<QuizController> logger) 
             CreateQuestionCommandResponse response = await _mediator.Send(command);
 
             return VerifySuccessOrLogError(response.Success, response.Error)
-                ? Ok(response)
-                : BadRequest(response.Error);
+                ? Ok(response.Question)
+                : BadRequest(response.Error is not null ? response.Error.Message : "An unexpected error occured.");
         }
         catch (Exception ex)
         {
