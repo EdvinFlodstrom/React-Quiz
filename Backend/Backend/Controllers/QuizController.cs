@@ -1,8 +1,10 @@
 ﻿using Backend.Dtos;
 using Backend.Handlers.Questions;
 using Backend.Models;
+using Backend.Models.QuestionTypes;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace Backend.Controllers;
 
@@ -17,10 +19,10 @@ public class QuizController(IMediator mediator, ILogger<QuizController> logger) 
     private const string WarningMessageTemplate = "Error: ";
     private const string ErrorMessageTemplate = "An unexpected error occured: ";
 
-    [HttpPost("create")]
-    public async Task<ActionResult<FourOptionQuestionDto>> CreateQuestion([FromBody] FourOptionQuestion fourOptionQuestion)
+    [HttpPost("create/{questionType}")]
+    public async Task<ActionResult<FourOptionQuestionDto>> CreateQuestion(string questionType, [FromBody] JsonElement fourOptionQuestionJson)
     {
-        if (!ModelState.IsValid || fourOptionQuestion is null)
+        if (!ModelState.IsValid)
         {
             _logger.LogWarning("Invalid request data: {ModelStateErrors}", ModelState.Values.SelectMany(v => v.Errors));
             return BadRequest(BadRequestMessageTemplate);
@@ -28,6 +30,8 @@ public class QuizController(IMediator mediator, ILogger<QuizController> logger) 
 
         try
         {
+            FourOptionQuestion fourOptionQuestion = DeserializeAndReturnQuestion(questionType, fourOptionQuestionJson);
+
             CreateQuestionCommand command = new()
             {
                 FourOptionQuestion = fourOptionQuestion,
@@ -37,13 +41,51 @@ public class QuizController(IMediator mediator, ILogger<QuizController> logger) 
 
             return VerifySuccessOrLogError(response.Success, response.Error)
                 ? Ok(response.Question)
-                : BadRequest(response.Error is not null ? response.Error.Message : "An unexpected error occured.");
+                : BadRequest(response.Error is not null ? response.Error.Message : ErrorMessageTemplate);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, ErrorMessageTemplate + ex.Message);
             return StatusCode(500, ErrorMessageTemplate + ex.Message);
         }
+    }
+
+    private static FourOptionQuestion DeserializeAndReturnQuestion(string questionType, JsonElement fourOptionQuestionJson)
+    {
+        return questionType.ToLower() switch
+        {
+            "chemistry" => JsonSerializer.Deserialize<ChemistryQuestion>(fourOptionQuestionJson)
+                                    ?? throw new NullReferenceException(nameof(fourOptionQuestionJson)),
+
+            "food" => JsonSerializer.Deserialize<FoodQuestion>(fourOptionQuestionJson)
+                                    ?? throw new NullReferenceException(nameof(fourOptionQuestionJson)),
+
+            "game" => JsonSerializer.Deserialize<GameQuestion>(fourOptionQuestionJson)
+                                    ?? throw new NullReferenceException(nameof(fourOptionQuestionJson)),
+
+            "geography" => JsonSerializer.Deserialize<GeographyQuestion>(fourOptionQuestionJson)
+                                    ?? throw new NullReferenceException(nameof(fourOptionQuestionJson)),
+
+            "history" => JsonSerializer.Deserialize<HistoryQuestion>(fourOptionQuestionJson)
+                                    ?? throw new NullReferenceException(nameof(fourOptionQuestionJson)),
+
+            "literature" => JsonSerializer.Deserialize<LiteratureQuestion>(fourOptionQuestionJson)
+                                    ?? throw new NullReferenceException(nameof(fourOptionQuestionJson)),
+
+            "math" => JsonSerializer.Deserialize<MathQuestion>(fourOptionQuestionJson)
+                                    ?? throw new NullReferenceException(nameof(fourOptionQuestionJson)),
+
+            "music" => JsonSerializer.Deserialize<MusicQuestion>(fourOptionQuestionJson)
+                                    ?? throw new NullReferenceException(nameof(fourOptionQuestionJson)),
+
+            "sports" => JsonSerializer.Deserialize<SportsQuestion>(fourOptionQuestionJson)
+                                    ?? throw new NullReferenceException(nameof(fourOptionQuestionJson)),
+
+            "technology" => JsonSerializer.Deserialize<TechnologyQuestion>(fourOptionQuestionJson)
+                                    ?? throw new NullReferenceException(nameof(fourOptionQuestionJson)),
+
+            _ => throw new ArgumentException("Please verify that you chose a valid question type."),
+        };
     }
 
     private bool VerifySuccessOrLogError(bool success, Exception? exception)
