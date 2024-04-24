@@ -13,6 +13,7 @@ public class CreateQuestionCommand : IRequest<CreateQuestionCommandResponse>
 public class CreateQuestionCommandHandler(QuizService quizService) : IRequestHandler<CreateQuestionCommand, CreateQuestionCommandResponse>
 {
     private readonly QuizService _quizService = quizService;
+
     public async Task<CreateQuestionCommandResponse> Handle(CreateQuestionCommand request, CancellationToken cancellationToken)
     {
         CreateQuestionCommandResponse response = new();

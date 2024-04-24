@@ -37,7 +37,30 @@ public class QuizController(IMediator mediator, ILogger<QuizController> logger) 
                 FourOptionQuestion = fourOptionQuestion,
             };
 
-            CreateQuestionCommandResponse response = await _mediator.Send(command);
+            var response = await _mediator.Send(command);
+
+            return VerifySuccessOrLogError(response.Success, response.Error)
+                ? Ok(response.Question)
+                : BadRequest(response.Error is not null ? response.Error.Message : ErrorMessageTemplate);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ErrorMessageTemplate + ex.Message);
+            return StatusCode(500, ErrorMessageTemplate + ex.Message);
+        }
+    }
+
+    [HttpDelete("delete/{questionId}")]
+    public async Task<ActionResult<FourOptionQuestion>> DeleteQuestion(int questionId)
+    {
+        try
+        {
+            DeleteQuestionCommand request = new()
+            {
+                QuestionId = questionId,
+            };
+
+            var response = await _mediator.Send(request);
 
             return VerifySuccessOrLogError(response.Success, response.Error)
                 ? Ok(response.Question)
