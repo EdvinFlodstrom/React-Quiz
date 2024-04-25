@@ -40,13 +40,13 @@ So... All is in order now. My endpoint for creating questions works, my SQL data
 
 It's a DTO of a question, so it doesn't include the answer that was submitted. I also adjusted some error handling and whatnot while I was at it, to make it a tad better all in all. The following link is the one I followed when dropping and recreating the tables: 'https://stackoverflow.com/questions/38909707/delete-table-from-ef-codefirst-migration'.
 
-2024-04-24
+2024-04-23
 -----------
 Ahh, I'm tired. I've been trying to fix this one detail for two and a half hours straight. I want multiple question types. I want it. And it shouldn't be that hard to implement, but I want to see it done nicely. So I've been trying to make 'FourOptionQuestion' an abstract class that returns an instance of a subclass (one of the specific question types). And that's, uh, not going very well. It's going really not well, in fact. I'll continue on trying to fix this problem of sorts tomorrow...
 
-2024-04-25
+2024-04-24
 -----------
-Alright, I've fixed the error above now. I got an idea today at work (internship) where I thought to save the question as JSON, and only deserialize it into a class *after* checking which type of question it is to be. Naturally, I ran into issues. And this sucker was not an explanatory one *at all*. It said: 
+Alright, I've fixed the error above now. I got an idea today at work (internship) where I thought to save the question as a JSON object (a `JsonElement`, to be precise), and only deserialize it into a class *after* checking which type of question it is to be. Naturally, I ran into issues. And this sucker was not an explanatory one *at all*. It said: 
 
 > System.NotSupportedException: 'Deserialization of types without a parameterless constructor, a singular parameterized constructor, or a parameterized constructor annotated with 'JsonConstructorAttribute' is not supported. 
 
@@ -54,4 +54,8 @@ To which I say: Absolute nonsense. The problem was the deserialization, sure, bu
 
 Alright, everything is now fixed, added, and up and running. I've verified in the database that every single question works as expected, and an appropriate error message is returned when an invalid question type is requested. I also rolled back the database once to combine some migrations into one, final migration. And I also dropped the databsae once. Let's say it was for fun, and leave it at that.
 
-Alrighty! New endpoint added for deleting questions. And wouldn't you (me?) know it, the floating IDs idea worked perfectly! Well I got a few errors because I forgot to 1) Add the floating ID upon deleting a question, and 2) Remove the floating ID after using it. But hey, with those additions, it worked absolutely perfectly! If a question is removed, then its ID is stored in a separate table. And when a new question is created, that table is first checked for IDs. If one is found, it is used and then removed. If not, a new one is generated based on the length of the questions table. Perfect! Side note: I find it to be unreasonably fun to drop the database every time I need to add a new migration/verify table compatibility. I'll be sure not to do so when I actually add some meaningful questions to there...
+Alrighty! New endpoint added for deleting questions. And wouldn't you (me?) know it, the floating IDs idea worked perfectly! Well I got a few errors because I forgot to 1) Add the floating ID upon deleting a question, and 2) Remove the floating ID after using it. But hey, with those additions, it worked absolutely perfectly! If a question is removed, then its ID is stored in a separate table. And when a new question is created, that table is first checked for IDs. If one is found, it is used and then removed. If not, a new one is generated based on the length of the questions table. Perfect! Side note: I find it to be unreasonably fun to drop the database every time I need to add a new migration/verify table compatibility. I'll be sure not to do so when I actually add some meaningful questions...
+
+2024-04-25
+-----------
+New endpoint added! I can now get any amount of questions (larger than 0, obviously) from the database with this new endpoint. If an amount of questions larger than what exists in the database are requested, all are chosen. Whenever a question, one or multiple, are requested, they are first randomized and then returned. It all went so well in fact, that I ran into a problem because I tried to prepare for it not going so well. So, I've previously created an AutoMapper map between a question and a DTO of a question. What I did not expect was for this to work even for lists of these questions. So I tried to add a map for lists of questions, and it crashed the program. Not immediately though, so it took a second for me to realize what the problem was. Anyhow, as I mentioned, apparently the first map was enough even for lists. So that's nice - no need for extra work this time, heh. What's next is probably to add an endpoint for verifying a question's answer.
