@@ -16,6 +16,51 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
     private const string logDatabaseWarningStringTemplate = "An error occured during database interaction: ";
     private const string logRegularWarningStringTemplate = "An unexpected error occured: ";
 
+    public GetManyQuestionsCommandResponse GetManyQuestions(int numberOfQuestions)
+    {
+        try
+        {
+            var allQuestions = _quizDbContext.FourOptionQuestions.ToList();
+
+            var myQuestions = _mapper.Map<List<FourOptionQuestion>, List<FourOptionQuestionDto>>(allQuestions);
+
+            if (numberOfQuestions >= allQuestions.Count)
+            {
+                return new GetManyQuestionsCommandResponse
+                {
+                    Questions = _mapper.Map<List<FourOptionQuestion>, List<FourOptionQuestionDto>>(
+                        SelectRandomQuestions(allQuestions, allQuestions.Count)),
+                    Success = true,
+                    Error = null,
+                };
+            }
+
+            var questions = SelectRandomQuestions(allQuestions, numberOfQuestions);
+
+            return new GetManyQuestionsCommandResponse
+            {
+                Questions = _mapper.Map<List<FourOptionQuestion>, List<FourOptionQuestionDto>>(questions),
+                Success = true,
+                Error = null,
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(
+                ex is DbUpdateException
+                ? logDatabaseWarningStringTemplate
+                : logRegularWarningStringTemplate
+                + ex.Message);
+
+            return new GetManyQuestionsCommandResponse
+            {
+                Questions = null,
+                Success = false,
+                Error = ex,
+            };
+        }
+    }
+
     public async Task<CreateQuestionCommandResponse> CreateQuestion(FourOptionQuestion fourOptionQuestion)
     {
         try
@@ -99,5 +144,22 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
                 Error = ex,
             };
         }
+    }
+
+    private static List<FourOptionQuestion> SelectRandomQuestions(List<FourOptionQuestion> questions, int numberOfQuestions)
+    {
+        Random rnd = new();
+
+        var selectedQuestions = new List<FourOptionQuestion>(numberOfQuestions);
+        var remainingQuestions = new List<FourOptionQuestion>(questions);
+
+        for (int i = 0; i < numberOfQuestions; i++)
+        {
+            int randomIndex = rnd.Next(0, remainingQuestions.Count);
+            selectedQuestions.Add(remainingQuestions[randomIndex]);
+            remainingQuestions.RemoveAt(randomIndex);
+        }
+
+        return selectedQuestions;
     }
 }

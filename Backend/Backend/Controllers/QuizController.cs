@@ -19,6 +19,32 @@ public class QuizController(IMediator mediator, ILogger<QuizController> logger) 
     private const string WarningMessageTemplate = "Error: ";
     private const string ErrorMessageTemplate = "An unexpected error occured: ";
 
+    [HttpGet("getMany/{numberOfQuestions:int}")]
+    public async Task<ActionResult<List<FourOptionQuestionDto>>> GetManyQuestions(int numberOfQuestions)
+    {
+        if (numberOfQuestions <= 0)
+            return BadRequest();
+
+        try
+        {
+            GetManyQuestionsCommand command = new()
+            {
+                NumberOfQuestions = numberOfQuestions,
+            };
+
+            var response = await _mediator.Send(command);
+
+            return VerifySuccessOrLogError(response.Success, response.Error)
+                ? Ok(response.Questions)
+                : BadRequest(response.Error is not null ? response.Error.Message : ErrorMessageTemplate);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ErrorMessageTemplate + ex.Message);
+            return StatusCode(500, ErrorMessageTemplate + ex.Message);
+        }
+    }
+
     [HttpPost("create/{questionType}")]
     public async Task<ActionResult<FourOptionQuestionDto>> CreateQuestion(string questionType, [FromBody] JsonElement fourOptionQuestionJson)
     {
@@ -50,7 +76,7 @@ public class QuizController(IMediator mediator, ILogger<QuizController> logger) 
         }
     }
 
-    [HttpDelete("delete/{questionId}")]
+    [HttpDelete("delete/{questionId:int}")]
     public async Task<ActionResult<FourOptionQuestion>> DeleteQuestion(int questionId)
     {
         try
