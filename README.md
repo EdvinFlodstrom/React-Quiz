@@ -58,4 +58,19 @@ Alrighty! New endpoint added for deleting questions. And wouldn't you (me?) know
 
 2024-04-25
 -----------
-New endpoint added! I can now get any amount of questions (larger than 0, obviously) from the database with this new endpoint. If an amount of questions larger than what exists in the database are requested, all are chosen. Whenever a question, one or multiple, are requested, they are first randomized and then returned. It all went so well in fact, that I ran into a problem because I tried to prepare for it not going so well. So, I've previously created an AutoMapper map between a question and a DTO of a question. What I did not expect was for this to work even for lists of these questions. So I tried to add a map for lists of questions, and it crashed the program. Not immediately though, so it took a second for me to realize what the problem was. Anyhow, as I mentioned, apparently the first map was enough even for lists. So that's nice - no need for extra work this time, heh. What's next is probably to add an endpoint for verifying a question's answer.
+New endpoint added! I can now get any amount of questions (larger than 0, obviously) from the database with this new endpoint. If an amount of questions larger than what exists in the database is requested, all are chosen. Whenever a question, one or multiple, is requested, they are first randomized and then returned. It all went so well in fact, that I ran into a problem because I tried to prepare for it not going so well. So, I've previously created an AutoMapper map between a question and a DTO of a question. What I did not expect was for this to work even for lists of these questions. So I tried to add a map for lists of questions, and it crashed the program. Not immediately though, so it took a second for me to realize what the problem was. Anyhow, as I mentioned, apparently the first map was enough even for lists. So that's nice - no need for extra work this time, heh. What's next is probably to add an endpoint for verifying a user's submitted answer.
+
+2024-04-26
+-----------
+Alright, I've been working on some small fixes for a bit now. First, I fixed a naming convention irregularity in 'QuizService.' Then, I changed the method in 'QuizService' for getting random questions from the database. So, my previous strategy was to get *all* the questions from the database, create a copy of that list of questions, randomize it, and pick X amount of questions. Not too efficient, in hindsight. Or concise. Both have changed - now all questions in the database are reordered (it doesn't affect the actual order of the questions in the database), and then X amount of questions are picked. This should be more efficient, and it is *far* more concise. And, I also added one more little feature of sorts. `JsonSerializerOptions` to the controller class, so that I can send CamelCase JSON instead of PascalCase. This should make the calls more consistent, since I'll be using React for it later. It did take me a while to get it working, though. I realized relatively quickly that I'd need to use Dependency Injection to get the options from `Startup.cs`. How exactly I was to do so, though, I was unsure of. I did figure I'd need to register some options with `.AddSingleton` to get them in the controller class, but I didn't get much farther than `services.AddSingleton<JsonSerializerOptions>`. So although I didn't quite figure it out on my own, I was definetely on the right track. The final result became as follows:
+
+```cs
+services.AddSingleton<JsonSerializerOptions>(new JsonSerializerOptions
+{
+    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+});
+```
+
+I knew I'd have to set the `PropertyNamingPolicy` - I had code prepared for this. The `new` part was what I didn't quite figure out. But hey, I was kind of close, and I learned some more about DI!
+
+Now, I'm going to attempt to slap the contents of `Startup.cs` into `Program.cs`. I know this is possible (I did from the start of this project), but I don't know how well this'll go. So, I'll commit and push any changes so that I can always roll back, should I manage to blow up the local repository.
