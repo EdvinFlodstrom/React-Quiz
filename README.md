@@ -74,3 +74,7 @@ services.AddSingleton<JsonSerializerOptions>(new JsonSerializerOptions
 I knew I'd have to set the `PropertyNamingPolicy` - I had code prepared for this. The `new` part was what I didn't quite figure out. But hey, I was kind of close, and I learned some more about DI!
 
 Now, I'm going to attempt to slap the contents of `Startup.cs` into `Program.cs`. I know this is possible (I did from the start of this project), but I don't know how well this'll go. So, I'll commit and push any changes so that I can always roll back, should I manage to blow up the local repository.
+
+Wouldn't you know it - worked perfectly! I followed some instructions, and now two classes, two files, are one. Looks rather slick, if I daresay so myself. I haven't noticed any problems in the API, so I'll assume it works as expected.
+
+Now, for another slightly risky step - changing from SQL Server to SQLite. Why? Because it'll be infinitely much easier to manage between machines, and I know this will be necessary eventually. And also because I don't need a full SQL Server for this little project. Apparently, an SQLite database can (theoretically) manage up to like 9 quintillion questions. Don't think I'll need quite that many...
