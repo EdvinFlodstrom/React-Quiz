@@ -24,6 +24,7 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
             { // Randomize order of questions and choose X amount. Does not affect the order of questions in the database.
                 Questions = _mapper.Map<List<FourOptionQuestion>, List<FourOptionQuestionDto>>(_quizDbContext
                     .FourOptionQuestions
+                    .AsEnumerable()
                     .OrderBy(q => Guid.NewGuid())
                     .Take(numberOfQuestions)
                     .ToList()),

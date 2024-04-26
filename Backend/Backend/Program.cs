@@ -16,7 +16,7 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddDbContext<QuizDbContext>(options =>
 {
-    options.UseSqlServer(Environment.GetEnvironmentVariable("React-Quiz"));
+    options.UseSqlite(Environment.GetEnvironmentVariable("SQLite-React-Quiz"));
 });
 
 builder.Services.AddSingleton(new JsonSerializerOptions

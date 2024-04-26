@@ -5,6 +5,7 @@
 
 .vs
 backend.sln
+backend/database
 
 # User-specific files
 *.rsuser
