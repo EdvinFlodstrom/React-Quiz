@@ -20,26 +20,13 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
     {
         try
         {
-            var allQuestions = _quizDbContext.FourOptionQuestions.ToList();
-
-            var myQuestions = _mapper.Map<List<FourOptionQuestion>, List<FourOptionQuestionDto>>(allQuestions);
-
-            if (numberOfQuestions >= allQuestions.Count)
-            {
-                return new GetManyQuestionsCommandResponse
-                {
-                    Questions = _mapper.Map<List<FourOptionQuestion>, List<FourOptionQuestionDto>>(
-                        SelectRandomQuestions(allQuestions, allQuestions.Count)),
-                    Success = true,
-                    Error = null,
-                };
-            }
-
-            var questions = SelectRandomQuestions(allQuestions, numberOfQuestions);
-
             return new GetManyQuestionsCommandResponse
-            {
-                Questions = _mapper.Map<List<FourOptionQuestion>, List<FourOptionQuestionDto>>(questions),
+            { // Randomize order of questions and choose X amount. Does not affect the order of questions in the database.
+                Questions = _mapper.Map<List<FourOptionQuestion>, List<FourOptionQuestionDto>>(_quizDbContext
+                    .FourOptionQuestions
+                    .OrderBy(q => Guid.NewGuid())
+                    .Take(numberOfQuestions)
+                    .ToList()),
                 Success = true,
                 Error = null,
             };
@@ -144,22 +131,5 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
                 Error = ex,
             };
         }
-    }
-
-    private static List<FourOptionQuestion> SelectRandomQuestions(List<FourOptionQuestion> questions, int numberOfQuestions)
-    {
-        Random rnd = new();
-
-        var selectedQuestions = new List<FourOptionQuestion>(numberOfQuestions);
-        var remainingQuestions = new List<FourOptionQuestion>(questions);
-
-        for (int i = 0; i < numberOfQuestions; i++)
-        {
-            int randomIndex = rnd.Next(0, remainingQuestions.Count);
-            selectedQuestions.Add(remainingQuestions[randomIndex]);
-            remainingQuestions.RemoveAt(randomIndex);
-        }
-
-        return selectedQuestions;
     }
 }
