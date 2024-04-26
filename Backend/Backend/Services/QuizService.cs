@@ -13,8 +13,8 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
     private readonly IMapper _mapper = mapper;
     private readonly ILogger<QuizService> _logger = logger;
 
-    private const string logDatabaseWarningStringTemplate = "An error occured during database interaction: ";
-    private const string logRegularWarningStringTemplate = "An unexpected error occured: ";
+    private const string LogDatabaseWarningStringTemplate = "An error occured during database interaction: ";
+    private const string LogRegularWarningStringTemplate = "An unexpected error occured: ";
 
     public GetManyQuestionsCommandResponse GetManyQuestions(int numberOfQuestions)
     {
@@ -48,8 +48,8 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
         {
             _logger.LogWarning(
                 ex is DbUpdateException
-                ? logDatabaseWarningStringTemplate
-                : logRegularWarningStringTemplate
+                ? LogDatabaseWarningStringTemplate
+                : LogRegularWarningStringTemplate
                 + ex.Message);
 
             return new GetManyQuestionsCommandResponse
@@ -88,8 +88,8 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
         {
             _logger.LogWarning(
                 ex is DbUpdateException 
-                ? logDatabaseWarningStringTemplate 
-                : logRegularWarningStringTemplate 
+                ? LogDatabaseWarningStringTemplate 
+                : LogRegularWarningStringTemplate 
                 + ex.Message
                 );
 
@@ -132,8 +132,8 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
         {
             _logger.LogWarning(
                 ex is DbUpdateException
-                ? logDatabaseWarningStringTemplate
-                : logRegularWarningStringTemplate
+                ? LogDatabaseWarningStringTemplate
+                : LogRegularWarningStringTemplate
                 + ex.Message
                 );
 
