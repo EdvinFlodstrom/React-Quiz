@@ -10,9 +10,10 @@ namespace Backend.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class QuizController(IMediator mediator, ILogger<QuizController> logger) : ControllerBase
+public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerializerOptions, ILogger<QuizController> logger) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
+    private readonly JsonSerializerOptions _serializerOptions = jsonSerializerOptions;
     private readonly ILogger<QuizController> _logger = logger;
 
     private const string BadRequestMessageTemplate = "Invalid request data";
@@ -99,38 +100,38 @@ public class QuizController(IMediator mediator, ILogger<QuizController> logger) 
         }
     }
 
-    private static FourOptionQuestion DeserializeAndReturnQuestion(string questionType, JsonElement fourOptionQuestionJson)
+    private FourOptionQuestion DeserializeAndReturnQuestion(string questionType, JsonElement fourOptionQuestionJson)
     {
         return questionType.ToLower() switch
         {
-            "chemistry" => JsonSerializer.Deserialize<ChemistryQuestion>(fourOptionQuestionJson)
+            "chemistry" => JsonSerializer.Deserialize<ChemistryQuestion>(fourOptionQuestionJson, _serializerOptions)
                                     ?? throw new NullReferenceException(nameof(fourOptionQuestionJson)),
 
-            "food" => JsonSerializer.Deserialize<FoodQuestion>(fourOptionQuestionJson)
+            "food" => JsonSerializer.Deserialize<FoodQuestion>(fourOptionQuestionJson, _serializerOptions)
                                     ?? throw new NullReferenceException(nameof(fourOptionQuestionJson)),
 
-            "game" => JsonSerializer.Deserialize<GameQuestion>(fourOptionQuestionJson)
+            "game" => JsonSerializer.Deserialize<GameQuestion>(fourOptionQuestionJson, _serializerOptions)
                                     ?? throw new NullReferenceException(nameof(fourOptionQuestionJson)),
 
-            "geography" => JsonSerializer.Deserialize<GeographyQuestion>(fourOptionQuestionJson)
+            "geography" => JsonSerializer.Deserialize<GeographyQuestion>(fourOptionQuestionJson, _serializerOptions)
                                     ?? throw new NullReferenceException(nameof(fourOptionQuestionJson)),
 
-            "history" => JsonSerializer.Deserialize<HistoryQuestion>(fourOptionQuestionJson)
+            "history" => JsonSerializer.Deserialize<HistoryQuestion>(fourOptionQuestionJson, _serializerOptions)
                                     ?? throw new NullReferenceException(nameof(fourOptionQuestionJson)),
 
-            "literature" => JsonSerializer.Deserialize<LiteratureQuestion>(fourOptionQuestionJson)
+            "literature" => JsonSerializer.Deserialize<LiteratureQuestion>(fourOptionQuestionJson, _serializerOptions)
                                     ?? throw new NullReferenceException(nameof(fourOptionQuestionJson)),
 
-            "math" => JsonSerializer.Deserialize<MathQuestion>(fourOptionQuestionJson)
+            "math" => JsonSerializer.Deserialize<MathQuestion>(fourOptionQuestionJson, _serializerOptions)
                                     ?? throw new NullReferenceException(nameof(fourOptionQuestionJson)),
 
-            "music" => JsonSerializer.Deserialize<MusicQuestion>(fourOptionQuestionJson)
+            "music" => JsonSerializer.Deserialize<MusicQuestion>(fourOptionQuestionJson, _serializerOptions)
                                     ?? throw new NullReferenceException(nameof(fourOptionQuestionJson)),
 
-            "sports" => JsonSerializer.Deserialize<SportsQuestion>(fourOptionQuestionJson)
+            "sports" => JsonSerializer.Deserialize<SportsQuestion>(fourOptionQuestionJson, _serializerOptions)
                                     ?? throw new NullReferenceException(nameof(fourOptionQuestionJson)),
 
-            "technology" => JsonSerializer.Deserialize<TechnologyQuestion>(fourOptionQuestionJson)
+            "technology" => JsonSerializer.Deserialize<TechnologyQuestion>(fourOptionQuestionJson, _serializerOptions)
                                     ?? throw new NullReferenceException(nameof(fourOptionQuestionJson)),
 
             _ => throw new ArgumentException("Please verify that you chose a valid question type."),

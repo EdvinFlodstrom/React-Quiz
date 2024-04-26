@@ -2,6 +2,7 @@
 using Backend.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using System.Text.Json;
 
 namespace Backend;
 
@@ -13,7 +14,13 @@ public class Startup(IConfiguration configuration)
     {
         // Add services to the container.
 
+        services.AddSingleton(new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        });
+
         services.AddControllers();
+
         services.AddEndpointsApiExplorer();
 
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
