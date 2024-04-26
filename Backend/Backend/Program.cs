@@ -1,14 +1,56 @@
-namespace Backend;
+using Backend.Data;
+using Backend.Services;
+using Backend;
+using System.Reflection;
+using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 
-public class Program()
+var builder = WebApplication.CreateBuilder(args);
+
+// Configure services
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+builder.Services.AddDbContext<QuizDbContext>(options =>
 {
-    public static void Main(string[] args)
-    {
-        CreateHostBuilder(args).Build().Run();
-    }
+    options.UseSqlServer(Environment.GetEnvironmentVariable("React-Quiz"));
+});
 
-    public static IHostBuilder CreateHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args)
-            .ConfigureWebHostDefaults(webBuilder =>
-                webBuilder.UseStartup<Startup>());
-}
+builder.Services.AddSingleton(new JsonSerializerOptions
+{
+    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+});
+
+builder.Services.AddScoped<QuizService>();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy",
+        builder => builder
+            .WithOrigins("http://localhost:5500", "http://localhost:3000")
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials());
+});
+
+// Add other service configurations
+var app = builder.Build();
+
+// Configure middleware
+app.UseCors("CorsPolicy");
+app.UseHttpsRedirection();
+app.UseRouting();
+app.UseAuthorization();
+
+// Other middleware options
+
+// Configure endpoints
+app.MapControllers();
+
+// Other endpoint mappings
+
+
+app.Run();
