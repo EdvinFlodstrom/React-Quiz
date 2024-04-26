@@ -78,3 +78,25 @@ Now, I'm going to attempt to slap the contents of `Startup.cs` into `Program.cs`
 Wouldn't you know it - worked perfectly! I followed some instructions, and now two classes, two files, are one. Looks rather slick, if I daresay so myself. I haven't noticed any problems in the API, so I'll assume it works as expected.
 
 Now, for another slightly risky step - changing from SQL Server to SQLite. Why? Because it'll be infinitely much easier to manage between machines, and I know this will be necessary eventually. And also because I don't need a full SQL Server for this little project. Apparently, an SQLite database can (theoretically) manage up to like 9 quintillion questions. Don't think I'll need quite that many...
+
+Ahhh... It works at last... I am tired. So, SQLite. In hindsight, I had to complete a few steps:
+1. Set up a new environment variable for the SQLite database connection string.
+2. Roll back the SQL Server database.
+3. Delete all the migration files and snapshot.
+4. Download SQLite NuGet package and remove SQL Server NuGet package.
+5. Adjust from `UseSqlServer` to `UseSqlite` in `Program.cs`.
+6. Create a new database migration.
+7. Apply the new database migration.
+8. Verify and potentially adjust CRUD operations.
+
+If one knows what to do from the start (me, now...) this would be a quick and easy process. Get a load of creating the environment variable and then not restarting PowerShell and VSCodium. Was fun debugging that - I didn't get an error message that the "database wasn't found", instead, I got an error message that said that a certain table was missing instead. Eventually I restarted my computer, and applying the database update worked. Which is when I remembered that I have to restart programs that use environment variables after adjusting them. What else did I struggle with? The query that didn't work, I suppose. So I had some code: 
+
+```cs
+_quizDbContext
+    .FourOptionQuestions
+    .OrderBy(q => Guid.NewGuid())
+    .Take(numberOfQuestions)
+    .ToList();
+```
+
+This worked with SQL Server, but not with SQLite. I'm not exactly sure why, but it supposedly had something to do with the SQLite provider. Anyhow, slapping a `.AsEnumerable()` after `.FourOptionQuestions` fixed the issue. It's a tad less efficient, but whatever. It works, and it's still fast. So until I add 1000+ questions to the database, this difference in speed is negligible. And if I ever do (as if), I should probably go outside instead. So this whole migration from SQL Server to SQLite was a lot more painful than I'd imagined, but I've thought that many a time by now. So anyway. It works now, I've verified that all CRUD operations are successful. And I dropped the database once to check that it is successfully recreated each time I run `dotnet ef database update`. All is in order, once more. I may now sleep, now that it works again. I didn't intend to be programming until 22:53, but oh well.
