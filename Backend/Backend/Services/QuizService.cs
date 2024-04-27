@@ -16,14 +16,28 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
     private const string LogDatabaseWarningStringTemplate = "An error occured during database interaction: ";
     private const string LogRegularWarningStringTemplate = "An unexpected error occured: ";
 
-    public GetManyQuestionsCommandResponse GetManyQuestions(int numberOfQuestions)
+    public GetManyQuestionsCommandResponse GetManyQuestions(int numberOfQuestions, string? questionType)
     {
         try
         {
+            var questions = questionType is null
+                ? _quizDbContext.FourOptionQuestions
+                : _quizDbContext.FourOptionQuestions
+                .Where(q => string.Equals(
+                    EF.Property<string>(q, "QuestionType").ToLower(), questionType.ToLower())
+                );
+
+            if (questions.FirstOrDefault() is null)
+                return new GetManyQuestionsCommandResponse
+                {
+                    Questions = null,
+                    Success = false,
+                    Error = new ArgumentException("The requested question type does not exist, or matches no questions."),
+                };
+
             return new GetManyQuestionsCommandResponse
             { // Randomize order of questions and choose X amount. Does not affect the order of questions in the database.
-                Questions = _mapper.Map<List<FourOptionQuestion>, List<FourOptionQuestionDto>>(_quizDbContext
-                    .FourOptionQuestions
+                Questions = _mapper.Map<List<FourOptionQuestion>, List<FourOptionQuestionDto>>(questions
                     .AsEnumerable()
                     .OrderBy(q => Guid.NewGuid())
                     .Take(numberOfQuestions)

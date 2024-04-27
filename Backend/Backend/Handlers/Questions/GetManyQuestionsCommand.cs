@@ -7,6 +7,8 @@ namespace Backend.Handlers.Questions;
 public class GetManyQuestionsCommand : IRequest<GetManyQuestionsCommandResponse>
 {
     public required int NumberOfQuestions { get; set; }
+    
+    public string? QuestionType { get; set; }
 }
 
 public class GetManyQuestionsCommandHandler(QuizService quizService) : IRequestHandler<GetManyQuestionsCommand, GetManyQuestionsCommandResponse>
@@ -19,7 +21,7 @@ public class GetManyQuestionsCommandHandler(QuizService quizService) : IRequestH
 
         try
         {
-            response = _quizService.GetManyQuestions(request.NumberOfQuestions);
+            response = _quizService.GetManyQuestions(request.NumberOfQuestions, request.QuestionType);
         }
         catch (Exception ex)
         {

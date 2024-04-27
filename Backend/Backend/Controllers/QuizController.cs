@@ -21,7 +21,7 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
     private const string ErrorMessageTemplate = "An unexpected error occured: ";
 
     [HttpGet("getMany/{numberOfQuestions:int}")]
-    public async Task<ActionResult<List<FourOptionQuestionDto>>> GetManyQuestions(int numberOfQuestions)
+    public async Task<ActionResult<List<FourOptionQuestionDto>>> GetManyQuestions(int numberOfQuestions, [FromQuery] string? questionType)
     {
         if (numberOfQuestions <= 0)
             return BadRequest();
@@ -31,6 +31,7 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
             GetManyQuestionsCommand command = new()
             {
                 NumberOfQuestions = numberOfQuestions,
+                QuestionType = questionType,
             };
 
             var response = await _mediator.Send(command);
