@@ -10,5 +10,5 @@ public class PlayerStatistics
 
     public int CurrentQuestionId { get; set; }
 
-    public int ListOfQuestions { get; set; }
+    public int ListOfQuestionIds { get; set; }
 }
