@@ -1,5 +1,5 @@
-﻿using Backend.Models;
-using Backend.Models.QuestionTypes;
+﻿using Backend.Models.Entities;
+using Backend.Models.Entities.QuestionTypes;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Data;

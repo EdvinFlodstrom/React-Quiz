@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Backend.Data;
-using Backend.Dtos;
 using Backend.Handlers.Questions;
-using Backend.Models;
+using Backend.Models.Dtos;
+using Backend.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Services;

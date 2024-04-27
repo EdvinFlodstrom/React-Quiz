@@ -1,4 +1,4 @@
-﻿namespace Backend.Dtos;
+﻿namespace Backend.Models.Dtos;
 
 public class FourOptionQuestionCorrectAnswerDto
 {

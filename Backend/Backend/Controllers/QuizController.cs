@@ -1,7 +1,7 @@
-﻿using Backend.Dtos;
-using Backend.Handlers.Questions;
-using Backend.Models;
-using Backend.Models.QuestionTypes;
+﻿using Backend.Handlers.Questions;
+using Backend.Models.Dtos;
+using Backend.Models.Entities;
+using Backend.Models.Entities.QuestionTypes;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
