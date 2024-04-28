@@ -1,4 +1,4 @@
-﻿using Backend.Models.Dtos;
+﻿using Backend.Models.Entities;
 using Backend.Services;
 using MediatR;
 
@@ -35,7 +35,7 @@ public class GetManyQuestionsCommandHandler(QuizService quizService) : IRequestH
 
 public class GetManyQuestionsCommandResponse
 {
-    public List<FourOptionQuestionDto>? Questions { get; set; }
+    public List<FourOptionQuestion>? Questions { get; set; }
 
     public bool Success { get; set; }
 

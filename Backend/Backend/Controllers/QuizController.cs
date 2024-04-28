@@ -1,7 +1,9 @@
 ﻿using Backend.Handlers.Questions;
+using Backend.Handlers.Quiz;
 using Backend.Models.Dtos;
 using Backend.Models.Entities;
 using Backend.Models.Entities.QuestionTypes;
+using Backend.Models.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
@@ -20,11 +22,73 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
     private const string WarningMessageTemplate = "Error: ";
     private const string ErrorMessageTemplate = "An unexpected error occured: ";
 
+    [HttpPost("get")]
+    public async Task<ActionResult<FourOptionQuestionDto>> GetQuestion([FromBody] GetQuestionRequest request)
+    {
+        if (!ModelState.IsValid)
+        {
+            _logger.LogWarning("Invalid request data: {ModelStateErrors}", ModelState.Values.SelectMany(v => v.Errors));
+            return BadRequest(BadRequestMessageTemplate);
+        }
+
+        try
+        {
+            GetQuestionCommand command = new()
+            {
+                PlayerName = request.PlayerName,
+            };
+
+            var response = await _mediator.Send(command);
+
+            return response.Success == true
+                ? response.Question is not null
+                ? Ok(response.Question)
+                : Ok(response.Details)
+                : BadRequest(response.Error is not null ? response.Error.Message : ErrorMessageTemplate);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ErrorMessageTemplate + ex.Message);
+            return StatusCode(500, ex + ErrorMessageTemplate + ex.Message);
+        }
+    }
+
+    [HttpPost("initialize")]
+    public async Task<ActionResult<string>> InitializeQuiz([FromBody] InitializeQuizRequest request)
+    {
+        if (!ModelState.IsValid)
+        {
+            _logger.LogWarning("Invalid request data: {ModelStateErrors}", ModelState.Values.SelectMany(v => v.Errors));
+            return BadRequest(BadRequestMessageTemplate);
+        }
+
+        try
+        {
+            InitializeQuizCommand command = new()
+            {
+                PlayerName = request.PlayerName,
+                AmountOfQuestions = request.AmountOfQuestions,
+                QuestionType = request.QuestionType,
+            };
+
+            var response = await _mediator.Send(command);
+
+            return response.Success
+                ? Ok(response.Details)
+                : BadRequest(response.Error is not null ? response.Error.Message : ErrorMessageTemplate);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ErrorMessageTemplate + ex.Message);
+            return StatusCode(500, ErrorMessageTemplate + ex.Message);
+        }
+    }
+
     [HttpGet("getMany/{numberOfQuestions:int}")]
-    public async Task<ActionResult<List<FourOptionQuestionDto>>> GetManyQuestions(int numberOfQuestions, [FromQuery] string? questionType)
+    public async Task<ActionResult<List<FourOptionQuestion>>> GetManyQuestions(int numberOfQuestions, [FromQuery] string? questionType)
     {
         if (numberOfQuestions <= 0)
-            return BadRequest();
+            return BadRequest(BadRequestMessageTemplate);
 
         try
         {

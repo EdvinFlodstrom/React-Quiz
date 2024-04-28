@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Backend.Data;
 using Backend.Handlers.Questions;
+using Backend.Handlers.Quiz;
 using Backend.Models.Dtos;
 using Backend.Models.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace Backend.Services;
 
@@ -15,6 +17,131 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
 
     private const string LogDatabaseWarningStringTemplate = "An error occured during database interaction: ";
     private const string LogRegularWarningStringTemplate = "An unexpected error occured: ";
+
+    public GetQuestionCommandResponse GetQuestion(string playerName)
+    {
+        try
+        {
+            playerName = FormatAndReturnPlayerName(playerName);
+
+            var playerObject =
+                _quizDbContext
+                .PlayerStatistics
+                .Include(ps => ps.Questions)
+                .FirstOrDefault(ps => ps.Name == playerName);
+
+            if (playerObject is null)
+                return new GetQuestionCommandResponse
+                {
+                    Question = null,
+                    Details = null,
+                    Success = false,
+                    Error = new ArgumentException("No database entry matched the requested name."),
+                };
+
+            // This means that one can get the same question twice, if it isn't deleted. Delete the question when checking answer.
+            var question = playerObject
+                .Questions
+                .OrderBy(q => Guid.NewGuid())
+                .First();
+
+            if (question is null)
+                return new GetQuestionCommandResponse
+                {
+                    Question = null,
+                    Details = "That's all the questions. Thanks for playing! Your final score was: " +
+                    playerObject.CorrectAnswers + "/" + playerObject.TotalAmountOfQuestions,
+                    Success = false,
+                    Error = null,
+                };
+
+            return new GetQuestionCommandResponse
+            {
+                Question = _mapper.Map<FourOptionQuestion, FourOptionQuestionDto>(question),
+                Details = null,
+                Success = true,
+                Error = null,
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(
+                ex is DbUpdateException
+                ? LogDatabaseWarningStringTemplate
+                : LogRegularWarningStringTemplate
+                + ex.Message);
+
+            return new GetQuestionCommandResponse
+            {
+                Question = null,
+                Details = null,
+                Success = false,
+                Error = ex,
+            };
+        }
+    }
+
+    public async Task<InitializeQuizCommandResponse> InitializeQuiz(string playerName, int amountOfQuestions, string? questionType)
+    {
+        try
+        {
+            playerName = FormatAndReturnPlayerName(playerName);
+
+            var playerObject = _quizDbContext
+                .PlayerStatistics
+                .Include(ps => ps.Questions)
+                .FirstOrDefault(ps => ps.Name == playerName);
+
+            var questionsObject = GetManyQuestions(amountOfQuestions, questionType);
+
+            if (questionsObject.Questions is null)
+                return new InitializeQuizCommandResponse
+                {
+                    Details = null,
+                    Success = false,
+                    Error = questionsObject.Error,
+                };
+
+            if (playerObject is null)
+                _quizDbContext.PlayerStatistics.Add(new PlayerStatistics
+                {
+                    Name = playerName,
+                    CorrectAnswers = 0,
+                    TotalAmountOfQuestions = questionsObject.Questions.Count,
+                    Questions = questionsObject.Questions,
+                });
+            else
+            {
+                playerObject.CorrectAnswers = 0;
+                playerObject.TotalAmountOfQuestions = questionsObject.Questions.Count;
+                playerObject.Questions = questionsObject.Questions;
+            }
+
+            await _quizDbContext.SaveChangesAsync();
+
+            return new InitializeQuizCommandResponse
+            {
+                Details = $"Quiz hass been initialized successfully for player {playerName}",
+                Success = true,
+                Error = null,
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(
+                ex is DbUpdateException
+                ? LogDatabaseWarningStringTemplate
+                : LogRegularWarningStringTemplate
+                + ex.Message);
+
+            return new InitializeQuizCommandResponse
+            {
+                Details = null,
+                Success = false,
+                Error = ex,
+            };
+        }
+    }
 
     public GetManyQuestionsCommandResponse GetManyQuestions(int numberOfQuestions, string? questionType)
     {
@@ -36,12 +163,11 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
                 };
 
             return new GetManyQuestionsCommandResponse
-            { // Randomize order of questions and choose X amount. Does not affect the order of questions in the database.
-                Questions = _mapper.Map<List<FourOptionQuestion>, List<FourOptionQuestionDto>>(questions
+            { // Choose X amount of questions. Randomization happens when getting individual question.
+                Questions = questions
                     .AsEnumerable()
-                    .OrderBy(q => Guid.NewGuid())
                     .Take(numberOfQuestions)
-                    .ToList()),
+                    .ToList(),
                 Success = true,
                 Error = null,
             };
@@ -146,5 +272,11 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
                 Error = ex,
             };
         }
+    }
+
+    private static string FormatAndReturnPlayerName(string playerName)
+    {
+        TextInfo textInfo = new CultureInfo("sv-SE", false).TextInfo;
+        return textInfo.ToTitleCase(playerName);
     }
 }
