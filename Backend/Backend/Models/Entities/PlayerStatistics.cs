@@ -2,13 +2,13 @@
 
 public class PlayerStatistics
 {
-    public int Id { get; set; }
+    public int Id { get; private set; }
 
-    public string Name { get; set; } = string.Empty;
+    public required string Name { get; set; }
 
-    public int CorrectAnswers { get; set; }
+    public required int CorrectAnswers { get; set; }
 
-    public int CurrentQuestionId { get; set; }
+    public required int TotalAmountOfQuestions { get; set; }
 
-    public int ListOfQuestionIds { get; set; }
+    public required ICollection<FourOptionQuestion> Questions { get; set; }
 }

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(QuizDbContext))]
-    [Migration("20240427084852_RenameListOfQuestionIds")]
-    partial class RenameListOfQuestionIds
+    [Migration("20240427192030_ConfigureRelations")]
+    partial class ConfigureRelations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -80,19 +80,31 @@ namespace Backend.Migrations
                     b.Property<int>("CorrectAnswers")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("CurrentQuestionId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("ListOfQuestionIds")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("TotalAmountOfQuestions")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.ToTable("PlayerStatistics", (string)null);
+                });
+
+            modelBuilder.Entity("FourOptionQuestionPlayerStatistics", b =>
+                {
+                    b.Property<int>("PlayerStatisticsId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("QuestionsId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("PlayerStatisticsId", "QuestionsId");
+
+                    b.HasIndex("QuestionsId");
+
+                    b.ToTable("FourOptionQuestionPlayerStatistics");
                 });
 
             modelBuilder.Entity("Backend.Models.Entities.QuestionTypes.ChemistryQuestion", b =>
@@ -163,6 +175,21 @@ namespace Backend.Migrations
                     b.HasBaseType("Backend.Models.Entities.FourOptionQuestion");
 
                     b.HasDiscriminator().HasValue("Technology");
+                });
+
+            modelBuilder.Entity("FourOptionQuestionPlayerStatistics", b =>
+                {
+                    b.HasOne("Backend.Models.Entities.PlayerStatistics", null)
+                        .WithMany()
+                        .HasForeignKey("PlayerStatisticsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Backend.Models.Entities.FourOptionQuestion", null)
+                        .WithMany()
+                        .HasForeignKey("QuestionsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

@@ -20,4 +20,6 @@ public abstract class FourOptionQuestion
     public required string Option4 { get; set; }
 
     public required int CorrectOptionNumber { get; set; }
+
+    public ICollection<PlayerStatistics>? PlayerStatistics { get; set; }
 }
