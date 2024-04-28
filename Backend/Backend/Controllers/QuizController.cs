@@ -172,6 +172,36 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
         }
     }
 
+    [HttpPatch("patch/{questionId}")]
+    public async Task<ActionResult<FourOptionQuestion>> PatchQuestion(int questionId, [FromBody] PatchQuestionRequest request)
+    {
+        if (!ModelState.IsValid)
+        {
+            _logger.LogWarning("Invalid request data: {ModelStateErrors}", ModelState.Values.SelectMany(v => v.Errors));
+            return BadRequest(BadRequestMessageTemplate);
+        }
+
+        try
+        {
+            PatchQuestionCommand command = new()
+            {
+                Request = request,
+                QuestionId = questionId,
+            };
+
+            var response = await _mediator.Send(command);
+
+            return response.Success == true
+                ? Ok(response.Question)
+                : BadRequest(response.Error is not null ? response.Error.Message : ErrorMessageTemplate);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ErrorMessageTemplate + ex.Message);
+            return StatusCode(500, ErrorMessageTemplate + ex.Message);
+        }
+    }
+
     [HttpDelete("delete/{questionId:int}")]
     public async Task<ActionResult<FourOptionQuestion>> DeleteQuestion(int questionId)
     {

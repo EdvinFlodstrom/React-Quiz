@@ -4,6 +4,7 @@ using Backend.Handlers.Questions;
 using Backend.Handlers.Quiz;
 using Backend.Models.Dtos;
 using Backend.Models.Entities;
+using Backend.Models.Requests;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 
@@ -323,6 +324,53 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
         }
     }
 
+    public async Task<PatchQuestionCommandResponse> PatchQuestion(int questionId, PatchQuestionRequest request)
+    {
+        try
+        {
+            var question = _quizDbContext.FourOptionQuestions.Find(questionId);
+
+            if (question is null)
+                return new PatchQuestionCommandResponse
+                {
+                    Question = null,
+                    Success = false,
+                    Error = new ArgumentException("A question with the provided ID does not exist in the database."),
+                };
+
+            question.Question = request.Question ?? question.Question;
+            question.Option1 = request.Option1 ?? question.Option1;
+            question.Option2 = request.Option2 ?? question.Option2;
+            question.Option3 = request.Option3 ?? question.Option3;
+            question.Option4 = request.Option4 ?? question.Option4;
+            question.CorrectOptionNumber = request.CorrectOptionNumber ?? question.CorrectOptionNumber;
+
+            await _quizDbContext.SaveChangesAsync();
+
+            return new PatchQuestionCommandResponse
+            {
+                Question = question,
+                Success = true,
+                Error = null,
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(
+                ex is DbUpdateException
+                ? LogDatabaseWarningStringTemplate
+                : LogRegularWarningStringTemplate
+                + ex.Message);
+
+            return new PatchQuestionCommandResponse
+            {
+                Question = null,
+                Success = false,
+                Error = ex,
+            };
+        }
+    }
+
     public async Task<DeleteQuestionCommandResponse> DeleteQuestion(int questionId)
     {
         try
@@ -334,7 +382,7 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
                 {
                     Question = null,
                     Success = false,
-                    Error = new ArgumentException("The provided ID does not exist in the database."),
+                    Error = new ArgumentException("A question with the provided ID does not exist in the database."),
                 };
 
             _quizDbContext.FourOptionQuestions.Remove(questionToRemove);
