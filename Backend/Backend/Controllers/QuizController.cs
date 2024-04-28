@@ -22,6 +22,36 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
     private const string WarningMessageTemplate = "Error: ";
     private const string ErrorMessageTemplate = "An unexpected error occured: ";
 
+    [HttpPost("answer")]
+    public async Task<ActionResult<string>> CheckAnswer([FromBody] CheckAnswerRequest request)
+    {
+        if (!ModelState.IsValid)
+        {
+            _logger.LogWarning("Invalid request data: {ModelStateErrors}", ModelState.Values.SelectMany(v => v.Errors));
+            return BadRequest(BadRequestMessageTemplate);
+        }
+
+        try
+        {
+            CheckAnswerCommand command = new()
+            {
+                PlayerName = request.PlayerName,
+                QuestionAnswer = request.QuestionAnswer,
+            };
+
+            var response = await _mediator.Send(command);
+
+            return response.Success == true
+                ? Ok(response.Message)
+                : BadRequest(response.Error is not null ? response.Error.Message : ErrorMessageTemplate);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ErrorMessageTemplate + ex.Message);
+            return StatusCode(500, ErrorMessageTemplate + ex.Message);
+        }
+    }
+
     [HttpPost("get")]
     public async Task<ActionResult<FourOptionQuestionDto>> GetQuestion([FromBody] GetQuestionRequest request)
     {

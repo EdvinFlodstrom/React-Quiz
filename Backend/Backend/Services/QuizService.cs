@@ -18,6 +18,77 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
     private const string LogDatabaseWarningStringTemplate = "An error occured during database interaction: ";
     private const string LogRegularWarningStringTemplate = "An unexpected error occured: ";
 
+    public async Task<CheckAnswerCommandResponse> CheckAnswer(string playerName,  int questionAnswer)
+    {
+        try
+        {
+            playerName = FormatAndReturnPlayerName(playerName);
+
+            var playerObject =
+                _quizDbContext
+                .PlayerStatistics
+                .Include(ps => ps.PlayerStatisticsFourOptionQuestions)
+                    .ThenInclude(psq => psq.Question)
+                 .FirstOrDefault(ps => ps.Name == playerName);
+
+            if (playerObject is null)
+                return new CheckAnswerCommandResponse
+                {
+                    Message = null,
+                    Success = false,
+                    Error = new ArgumentException("No database entry matched the requested name."),
+                };
+
+            var playerStatisticsQuestionList = playerObject
+                .PlayerStatisticsFourOptionQuestions
+                .OrderBy(ps => ps.Order);
+
+            if (!playerStatisticsQuestionList.Any())
+                return new CheckAnswerCommandResponse
+                {
+                    Message = null,
+                    Success = false,
+                    Error = new ArgumentException("You've already answered all your questions. " +
+                    "To restart, please initialize the quiz again."),
+                };
+
+            var playerStatisticsQuestion = playerStatisticsQuestionList.First();
+
+            playerObject.PlayerStatisticsFourOptionQuestions.Remove(playerStatisticsQuestion);
+
+            string message = "Incorrect.";
+            if (questionAnswer == playerStatisticsQuestion.Question.CorrectOptionNumber)
+            {
+                playerObject.CorrectAnswers++;
+                message = "Correct!";
+            }
+
+            await _quizDbContext.SaveChangesAsync();
+
+            return new CheckAnswerCommandResponse
+            {
+                Message = message,
+                Success = true,
+                Error = null,
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(
+                ex is DbUpdateException
+                ? LogDatabaseWarningStringTemplate
+                : LogRegularWarningStringTemplate
+                + ex.Message);
+
+            return new CheckAnswerCommandResponse
+            {
+                Message = null,
+                Success = false,
+                Error = ex
+            };
+        }
+    }
+
     public GetQuestionCommandResponse GetQuestion(string playerName)
     {
         try
@@ -27,8 +98,9 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
             var playerObject =
                 _quizDbContext
                 .PlayerStatistics
-                .Include(ps => ps.Questions)
-                .FirstOrDefault(ps => ps.Name == playerName);
+                .Include(ps => ps.PlayerStatisticsFourOptionQuestions)
+                    .ThenInclude(psq => psq.Question)
+                 .FirstOrDefault(ps => ps.Name == playerName);
 
             if (playerObject is null)
                 return new GetQuestionCommandResponse
@@ -39,21 +111,23 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
                     Error = new ArgumentException("No database entry matched the requested name."),
                 };
 
-            // This means that one can get the same question twice, if it isn't deleted. Delete the question when checking answer.
-            var question = playerObject
-                .Questions
-                .OrderBy(q => Guid.NewGuid())
-                .First();
+            var questionList = playerObject
+                .PlayerStatisticsFourOptionQuestions
+                .OrderBy(q => q.Order)
+                .Select(q => q.Question);
 
-            if (question is null)
+            if (!questionList.Any())
                 return new GetQuestionCommandResponse
                 {
                     Question = null,
                     Details = "That's all the questions. Thanks for playing! Your final score was: " +
-                    playerObject.CorrectAnswers + "/" + playerObject.TotalAmountOfQuestions,
-                    Success = false,
+                    playerObject.CorrectAnswers + "/" + playerObject.TotalAmountOfQuestions
+                    + ". To play again, please initialize the quiz once more.",
+                    Success = true,
                     Error = null,
                 };
+
+            var question = questionList.First();
 
             return new GetQuestionCommandResponse
             {
@@ -89,7 +163,7 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
 
             var playerObject = _quizDbContext
                 .PlayerStatistics
-                .Include(ps => ps.Questions)
+                .Include(ps => ps.PlayerStatisticsFourOptionQuestions)
                 .FirstOrDefault(ps => ps.Name == playerName);
 
             var questionsObject = GetManyQuestions(amountOfQuestions, questionType);
@@ -103,25 +177,43 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
                 };
 
             if (playerObject is null)
-                _quizDbContext.PlayerStatistics.Add(new PlayerStatistics
+            {
+                playerObject = new PlayerStatistics
                 {
                     Name = playerName,
                     CorrectAnswers = 0,
                     TotalAmountOfQuestions = questionsObject.Questions.Count,
-                    Questions = questionsObject.Questions,
-                });
+                    PlayerStatisticsFourOptionQuestions = new List<PlayerStatisticsFourOptionQuestion>(),
+                };
+                _quizDbContext.PlayerStatistics.Add(playerObject);
+            }
             else
             {
                 playerObject.CorrectAnswers = 0;
                 playerObject.TotalAmountOfQuestions = questionsObject.Questions.Count;
-                playerObject.Questions = questionsObject.Questions;
+                playerObject.PlayerStatisticsFourOptionQuestions.Clear();
+            }
+
+            int order = 1;
+            foreach (var question in questionsObject.Questions)
+            {
+                PlayerStatisticsFourOptionQuestion playerStatisticsFourOptionQuestion = new()
+                {
+                    QuestionId = question.Id,
+                    Question = question,
+                    PlayerStatisticsId = playerObject!.Id,
+                    PlayerStatistics = playerObject,
+                    Order = order++,
+                };
+
+                playerObject.PlayerStatisticsFourOptionQuestions.Add(playerStatisticsFourOptionQuestion);
             }
 
             await _quizDbContext.SaveChangesAsync();
 
             return new InitializeQuizCommandResponse
             {
-                Details = $"Quiz hass been initialized successfully for player {playerName}",
+                Details = $"Quiz has been initialized successfully for player {playerName}",
                 Success = true,
                 Error = null,
             };
@@ -146,7 +238,7 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
     public GetManyQuestionsCommandResponse GetManyQuestions(int numberOfQuestions, string? questionType)
     {
         try
-        {
+        { // If any question type is chosen, take all questions of that type. Otherwise, take any.
             var questions = questionType is null
                 ? _quizDbContext.FourOptionQuestions
                 : _quizDbContext.FourOptionQuestions
@@ -166,6 +258,7 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
             { // Choose X amount of questions. Randomization happens when getting individual question.
                 Questions = questions
                     .AsEnumerable()
+                    .OrderBy(q => Guid.NewGuid())
                     .Take(numberOfQuestions)
                     .ToList(),
                 Success = true,
