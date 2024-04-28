@@ -32,6 +32,19 @@ public class QuizDbContext(DbContextOptions<QuizDbContext> options) : DbContext(
         modelBuilder.Entity<FloatingIds>()
             .ToTable(nameof(FloatingIds));
 
+        modelBuilder.Entity<PlayerStatisticsFourOptionQuestion>()
+            .HasKey(psq => new { psq.PlayerStatisticsId, psq.QuestionId });
+
+        modelBuilder.Entity<PlayerStatisticsFourOptionQuestion>()
+            .HasOne(psq => psq.PlayerStatistics)
+            .WithMany(ps => ps.PlayerStatisticsFourOptionQuestions)
+            .HasForeignKey(psq => psq.PlayerStatisticsId);
+
+        modelBuilder.Entity<PlayerStatisticsFourOptionQuestion>()
+            .HasOne(psq => psq.Question)
+            .WithMany(q => q.PlayerStatisticsFourOptionQuestion)
+            .HasForeignKey(psq => psq.QuestionId);
+
         base.OnModelCreating(modelBuilder);
     }
 }

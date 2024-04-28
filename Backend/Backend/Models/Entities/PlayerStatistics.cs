@@ -10,5 +10,5 @@ public class PlayerStatistics
 
     public required int TotalAmountOfQuestions { get; set; }
 
-    public required ICollection<FourOptionQuestion> Questions { get; set; }
+    public required ICollection<PlayerStatisticsFourOptionQuestion> PlayerStatisticsFourOptionQuestions { get; set; }
 }

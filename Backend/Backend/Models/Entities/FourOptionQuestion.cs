@@ -21,5 +21,5 @@ public abstract class FourOptionQuestion
 
     public required int CorrectOptionNumber { get; set; }
 
-    public ICollection<PlayerStatistics>? PlayerStatistics { get; set; }
+    public ICollection<PlayerStatisticsFourOptionQuestion>? PlayerStatisticsFourOptionQuestion { get; set; }
 }
