@@ -19,7 +19,7 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
     private const string LogDatabaseWarningStringTemplate = "An error occured during database interaction: ";
     private const string LogRegularWarningStringTemplate = "An unexpected error occured: ";
 
-    public async Task<CheckAnswerCommandResponse> CheckAnswer(string playerName,  int questionAnswer)
+    public async Task<CheckAnswerCommandResponse> CheckAnswer(string playerName, int questionAnswer)
     {
         try
         {
@@ -309,9 +309,9 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
         catch (Exception ex)
         {
             _logger.LogWarning(
-                ex is DbUpdateException 
-                ? LogDatabaseWarningStringTemplate 
-                : LogRegularWarningStringTemplate 
+                ex is DbUpdateException
+                ? LogDatabaseWarningStringTemplate
+                : LogRegularWarningStringTemplate
                 + ex.Message
                 );
 

@@ -7,7 +7,7 @@ namespace Backend.Handlers.Questions;
 public class GetManyQuestionsCommand : IRequest<GetManyQuestionsCommandResponse>
 {
     public required int NumberOfQuestions { get; set; }
-    
+
     public string? QuestionType { get; set; }
 }
 

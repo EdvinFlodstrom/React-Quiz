@@ -1,9 +1,9 @@
+using Backend;
 using Backend.Data;
 using Backend.Services;
-using Backend;
+using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using System.Text.Json;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -12,5 +12,5 @@ public class PlayerStatisticsFourOptionQuestion
     public required FourOptionQuestion Question { get; set; }
 
 
-    public required int Order {  get; set; } // Represent the randomized order of the questions
+    public required int Order { get; set; } // Represent the randomized order of the questions
 }

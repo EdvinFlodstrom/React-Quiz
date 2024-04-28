@@ -7,7 +7,7 @@ public class CheckAnswerCommand : IRequest<CheckAnswerCommandResponse>
 {
     public required string PlayerName { get; set; }
 
-    public required int QuestionAnswer {  get; set; }
+    public required int QuestionAnswer { get; set; }
 }
 
 public class CheckAnswerCommandHandler(QuizService quizService) : IRequestHandler<CheckAnswerCommand, CheckAnswerCommandResponse>
@@ -22,7 +22,7 @@ public class CheckAnswerCommandHandler(QuizService quizService) : IRequestHandle
         {
             response = await _quizService.CheckAnswer(request.PlayerName, request.QuestionAnswer);
         }
-        catch( Exception ex)
+        catch (Exception ex)
         {
             response.Success = false;
             response.Error = ex;
