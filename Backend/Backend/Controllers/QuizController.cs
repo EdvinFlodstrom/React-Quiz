@@ -144,7 +144,7 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
     [HttpPost("create/{questionType}")]
     public async Task<ActionResult<FourOptionQuestionDto>> CreateQuestion(string questionType, [FromBody] JsonElement fourOptionQuestionJson)
     {
-        if (!ModelState.IsValid)
+        if (!ModelState.IsValid || string.IsNullOrEmpty(questionType))
         {
             _logger.LogWarning("Invalid request data: {ModelStateErrors}", ModelState.Values.SelectMany(v => v.Errors));
             return BadRequest(BadRequestMessageTemplate);
@@ -152,7 +152,10 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
 
         try
         {
-            FourOptionQuestion fourOptionQuestion = DeserializeAndReturnQuestion(questionType, fourOptionQuestionJson);
+            FourOptionQuestion? fourOptionQuestion = DeserializeAndReturnQuestion(questionType, fourOptionQuestionJson);
+
+            if (fourOptionQuestion is null)
+                return BadRequest("Please verify that you chose a valid question type.");
 
             CreateQuestionCommand command = new()
             {
@@ -225,7 +228,7 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
         }
     }
 
-    private FourOptionQuestion DeserializeAndReturnQuestion(string questionType, JsonElement fourOptionQuestionJson)
+    private FourOptionQuestion? DeserializeAndReturnQuestion(string questionType, JsonElement fourOptionQuestionJson)
     {
         return questionType.ToLower() switch
         {
@@ -259,7 +262,7 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
             "technology" => JsonSerializer.Deserialize<TechnologyQuestion>(fourOptionQuestionJson, _serializerOptions)
                                     ?? throw new NullReferenceException(nameof(fourOptionQuestionJson)),
 
-            _ => throw new ArgumentException("Please verify that you chose a valid question type."),
+            _ => null, // Check if response is null when using method. Return BadRequest() if such is the case.
         };
     }
 
