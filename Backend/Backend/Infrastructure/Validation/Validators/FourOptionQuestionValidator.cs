@@ -12,7 +12,11 @@ public class FourOptionQuestionValidator : AbstractValidator<FourOptionQuestion>
             .WithMessage("Question may not be empty.");
 
         RuleFor(x => new { x.Option1, x.Option2, x.Option3, x.Option4 })
-            .NotEmpty()
+            .Must(options =>
+                !string.IsNullOrEmpty(options.Option1) &&
+                !string.IsNullOrEmpty(options.Option2) &&
+                !string.IsNullOrEmpty(options.Option3) &&
+                !string.IsNullOrEmpty(options.Option4))
             .WithMessage("Options may not be empty.");
 
         RuleFor(x => x.CorrectOptionNumber)
