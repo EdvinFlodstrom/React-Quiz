@@ -1,6 +1,10 @@
 using Backend;
-using Backend.Data;
+using Backend.Infrastructure.Data;
+using Backend.Infrastructure.Models.Entities;
+using Backend.Infrastructure.Validation.ValidatorFactory;
+using Backend.Infrastructure.Validation.Validators;
 using Backend.Services;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using System.Text.Json;
@@ -23,6 +27,9 @@ builder.Services.AddSingleton(new JsonSerializerOptions
 {
     PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
 });
+
+builder.Services.AddScoped<Backend.Infrastructure.Validation.ValidatorFactory.IValidatorFactory, ValidatorFactory>();
+builder.Services.AddScoped<IValidator<FourOptionQuestion>, FourOptionQuestionValidator>();
 
 builder.Services.AddScoped<QuizService>();
 

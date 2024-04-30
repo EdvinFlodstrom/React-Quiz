@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Backend.Models.Dtos;
-using Backend.Models.Entities;
+using Backend.Infrastructure.Models.Dtos;
+using Backend.Infrastructure.Models.Entities;
 
 namespace Backend;
 

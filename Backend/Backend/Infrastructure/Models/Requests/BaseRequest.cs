@@ -1,4 +1,4 @@
-﻿namespace Backend.Models.Requests;
+﻿namespace Backend.Infrastructure.Models.Requests;
 
 public abstract class BaseRequest
 {

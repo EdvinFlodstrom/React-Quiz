@@ -1,4 +1,4 @@
-﻿namespace Backend.Models.Entities;
+﻿namespace Backend.Infrastructure.Models.Entities;
 
 public class PlayerStatisticsFourOptionQuestion
 {

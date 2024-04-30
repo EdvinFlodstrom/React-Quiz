@@ -1,4 +1,4 @@
-﻿using Backend.Models.Dtos;
+﻿using Backend.Infrastructure.Models.Dtos;
 using Backend.Services;
 using MediatR;
 

@@ -1,7 +1,8 @@
 using Backend.Controllers;
 using Backend.Handlers.Questions;
-using Backend.Models.Dtos;
-using Backend.Models.Entities.QuestionTypes;
+using Backend.Infrastructure.Models.Dtos;
+using Backend.Infrastructure.Models.Entities.QuestionTypes;
+using Backend.Infrastructure.Validation.ValidatorFactory;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +17,7 @@ public class QuizControllerTests
 {
     private readonly Mock<IMediator> _mediatorMock;
     private readonly JsonSerializerOptions options;
+    private readonly Mock<IValidatorFactory> _validatorFactory;
     private readonly Mock<ILogger<QuizController>> _loggerMock;
     private readonly QuizController _controller;
 
@@ -26,8 +28,9 @@ public class QuizControllerTests
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         };
+        _validatorFactory = new();
         _loggerMock = new();
-        _controller = new(_mediatorMock.Object, options, _loggerMock.Object);
+        _controller = new(_mediatorMock.Object, options, _validatorFactory.Object, _loggerMock.Object);
     }
 
     [TestMethod]

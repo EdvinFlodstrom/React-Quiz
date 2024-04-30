@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using Backend.Data;
 using Backend.Handlers.Questions;
 using Backend.Handlers.Quiz;
-using Backend.Models.Dtos;
-using Backend.Models.Entities;
-using Backend.Models.Requests;
+using Backend.Infrastructure.Data;
+using Backend.Infrastructure.Models.Dtos;
+using Backend.Infrastructure.Models.Entities;
+using Backend.Infrastructure.Models.Requests;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 
@@ -16,8 +16,7 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
     private readonly IMapper _mapper = mapper;
     private readonly ILogger<QuizService> _logger = logger;
 
-    private const string LogDatabaseWarningStringTemplate = "An error occured during database interaction: ";
-    private const string LogRegularWarningStringTemplate = "An unexpected error occured: ";
+    private const string LogWarningStringTemplate = "{WarningType} error occurred: {Message}";
 
     public async Task<CheckAnswerCommandResponse> CheckAnswer(string playerName, int questionAnswer)
     {
@@ -76,10 +75,10 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
         catch (Exception ex)
         {
             _logger.LogWarning(
-                ex is DbUpdateException
-                ? LogDatabaseWarningStringTemplate
-                : LogRegularWarningStringTemplate
-                + ex.Message);
+                LogWarningStringTemplate
+                , ex is DbUpdateException
+                ? "Database" : "Regular"
+                , ex.Message);
 
             return new CheckAnswerCommandResponse
             {
@@ -141,10 +140,10 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
         catch (Exception ex)
         {
             _logger.LogWarning(
-                ex is DbUpdateException
-                ? LogDatabaseWarningStringTemplate
-                : LogRegularWarningStringTemplate
-                + ex.Message);
+                LogWarningStringTemplate
+                , ex is DbUpdateException
+                ? "Database" : "Regular"
+                , ex.Message);
 
             return new GetQuestionCommandResponse
             {
@@ -184,7 +183,7 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
                     Name = playerName,
                     CorrectAnswers = 0,
                     TotalAmountOfQuestions = questionsObject.Questions.Count,
-                    PlayerStatisticsFourOptionQuestions = new List<PlayerStatisticsFourOptionQuestion>(),
+                    PlayerStatisticsFourOptionQuestions = [],
                 };
                 _quizDbContext.PlayerStatistics.Add(playerObject);
             }
@@ -222,10 +221,10 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
         catch (Exception ex)
         {
             _logger.LogWarning(
-                ex is DbUpdateException
-                ? LogDatabaseWarningStringTemplate
-                : LogRegularWarningStringTemplate
-                + ex.Message);
+                LogWarningStringTemplate
+                , ex is DbUpdateException
+                ? "Database" : "Regular"
+                , ex.Message);
 
             return new InitializeQuizCommandResponse
             {
@@ -269,10 +268,10 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
         catch (Exception ex)
         {
             _logger.LogWarning(
-                ex is DbUpdateException
-                ? LogDatabaseWarningStringTemplate
-                : LogRegularWarningStringTemplate
-                + ex.Message);
+                LogWarningStringTemplate
+                , ex is DbUpdateException
+                ? "Database" : "Regular"
+                , ex.Message);
 
             return new GetManyQuestionsCommandResponse
             {
@@ -309,11 +308,10 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
         catch (Exception ex)
         {
             _logger.LogWarning(
-                ex is DbUpdateException
-                ? LogDatabaseWarningStringTemplate
-                : LogRegularWarningStringTemplate
-                + ex.Message
-                );
+                LogWarningStringTemplate
+                , ex is DbUpdateException
+                ? "Database" : "Regular"
+                , ex.Message);
 
             return new CreateQuestionCommandResponse
             {
@@ -357,10 +355,10 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
         catch (Exception ex)
         {
             _logger.LogWarning(
-                ex is DbUpdateException
-                ? LogDatabaseWarningStringTemplate
-                : LogRegularWarningStringTemplate
-                + ex.Message);
+                LogWarningStringTemplate
+                , ex is DbUpdateException
+                ? "Database" : "Regular"
+                , ex.Message);
 
             return new PatchQuestionCommandResponse
             {
@@ -400,11 +398,10 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
         catch (Exception ex)
         {
             _logger.LogWarning(
-                ex is DbUpdateException
-                ? LogDatabaseWarningStringTemplate
-                : LogRegularWarningStringTemplate
-                + ex.Message
-                );
+                LogWarningStringTemplate
+                , ex is DbUpdateException
+                ? "Database" : "Regular"
+                , ex.Message);
 
             return new DeleteQuestionCommandResponse
             {

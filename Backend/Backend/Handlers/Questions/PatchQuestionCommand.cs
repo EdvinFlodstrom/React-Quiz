@@ -1,5 +1,5 @@
-﻿using Backend.Models.Entities;
-using Backend.Models.Requests;
+﻿using Backend.Infrastructure.Models.Entities;
+using Backend.Infrastructure.Models.Requests;
 using Backend.Services;
 using MediatR;
 

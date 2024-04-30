@@ -1,9 +1,10 @@
 ﻿using Backend.Handlers.Questions;
 using Backend.Handlers.Quiz;
-using Backend.Models.Dtos;
-using Backend.Models.Entities;
-using Backend.Models.Entities.QuestionTypes;
-using Backend.Models.Requests;
+using Backend.Infrastructure.Models.Dtos;
+using Backend.Infrastructure.Models.Entities;
+using Backend.Infrastructure.Models.Entities.QuestionTypes;
+using Backend.Infrastructure.Models.Requests;
+using Backend.Infrastructure.Validation.ValidatorFactory;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
@@ -12,15 +13,17 @@ namespace Backend.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerializerOptions, ILogger<QuizController> logger) : ControllerBase
+public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerializerOptions, IValidatorFactory validatorFactory, ILogger<QuizController> logger) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
     private readonly JsonSerializerOptions _serializerOptions = jsonSerializerOptions;
+    private readonly IValidatorFactory _validatorFactory = validatorFactory;
     private readonly ILogger<QuizController> _logger = logger;
 
     private const string BadRequestMessageTemplate = "Invalid request data";
-    private const string WarningMessageTemplate = "Error: ";
+    private const string LogWarningMessageTemplate = "Error: {Error}";
     private const string ErrorMessageTemplate = "An unexpected error occured: ";
+    private const string LogErrorMessageTemplate = "An unexpected error occured: {Error}";
 
     [HttpPost("answer")]
     public async Task<ActionResult<string>> CheckAnswer([FromBody] CheckAnswerRequest request)
@@ -47,7 +50,7 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ErrorMessageTemplate + ex.Message);
+            _logger.LogError(ex, LogErrorMessageTemplate, ex.Message);
             return StatusCode(500, ErrorMessageTemplate + ex.Message);
         }
     }
@@ -78,7 +81,7 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ErrorMessageTemplate + ex.Message);
+            _logger.LogError(ex, LogErrorMessageTemplate, ex.Message);
             return StatusCode(500, ex + ErrorMessageTemplate + ex.Message);
         }
     }
@@ -109,7 +112,7 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ErrorMessageTemplate + ex.Message);
+            _logger.LogError(ex, LogErrorMessageTemplate, ex.Message);
             return StatusCode(500, ErrorMessageTemplate + ex.Message);
         }
     }
@@ -136,7 +139,7 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ErrorMessageTemplate + ex.Message);
+            _logger.LogError(ex, LogErrorMessageTemplate, ex.Message);
             return StatusCode(500, ErrorMessageTemplate + ex.Message);
         }
     }
@@ -157,6 +160,15 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
             if (fourOptionQuestion is null)
                 return BadRequest("Please verify that you chose a valid question type.");
 
+            var validator = _validatorFactory.GetValidator<FourOptionQuestion>();
+            var validationResult = validator.Validate(fourOptionQuestion);
+
+            if (!validationResult.IsValid)
+            {
+                _logger.LogWarning("Validation failed: {ValidationResult}", validationResult.ToString());
+                return BadRequest("Validaiton failed: " + validationResult.ToString());
+            }
+
             CreateQuestionCommand command = new()
             {
                 FourOptionQuestion = fourOptionQuestion,
@@ -170,7 +182,7 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ErrorMessageTemplate + ex.Message);
+            _logger.LogError(ex, LogErrorMessageTemplate, ex.Message);
             return StatusCode(500, ErrorMessageTemplate + ex.Message);
         }
     }
@@ -200,7 +212,7 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ErrorMessageTemplate + ex.Message);
+            _logger.LogError(ex, LogErrorMessageTemplate, ex.Message);
             return StatusCode(500, ErrorMessageTemplate + ex.Message);
         }
     }
@@ -223,7 +235,7 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ErrorMessageTemplate + ex.Message);
+            _logger.LogError(ex, LogErrorMessageTemplate, ex.Message);
             return StatusCode(500, ErrorMessageTemplate + ex.Message);
         }
     }
@@ -271,7 +283,7 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
         if (success)
             return true;
 
-        _logger.LogWarning(WarningMessageTemplate + (exception is not null ? exception.Message : ""));
+        _logger.LogWarning(LogWarningMessageTemplate, (exception is not null ? exception.Message : ""));
 
         return false;
     }

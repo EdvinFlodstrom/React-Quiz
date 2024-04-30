@@ -1,4 +1,4 @@
-﻿using Backend.Models.Entities;
+﻿using Backend.Infrastructure.Models.Entities;
 using Backend.Services;
 using MediatR;
 

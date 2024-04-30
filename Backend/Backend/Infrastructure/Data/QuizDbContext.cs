@@ -1,8 +1,8 @@
-﻿using Backend.Models.Entities;
-using Backend.Models.Entities.QuestionTypes;
+﻿using Backend.Infrastructure.Models.Entities;
+using Backend.Infrastructure.Models.Entities.QuestionTypes;
 using Microsoft.EntityFrameworkCore;
 
-namespace Backend.Data;
+namespace Backend.Infrastructure.Data;
 
 public class QuizDbContext(DbContextOptions<QuizDbContext> options) : DbContext(options)
 {

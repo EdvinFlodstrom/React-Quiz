@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Backend.Models.Requests;
+namespace Backend.Infrastructure.Models.Requests;
 
 public class PatchQuestionRequest
 {

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Backend.Models.Entities;
+namespace Backend.Infrastructure.Models.Entities;
 
 public class FloatingIds
 {
