@@ -136,3 +136,35 @@ Alrighty! PATCH endpoint added and functional. It even updates questions that ar
 Right, unit tests exists. Not that I mind - I'll take any excuse to postpone the frontending. So I'll start writing some of these unit tests. If I'm going to test every scenario in the controller, mediator classes, and the service class, this is going to take a while. But hey, the longer it takes, the longer I can delay the frontend. More backend tests, less frontend. Win-win!
 
 Alright, first test's up and running. Kind of. I'm having some trouble with a null-related problem regarding the response of the method I'm testing in the controller class. I have some code `response.Result.Should().NotBeNull()`, which means that if `response.Result` *is* null, the test will fail. So `ObjectResult objectResult = response.Result as ObjectResult` is fine. If `response.Result` is null, the code won't reach that part. But alas, the compiler doesn't agree. So now I'm stuck with a null-related error that I'll have to try fixing tomorrow. But hey, at least the tests project's working, so there's that.
+
+2024-04-30
+-----------
+So apparently `ObjectResult objectResult = (ObjectResult)response.Result!;` works to remedy the null-related warning, despite `ObjectResult objectResult = response.Result as ObjectResult` not working. I actually came up with this solution yesterday, about a minute after pushing the commit. So I didn't spend a lot of time fixing this, for once. However, this caused me to notice that apprently the JSON is invalid, or something. So the test is failing now that I'm trying to run `objectResult.StatusCode.Should().Be(200);`. So, I'll get to fixing that... If I'm to make a wild guess, I'd assume it's because of a mismatch in title case. I think I'm sending `"Question": "My question"` and not `"question": "My question"`. Allow me to verify...
+
+That was it, alright! A mismatch in title case (is that even what it's called?). And hey, good thing I brought Dependency Injection to the table, because I already had the `JsonSerializerOptions` prepared! All I had to do was add `options`, which I'd already gotten through DI, to the serialization part. And just like that, the test now passes.
+
+I've now added the remaining assertions, and it all went according to plan. So, the first test is up and flawlessly running (I think?). Now, time to get the ball rolling...
+
+Well hey. Seems these tests sure have proven far more fruitful than I'd imagined. Already have I solved several minor issues. And I just now noticed a less *minor* issue. Take a look:
+
+```json
+{
+    "question": "What is Eyjafjallajökull?",
+    "option1": "A glacier in Norway",
+    "option2": "A volcano on Iceland",
+    "option3": "A crater in China",
+    "option4": "A city on Greenland",
+    "correctOptionNumber": -10
+}
+```
+
+The correct option number is -10 in the example. Absurd right? No quiz would ever accept that. Except mine, apparently. So, let met just go fix that, real quick...
+
+Hm. It was not as easy as I'd hoped. I was hoping to add a [Range] attribute and leave it at that, but alas, it was not that easy. Attributes like these are not inherited, so it quickly became a *lot* more complicated. I tried marking the property in the superclass `abstract` and `virtual`, to override it with a [Range] attribute in each subclass. It did not work. I tried modifying the getters and setters like this:
+
+```cs
+private int correctOptionNumber;
+public override required int CorrectOptionNumber { get { return correctOptionNumber; } set { if (value >= 1 && value <= 4) correctOptionNumber = value; else throw new ArgumentOutOfRangeException(nameof(CorrectOptionNumber), "Value must be in the range 1-4."); ; } }
+```
+
+Incredibly readable, I know. Anyhow it did work, but not as I want it to. Throwing an error like this means returning an Internal server error, which is not what I want - I want to return a `BadRequest`. So now I'm experimenting with ways to validate the JSON before deserializing it.
