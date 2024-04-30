@@ -28,7 +28,7 @@ builder.Services.AddSingleton(new JsonSerializerOptions
     PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
 });
 
-builder.Services.AddScoped<Backend.Infrastructure.Validation.ValidatorFactory.IValidatorFactory, ValidatorFactory>();
+builder.Services.AddScoped<Backend.Infrastructure.Validation.ValidatorFactory.IQuestionValidatorFactory, QuestionValidatorFactory>();
 builder.Services.AddScoped<IValidator<FourOptionQuestion>, FourOptionQuestionValidator>();
 
 builder.Services.AddScoped<QuizService>();

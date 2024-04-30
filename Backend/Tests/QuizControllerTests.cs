@@ -1,9 +1,12 @@
 using Backend.Controllers;
 using Backend.Handlers.Questions;
 using Backend.Infrastructure.Models.Dtos;
+using Backend.Infrastructure.Models.Entities;
 using Backend.Infrastructure.Models.Entities.QuestionTypes;
 using Backend.Infrastructure.Validation.ValidatorFactory;
+using Backend.Infrastructure.Validation.Validators;
 using FluentAssertions;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -17,7 +20,7 @@ public class QuizControllerTests
 {
     private readonly Mock<IMediator> _mediatorMock;
     private readonly JsonSerializerOptions options;
-    private readonly Mock<IValidatorFactory> _validatorFactory;
+    private readonly Mock<IQuestionValidatorFactory> _validatorFactoryMock;
     private readonly Mock<ILogger<QuizController>> _loggerMock;
     private readonly QuizController _controller;
 
@@ -28,9 +31,9 @@ public class QuizControllerTests
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         };
-        _validatorFactory = new();
+        _validatorFactoryMock = new();
         _loggerMock = new();
-        _controller = new(_mediatorMock.Object, options, _validatorFactory.Object, _loggerMock.Object);
+        _controller = new(_mediatorMock.Object, options, _validatorFactoryMock.Object, _loggerMock.Object);
     }
 
     [TestMethod]
@@ -66,12 +69,17 @@ public class QuizControllerTests
         JsonDocument jsonDocument = JsonDocument.Parse(jsonString);
         JsonElement fourOptionQuestionJson = jsonDocument.RootElement;
 
+        IValidator<FourOptionQuestion> validator = new FourOptionQuestionValidator();
+
         _mediatorMock.Setup(m => m.Send(It.IsAny<CreateQuestionCommand>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(commandResponse);
 
+        _validatorFactoryMock.Setup(v => v.GetValidator<FourOptionQuestion>())
+            .Returns(validator);
+
         // Act
         var response = await _controller.CreateQuestion(questionType, fourOptionQuestionJson);
-        _mediatorMock.Reset();
+        ResetAllMocks();
 
         // Assert
         response.Should().NotBeNull();
@@ -91,28 +99,38 @@ public class QuizControllerTests
     }
 
     [TestMethod]
-    public async Task CreateQuestion_QuestionInvalid_Should_Return_()
+    public async Task CreateQuestion_QuestionInvalid_Should_Return_BadRequest()
     {
         // Arrange
         string questionType = "Geography";
         MathQuestion questionRequest = new()
         {
-            Question = "What is Eyjafjallajökull?",
+            Question = "",
             Option1 = "A glacier in Norway",
-            Option2 = "A volcano on Iceland",
+            Option2 = "",
             Option3 = "A crater in China",
             Option4 = "A city on Greenland",
-            CorrectOptionNumber = 1400,
+            CorrectOptionNumber = 1337,
         };
 
         string jsonString = JsonSerializer.Serialize(questionRequest, options);
         JsonDocument jsonDocument = JsonDocument.Parse(jsonString);
         JsonElement fourOptionQuestionJson = jsonDocument.RootElement;
 
+        IValidator<FourOptionQuestion> validator = new FourOptionQuestionValidator();
+
+        _validatorFactoryMock.Setup(v => v.GetValidator<FourOptionQuestion>())
+            .Returns(validator);
+
         // Act
         var response = await _controller.CreateQuestion(questionType, fourOptionQuestionJson);
+        ResetAllMocks();
 
         // Assert
+        response.Should().NotBeNull();
+        response.Result.Should().NotBeNull();
+        response.Result.Should().BeOfType<BadRequestObjectResult>();
+        VerifyLog(LogLevel.Warning);
     }
 
     [TestMethod]
@@ -145,6 +163,7 @@ public class QuizControllerTests
 
         ObjectResult objectResult = (ObjectResult)response.Result!;
         objectResult.StatusCode.Should().Be(400);
+        VerifyLog(LogLevel.Warning);
     }
 
     [TestMethod]
@@ -175,6 +194,7 @@ public class QuizControllerTests
 
         ObjectResult objectResult = (ObjectResult)response.Result!;
         objectResult.StatusCode.Should().Be(400);
+        VerifyLog(LogLevel.Warning);
     }
 
     [TestMethod]
@@ -205,5 +225,22 @@ public class QuizControllerTests
 
         ObjectResult objectResult = (ObjectResult)response.Result!;
         objectResult.StatusCode.Should().Be(400);
+        VerifyLog(LogLevel.Warning);
+    }
+
+    private void VerifyLog(LogLevel level)
+    {
+        _loggerMock.Verify(l => l.Log(
+            It.Is<LogLevel>(loglevel => loglevel == level),
+            It.IsAny<EventId>(),
+            It.IsAny<It.IsAnyType>(),
+            It.IsAny<Exception>(),
+            It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Once);
+    }
+
+    private void ResetAllMocks()
+    {
+        _mediatorMock.Reset();
+        _validatorFactoryMock.Reset();
     }
 }
