@@ -1,6 +1,7 @@
 using Backend;
 using Backend.Infrastructure.Data;
 using Backend.Infrastructure.Models.Entities;
+using Backend.Infrastructure.Models.Requests;
 using Backend.Infrastructure.Validation.ValidatorFactory;
 using Backend.Infrastructure.Validation.Validators;
 using Backend.Services;
@@ -30,6 +31,7 @@ builder.Services.AddSingleton(new JsonSerializerOptions
 
 builder.Services.AddScoped<Backend.Infrastructure.Validation.ValidatorFactory.IQuestionValidatorFactory, QuestionValidatorFactory>();
 builder.Services.AddScoped<IValidator<FourOptionQuestion>, FourOptionQuestionValidator>();
+builder.Services.AddScoped<IValidator<PatchQuestionRequest>, PatchQuestionRequestValidator>();
 
 builder.Services.AddScoped<QuizService>();
 

@@ -22,7 +22,6 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
     private readonly ILogger<QuizController> _logger = logger;
 
     private const string BadRequestMessageTemplate = "Invalid request data: ";
-    private const string LogWarningMessageTemplate = "Error: ";
     private const string ErrorMessageTemplate = "An unexpected error occured: ";
     private const string LogErrorMessageTemplate = "An unexpected error occured: ";
 
@@ -197,6 +196,10 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
 
         try
         {
+            var (success, validationMessage) = ValidateRequestAndLogErrors<PatchQuestionRequest>(request);
+            if (!success)
+                return BadRequest(validationMessage);
+
             PatchQuestionCommand command = new()
             {
                 Request = request,
