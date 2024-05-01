@@ -4,9 +4,9 @@ using Backend.Infrastructure.Models.Dtos;
 using Backend.Infrastructure.Models.Entities;
 using Backend.Infrastructure.Models.Entities.QuestionTypes;
 using Backend.Infrastructure.Models.Requests;
+using Backend.Infrastructure.Models.Responses;
 using Backend.Infrastructure.Validation.ValidatorFactory;
 using MediatR;
-using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -28,7 +28,7 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
     [HttpPost("answer")]
     public async Task<ActionResult<string>> CheckAnswer([FromBody] CheckAnswerRequest request)
     {
-        if (!ModelState.IsValid)
+        if (!ModelState.IsValid || request is null)
         {
             _logger.LogWarning(BadRequestMessageTemplate + "{ModelStateErrors}", ModelState.Values.SelectMany(v => v.Errors));
             return BadRequest(BadRequestMessageTemplate);
@@ -56,9 +56,9 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
     }
 
     [HttpPost("get")]
-    public async Task<ActionResult<FourOptionQuestionDto>> GetQuestion([FromBody] GetQuestionRequest request)
+    public async Task<ActionResult<GetQuestionResponse>> GetQuestion([FromBody] GetQuestionRequest request)
     {
-        if (!ModelState.IsValid)
+        if (!ModelState.IsValid || request is null)
         {
             _logger.LogWarning(BadRequestMessageTemplate + "{ModelStateErrors}", ModelState.Values.SelectMany(v => v.Errors));
             return BadRequest(BadRequestMessageTemplate);
@@ -66,6 +66,10 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
 
         try
         {
+            (bool success, string? validationMessage) = ValidateRequestAndLogErrors<BaseRequest>(request);
+            if (!success)
+                return BadRequest(validationMessage);
+
             GetQuestionCommand command = new()
             {
                 PlayerName = request.PlayerName,
@@ -74,9 +78,11 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
             var response = await _mediator.Send(command);
 
             return response.Success == true
-                ? response.Question is not null
-                ? Ok(response.Question)
-                : Ok(response.Details)
+                ? Ok(new GetQuestionResponse
+                {
+                    FourOptionQuestion = response.Question,
+                    Details = response.Details
+                })
                 : BadRequest(response.Error is not null ? response.Error.Message : ErrorMessageTemplate);
         }
         catch (Exception ex)
@@ -89,7 +95,7 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
     [HttpPost("initialize")]
     public async Task<ActionResult<string>> InitializeQuiz([FromBody] InitializeQuizRequest request)
     {
-        if (!ModelState.IsValid)
+        if (!ModelState.IsValid || request is null)
         {
             _logger.LogWarning(BadRequestMessageTemplate + "{ModelStateErrors}", ModelState.Values.SelectMany(v => v.Errors));
             return BadRequest(BadRequestMessageTemplate);
