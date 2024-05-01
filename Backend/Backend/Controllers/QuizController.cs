@@ -97,6 +97,10 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
 
         try
         {
+            var (success, validationMessage) = ValidateRequestAndLogErrors<BaseRequest>(request);
+            if (!success)
+                return BadRequest(validationMessage);
+
             InitializeQuizCommand command = new()
             {
                 PlayerName = request.PlayerName,

@@ -32,6 +32,7 @@ builder.Services.AddSingleton(new JsonSerializerOptions
 builder.Services.AddScoped<Backend.Infrastructure.Validation.ValidatorFactory.IQuestionValidatorFactory, QuestionValidatorFactory>();
 builder.Services.AddScoped<IValidator<FourOptionQuestion>, FourOptionQuestionValidator>();
 builder.Services.AddScoped<IValidator<PatchQuestionRequest>, PatchQuestionRequestValidator>();
+builder.Services.AddScoped<IValidator<BaseRequest>, BaseRequestValidator>();
 
 builder.Services.AddScoped<QuizService>();
 
