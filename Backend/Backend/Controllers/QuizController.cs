@@ -155,12 +155,12 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
 
         try
         {
-            FourOptionQuestion? fourOptionQuestion = DeserializeAndReturnQuestion(questionType, fourOptionQuestionJson);
+            (FourOptionQuestion? fourOptionQuestion, string? message) = DeserializeAndReturnQuestion(questionType, fourOptionQuestionJson);
 
             if (fourOptionQuestion is null)
             {
-                _logger.LogWarning(BadRequestMessageTemplate + "{RequestDataErrors}", "Invalid question type.");
-                return BadRequest("Please verify that you chose a valid question type.");
+                _logger.LogWarning(BadRequestMessageTemplate + "{RequestDataErrors}", message);
+                return BadRequest(message);
             }
 
             var (success, validationMessage) = ValidateRequestAndLogErrors<FourOptionQuestion>(fourOptionQuestion);
@@ -242,42 +242,47 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
         }
     }
 
-    private FourOptionQuestion? DeserializeAndReturnQuestion(string questionType, JsonElement fourOptionQuestionJson)
+    private (FourOptionQuestion? fourOptionQuestion, string? message) DeserializeAndReturnQuestion(string questionType, JsonElement fourOptionQuestionJson)
     {
-        return questionType.ToLower() switch
+        FourOptionQuestion? question = questionType.ToLower() switch
         {
-            "chemistry" => JsonSerializer.Deserialize<ChemistryQuestion>(fourOptionQuestionJson, _serializerOptions)
-                                    ?? throw new NullReferenceException(nameof(fourOptionQuestionJson)),
+            "chemistry" => JsonSerializer.Deserialize<ChemistryQuestion>(fourOptionQuestionJson, _serializerOptions),
 
-            "food" => JsonSerializer.Deserialize<FoodQuestion>(fourOptionQuestionJson, _serializerOptions)
-                                    ?? throw new NullReferenceException(nameof(fourOptionQuestionJson)),
+            "food" => JsonSerializer.Deserialize<FoodQuestion>(fourOptionQuestionJson, _serializerOptions),
 
-            "game" => JsonSerializer.Deserialize<GameQuestion>(fourOptionQuestionJson, _serializerOptions)
-                                    ?? throw new NullReferenceException(nameof(fourOptionQuestionJson)),
+            "game" => JsonSerializer.Deserialize<GameQuestion>(fourOptionQuestionJson, _serializerOptions),
 
-            "geography" => JsonSerializer.Deserialize<GeographyQuestion>(fourOptionQuestionJson, _serializerOptions)
-                                    ?? throw new NullReferenceException(nameof(fourOptionQuestionJson)),
+            "geography" => JsonSerializer.Deserialize<GeographyQuestion>(fourOptionQuestionJson, _serializerOptions),
 
-            "history" => JsonSerializer.Deserialize<HistoryQuestion>(fourOptionQuestionJson, _serializerOptions)
-                                    ?? throw new NullReferenceException(nameof(fourOptionQuestionJson)),
+            "history" => JsonSerializer.Deserialize<HistoryQuestion>(fourOptionQuestionJson, _serializerOptions),
 
-            "literature" => JsonSerializer.Deserialize<LiteratureQuestion>(fourOptionQuestionJson, _serializerOptions)
-                                    ?? throw new NullReferenceException(nameof(fourOptionQuestionJson)),
+            "literature" => JsonSerializer.Deserialize<LiteratureQuestion>(fourOptionQuestionJson, _serializerOptions),
 
-            "math" => JsonSerializer.Deserialize<MathQuestion>(fourOptionQuestionJson, _serializerOptions)
-                                    ?? throw new NullReferenceException(nameof(fourOptionQuestionJson)),
+            "math" => JsonSerializer.Deserialize<MathQuestion>(fourOptionQuestionJson, _serializerOptions),
 
-            "music" => JsonSerializer.Deserialize<MusicQuestion>(fourOptionQuestionJson, _serializerOptions)
-                                    ?? throw new NullReferenceException(nameof(fourOptionQuestionJson)),
+            "music" => JsonSerializer.Deserialize<MusicQuestion>(fourOptionQuestionJson, _serializerOptions),
 
-            "sports" => JsonSerializer.Deserialize<SportsQuestion>(fourOptionQuestionJson, _serializerOptions)
-                                    ?? throw new NullReferenceException(nameof(fourOptionQuestionJson)),
+            "sports" => JsonSerializer.Deserialize<SportsQuestion>(fourOptionQuestionJson, _serializerOptions),
 
-            "technology" => JsonSerializer.Deserialize<TechnologyQuestion>(fourOptionQuestionJson, _serializerOptions)
-                                    ?? throw new NullReferenceException(nameof(fourOptionQuestionJson)),
+            "technology" => JsonSerializer.Deserialize<TechnologyQuestion>(fourOptionQuestionJson, _serializerOptions),
 
-            _ => null, // Check if response is null when using method. Return BadRequest() if such is the case.
+            _ => new InvalidQuestionType // Use only to differentiate from JSON deserialization failures.
+            {
+                Question = "",
+                Option1 = "",
+                Option2 = "",
+                Option3 = "",
+                Option4 = "",
+                CorrectOptionNumber = 1,
+            },
         };
+
+        if (question is null)
+            return (null, "Deserialization failed. Please verify your request body.");
+        else if (question is InvalidQuestionType)
+            return (null, "Invalid question type. Please verify that you chose a valid question type.");
+        else
+            return (question, null);
     }
 
     private (bool success, string? validationMessage) ValidateRequestAndLogErrors<T>(T instance)
