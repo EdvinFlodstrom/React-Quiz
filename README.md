@@ -205,3 +205,35 @@ Alright, problem above's been fixed. It really wasn't as confusing as I made it 
 Hmkay, tests for DELETE have been added now as well. So, I have a total of 12 functional tests now, for `CreateQuestion`, HTTP PATCH, and HTTP DELETE. I suppose I'll keep working on unit tests for the remaining endpoints, then.
 
 15 tests are up and functional. I'm starting to get a little tired of tests though, so I'll take a break for now. Not quite done with the testing yet, though...
+
+Alright, some extra validation has now been added to the `InitializeQuiz` endpoint. Now, one may no longer provide a name that is shorter than two characters long. If your name is "" or "A" or something else with only one letter, sorry. Got to keep the names unique, yah?
+
+I've now updated the validation above. Suppose I forgot to think before adding it, cause I made the validaiton only for `InitializeQuiz`, which inherits from `BaseRequest` (not very explanatory name perhaps, but oh well). This `BaseRequest` class is the one containing the `PlayerName` property, so I adjusted the validation to be of type `BaseRequest`. As such, I can now reuse this same validation not only for `InitializeQuiz`, but also for any other methods that implement a form of request that inherits from `BaseRequest`. By a complete coincidence (for the sake of clarity, this is a joke), this is the case right now. So I'll be reusing the validaiton for the `GetQuestion` method. Also, I feel inclined to point out how useful the factory class I made for this validation has proven. I can validate the a subclass with the validaiton methods of the superclass like this: `(bool success, string? validationMessage) = ValidateRequestAndLogErrors<BaseRequest>(request);`. So despite `request` being an instance of a subclass, I can still validate it using the superclass' validation. Polymorphism sure is useful, eh? Also, this is what the method declaration of the method in question looks like: `private (bool success, string? validationMessage) ValidateRequestAndLogErrors<T>(T instance)`. The `<T>` is real nice, indeed. Means I can specify to validate using the superclass type instead of the subclass, which is chosen by default unless I specify the superclass type when calling the method.
+
+Hm. I just noticed an error. A rather problematic one, one could say. So, the `GetQuestion` method returns a `Task<ActionResult<FourOptionQuestionDto>>`. And this is a problem, because when there are no questions left, I instead return a string. A string. Good luck treating that FourOptionQuestionDto as a string, me. So I'll have to adjust this logic, somehow. I just don't know exactly how - there are many ways to do so...
+
+Huh. Now, something like this can be returned when asking for a question:
+```json
+{
+    "fourOptionQuestion": {
+        "question": "What is Eyjafjallajökull?",
+        "option1": "A glacier in Norway",
+        "option2": "A volcano on Iceland",
+        "option3": "A crater in China",
+        "option4": "A city on Greenland"
+    },
+    "details": null
+}
+```
+
+And if no questions remiain:
+```json
+{
+    "fourOptionQuestion": null,
+    "details": "That's all the questions. Thanks for playing! Your final score was: 1/1. To play again, please initialize the quiz once more."
+}
+```
+
+I guess this is what I was technically after, since I can now check "Is question null? Render the details instead". It doesn't look as slick in Postman, but I suppose that's not what I was after anyway, so what do I know? I'll leave it like this for now, since it'll make the tests a lot more comprehendable (relatively speaking, that is).
+
+Hm. I've written many a test today. Well and yesterday. In about two days, I've written 22 functional tests. 825 lines. Yeesh. Only one controller method remains to test now - `CheckAnswer`. And then I'll have to test all the MediatR commands. And all the `QuizService` methods. This is going to take a while, eh?
