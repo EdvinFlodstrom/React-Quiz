@@ -174,8 +174,34 @@ Ahem.
 
 *WOOOOOOOOOOOOOOOOOOOOOOOOO*
 
-Anyway, where was I? The validation works. Hardly have I been so exited to see an error message. It took me a lot of time and a lot of thinking to get this working. So although the validation doesn't occur before deserialization, it occurs before sending the MediatR command. Which now means I can return a `BadRequest` immediately when the user sends something dumb like `"NumberOfCorrectOption": -1337`. And this also means I don't have to bother fixing an attribute for the inheriting subclasses of `FourOpionQuestion`. A foul value can be set, but it won't get much longer than the deserialization part. However, since I moved all the subclasses and such to a new `Infrastructure` folder, I can no longer use `git restore x` to fix it instantly. So, time for some good old manual code cleanup...
+Anyway, where was I? The validation works. Hardly have I ever before been so exited to see an error message. It took me a lot of time and a lot of thinking to get this working. So although the validation doesn't occur before deserialization, it occurs before sending the MediatR command. Which now means I can return a `BadRequest` immediately when the user sends something dumb like `"NumberOfCorrectOption": -1337`. And this also means I don't have to bother fixing an attribute for the inheriting subclasses of `FourOpionQuestion`. A foul value can be set, but it won't get much longer than the deserialization part. However, since I moved all the subclasses and such to a new `Infrastructure` folder, I can no longer use `git restore x` to fix it instantly. So, time for some good old manual code cleanup...
 
-Hookay, all's fixed now. I've renamed, refactored, re-read, re-tested, and everything some more. I believe, after a *lot* more work than I'd expected, gotten the `CreateQuestion` controller method just perfect. Any potential mistakes, intentional or not, should be caught. A warning is logged, and a `BadRequest` is returned. At least for all the cases that I've found out about. It's funny how, prior to starting work on these unit tests, I thought the `CreateQuestion` method was fiiine, it was good. No need to work on it or other parts of the backend... Yeah that was wrong, to say the least. Safe to say, I didn't think there were so many things that could be improved in my code. Which worries me, because I currently think "it's fiiine...". Which it probably isn't. But, uh. At least it's a bit better than before?
+Hookay, all's fixed now. I've renamed, refactored, re-read, re-tested, and everything some more. I believe that I've, after a *lot* more work than I'd expected, gotten the `CreateQuestion` controller method just perfect. Any potential mistakes, intentional or not, should be caught. A warning is logged, and a `BadRequest` is returned. At least for all the cases that I've found out about. It's funny how I, prior to starting work on these unit tests, thought the `CreateQuestion` method was fiiine, it was good. No need to work on it or other parts of the backend... Yeah that was wrong, to say the least. Safe to say, I didn't think there were so many things that could be improved in my code. Which worries me, because I currently think "it's fiiine...". Which it probably isn't. But, uh. At least it's a bit better than before?
 
 So, apparently, the validation wasn't *quite* functional. Apparently one could still create questions with one or more empty options. So, I had that fixed. Now, I *think* the `CreateQuestion` endpoint in the controller should be basically perfect (sure). But, uh, I have a feeling one can still PATCH a question to have invalid properties. So, that's what I'll be fixing next...
+
+2024-05-01
+-----------
+Well, I wasn't completely wrong. Here's a PATCH request:
+```json
+{
+    "question": "",
+    "correctOptionNumber": 2
+}
+```
+
+It is supposed to fail, but it currently doesn't. I'll have to find a way to fix this - probably with custom validation. Any property should able to be null, but not empty. One nice thing is that I can't set the correct option number to anything outside the range 1-4, but I can leave it out. So I'll simply have to make sure that no property is set to an empty value... In theory, all that's required should be to set a rule for when it isn't null, I think?
+
+Hey hey, it's working! Any one of the options may be null, but if any isn't, it may not be empty. So to change one option and leave the others unchanged, simply include only the one option to change and provide a not-empty string.
+
+I don't think I need to add validation for HTTP DELETE? It's just an integer - if it doesn't exist in the database, that's returned as a `BadRequest`. Suppose I'll start writing tests for HTTP PATCH and DELETE then?
+
+Okay, I've now improved the error handling in the `CreateQuestion` method even more. Previously, if JSON of the to-be question was null, the deserialization method threw an Exception that was caught and returned with a special message. This meant an Internal Server Error, though. And this bothered me, since it's more of a `BadRequest` to send invalid JSON, yah? So I fixed that, and now a `BadRequest` is returned for bad requests. Makes sense, hm.
+
+Huh, I just now noticed a curious problem. One can set the ID of the question in the request. This doesn't actually matter - I have logic later in the program that sets the ID every time, so I could tehcnically ignore this. But admittely, it does annoy me somewhat that it's possible in the first place. So, I'll see what I can do about that...
+
+Alright, problem above's been fixed. It really wasn't as confusing as I made it seem, because I (somehow) edited the wrong property. I don't know how I didn't realize I was editing the wrong property for about five to ten minutes, but when I noticed, I simply added the code to the right property instead. I dropped the database about seven times and tested a bunch of stuff, and now I'm pretty sure it works as I want. Now, even though the ID of the question could not be tampered with from the start, it can't be assigned at all anymore. I also added this thingy to another property, that users should not have access to...
+
+Hmkay, tests for DELETE have been added now as well. So, I have a total of 12 functional tests now, for `CreateQuestion`, HTTP PATCH, and HTTP DELETE. I suppose I'll keep working on unit tests for the remaining endpoints, then.
+
+15 tests are up and functional. I'm starting to get a little tired of tests though, so I'll take a break for now. Not quite done with the testing yet, though...
