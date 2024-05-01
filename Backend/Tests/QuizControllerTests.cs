@@ -456,6 +456,122 @@ public class QuizControllerTests
         response.Result.Should().BeOfType<BadRequestObjectResult>();
     }
 
+    [TestMethod]
+    public async Task GetManyQuestions_Should_Return_ListOfFourOptionQuestion()
+    {
+        // Arrange
+        int numberOfQuestions = 1;
+        string questionType = "Geography";
+
+        GetManyQuestionsCommandResponse commandResponse = new()
+        {
+            Questions =
+            [
+                new GeographyQuestion()
+                {
+                    Question = "What is Eyjafjallajökull?",
+                    Option1 = "A glacier in Norway",
+                    Option2 = "A volcano on Iceland",
+                    Option3 = "A crater in China",
+                    Option4 = "A city in Greenland",
+                    CorrectOptionNumber = 2,
+                }
+            ],
+            Success = true,
+            Error = null,
+        };
+
+        _mediatorMock.Setup(m => m.Send(It.IsAny<GetManyQuestionsCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(commandResponse);
+
+        // Act
+        var response = await _controller.GetManyQuestions(numberOfQuestions, questionType);
+        ResetAllMocks();
+
+        // Assert
+        response.Should().NotBeNull();
+        response.Result.Should().NotBeNull();
+
+        ObjectResult objectResult = (ObjectResult)response.Result!;
+        objectResult.StatusCode.Should().Be(200);
+        objectResult.Value.Should().NotBeNull();
+
+        List<FourOptionQuestion> questions = (List<FourOptionQuestion>)objectResult.Value!;
+        questions.Count.Should().Be(1);
+        questions[0].Question.Should().Be("What is Eyjafjallajökull?");
+        questions[0].Option1.Should().Be("A glacier in Norway");
+        questions[0].Option2.Should().Be("A volcano on Iceland");
+        questions[0].Option3.Should().Be("A crater in China");
+        questions[0].Option4.Should().Be("A city in Greenland");
+        questions[0].CorrectOptionNumber.Should().Be(2);
+    }
+
+    [TestMethod]
+    public async Task GetManyQuestions_QuestionTypeNull_Should_Return_ListOfFourOptionQuestion()
+    {
+        // Arrange
+        int numberOfQuestions = 1;
+        string? questionType = null;
+
+        GetManyQuestionsCommandResponse commandResponse = new()
+        {
+            Questions =
+            [
+                new GeographyQuestion()
+                {
+                    Question = "What is Eyjafjallajökull?",
+                    Option1 = "A glacier in Norway",
+                    Option2 = "A volcano on Iceland",
+                    Option3 = "A crater in China",
+                    Option4 = "A city in Greenland",
+                    CorrectOptionNumber = 2,
+                }
+            ],
+            Success = true,
+            Error = null,
+        };
+
+        _mediatorMock.Setup(m => m.Send(It.IsAny<GetManyQuestionsCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(commandResponse);
+
+        // Act
+        var response = await _controller.GetManyQuestions(numberOfQuestions, questionType);
+        ResetAllMocks();
+
+        // Assert
+        response.Should().NotBeNull();
+        response.Result.Should().NotBeNull();
+
+        ObjectResult objectResult = (ObjectResult)response.Result!;
+        objectResult.StatusCode.Should().Be(200);
+        objectResult.Value.Should().NotBeNull();
+
+        List<FourOptionQuestion> questions = (List<FourOptionQuestion>)objectResult.Value!;
+        questions.Count.Should().Be(1);
+        questions[0].Question.Should().Be("What is Eyjafjallajökull?");
+        questions[0].Option1.Should().Be("A glacier in Norway");
+        questions[0].Option2.Should().Be("A volcano on Iceland");
+        questions[0].Option3.Should().Be("A crater in China");
+        questions[0].Option4.Should().Be("A city in Greenland");
+        questions[0].CorrectOptionNumber.Should().Be(2);
+    }
+
+    [TestMethod]
+    public async Task GetManyQuestions_NumberOfQuestionsInvalid_Should_Return_()
+    {
+        // Arrange
+        int numberOfQuestions = 0;
+        string questionType = "Geography";
+
+        // Act
+        var response = await _controller.GetManyQuestions(numberOfQuestions, questionType);
+
+        // Assert
+        response.Should().NotBeNull();
+        response.Result.Should().NotBeNull();
+        response.Result.Should().BeOfType<BadRequestObjectResult>();
+    }
+
     private void VerifyLog(LogLevel level)
     {
         _loggerMock.Verify(l => l.Log(
