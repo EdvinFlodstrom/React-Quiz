@@ -188,7 +188,7 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
     [HttpPatch("patch/{questionId}")]
     public async Task<ActionResult<FourOptionQuestion>> PatchQuestion(int questionId, [FromBody] PatchQuestionRequest request)
     {
-        if (!ModelState.IsValid)
+        if (!ModelState.IsValid  || request is null)
         {
             _logger.LogWarning(BadRequestMessageTemplate + "{ModelStateErrors}", ModelState.Values.SelectMany(v => v.Errors));
             return BadRequest(BadRequestMessageTemplate);
