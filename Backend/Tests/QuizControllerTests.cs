@@ -42,13 +42,13 @@ public class QuizControllerTests
     {
         // Arrange
         string questionType = "Geography";
-        MathQuestion questionRequest = new()
+        GeographyQuestion questionRequest = new()
         {
             Question = "What is Eyjafjallajökull?",
             Option1 = "A glacier in Norway",
             Option2 = "A volcano on Iceland",
             Option3 = "A crater in China",
-            Option4 = "A city on Greenland",
+            Option4 = "A city in Greenland",
             CorrectOptionNumber = 2,
         };
 
@@ -95,7 +95,7 @@ public class QuizControllerTests
         question.Option1.Should().Be("A glacier in Norway");
         question.Option2.Should().Be("A volcano on Iceland");
         question.Option3.Should().Be("A crater in China");
-        question.Option4.Should().Be("A city on Greenland");
+        question.Option4.Should().Be("A city in Greenland");
     }
 
     [TestMethod]
@@ -130,13 +130,13 @@ public class QuizControllerTests
     {
         // Arrange
         string questionType = "Geography";
-        MathQuestion questionRequest = new()
+        GeographyQuestion questionRequest = new()
         {
             Question = "",
             Option1 = "A glacier in Norway",
             Option2 = "",
             Option3 = "A crater in China",
-            Option4 = "A city on Greenland",
+            Option4 = "A city in Greenland",
             CorrectOptionNumber = 1337,
         };
 
@@ -165,13 +165,13 @@ public class QuizControllerTests
     {
         // Arrange
         string? questionType = null;
-        MathQuestion questionRequest = new()
+        GeographyQuestion questionRequest = new()
         {
             Question = "What is Eyjafjallajökull?",
             Option1 = "A glacier in Norway",
             Option2 = "A volcano on Iceland",
             Option3 = "A crater in China",
-            Option4 = "A city on Greenland",
+            Option4 = "A city in Greenland",
             CorrectOptionNumber = 2
         };
         string jsonString = JsonSerializer.Serialize(questionRequest);
@@ -195,13 +195,13 @@ public class QuizControllerTests
     {
         // Arrange
         string? questionType = "";
-        MathQuestion questionRequest = new()
+        GeographyQuestion questionRequest = new()
         {
             Question = "What is Eyjafjallajökull?",
             Option1 = "A glacier in Norway",
             Option2 = "A volcano on Iceland",
             Option3 = "A crater in China",
-            Option4 = "A city on Greenland",
+            Option4 = "A city in Greenland",
             CorrectOptionNumber = 2
         };
         string jsonString = JsonSerializer.Serialize(questionRequest);
@@ -223,13 +223,13 @@ public class QuizControllerTests
     {
         // Arrange
         string? questionType = "My special question type";
-        MathQuestion questionRequest = new()
+        GeographyQuestion questionRequest = new()
         {
             Question = "What is Eyjafjallajökull?",
             Option1 = "A glacier in Norway",
             Option2 = "A volcano on Iceland",
             Option3 = "A crater in China",
-            Option4 = "A city on Greenland",
+            Option4 = "A city in Greenland",
             CorrectOptionNumber = 2
         };
         string jsonString = JsonSerializer.Serialize(questionRequest);
@@ -377,6 +377,77 @@ public class QuizControllerTests
 
         // Act
         var response = await _controller.PatchQuestion(questionId, patchQuestionRequest);
+        ResetAllMocks();
+
+        // Assert
+        response.Should().NotBeNull();
+        response.Result.Should().NotBeNull();
+        response.Result.Should().BeOfType<BadRequestObjectResult>();
+    }
+
+    [TestMethod]
+    public async Task DeleteQuestion_Should_Return_FourOptionQuestion()
+    {
+        // Arrange
+        int questionId = 1;
+
+        DeleteQuestionCommandResponse commandResponse = new()
+        {
+            Question = new GeographyQuestion()
+            {
+                Question = "What is Eyjafjallajökull?",
+                Option1 = "A glacier in Norway",
+                Option2 = "A volcano on Iceland",
+                Option3 = "A crater in China",
+                Option4 = "A city in Greenland",
+                CorrectOptionNumber = 2,
+            },
+            Success = true,
+            Error = null,
+        };
+
+        _mediatorMock.Setup(m => m.Send(It.IsAny<DeleteQuestionCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(commandResponse);
+
+        // Act
+        var response = await _controller.DeleteQuestion(questionId);
+        ResetAllMocks();
+
+        // Assert
+        response.Should().NotBeNull();
+        response.Result.Should().NotBeNull();
+
+        ObjectResult objectResult = (ObjectResult)response.Result!;
+        objectResult.StatusCode.Should().Be(200);
+        objectResult.Value.Should().NotBeNull();
+
+        var question = (FourOptionQuestion)objectResult.Value!;
+        question.Question.Should().Be("What is Eyjafjallajökull?");
+        question.Option1.Should().Be("A glacier in Norway");
+        question.Option2.Should().Be("A volcano on Iceland");
+        question.Option3.Should().Be("A crater in China");
+        question.Option4.Should().Be("A city in Greenland");
+        question.CorrectOptionNumber.Should().Be(2);
+    }
+
+    [TestMethod]
+    public async Task DeleteQuestion_QuestionIdInvalid_Should_Return_BadRequest()
+    {
+        // Arrange
+        int questionId = -1337;
+
+        DeleteQuestionCommandResponse commandResponse = new()
+        {
+            Question = null,
+            Success = false,
+            Error = new ArgumentException("A question with the provided ID does not exist in the database."),
+        };
+
+        _mediatorMock.Setup(m => m.Send(It.IsAny<DeleteQuestionCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(commandResponse);
+
+        // Act
+        var response = await _controller.DeleteQuestion(questionId);
         ResetAllMocks();
 
         // Assert
