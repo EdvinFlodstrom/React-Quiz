@@ -1,9 +1,11 @@
 using Backend.Controllers;
 using Backend.Handlers.Questions;
+using Backend.Handlers.Quiz;
 using Backend.Infrastructure.Models.Dtos;
 using Backend.Infrastructure.Models.Entities;
 using Backend.Infrastructure.Models.Entities.QuestionTypes;
 using Backend.Infrastructure.Models.Requests;
+using Backend.Infrastructure.Models.Responses;
 using Backend.Infrastructure.Validation.ValidatorFactory;
 using Backend.Infrastructure.Validation.Validators;
 using FluentAssertions;
@@ -12,6 +14,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
+using Newtonsoft.Json.Serialization;
 using System.Text.Json;
 
 namespace Tests;
@@ -557,7 +560,7 @@ public class QuizControllerTests
     }
 
     [TestMethod]
-    public async Task GetManyQuestions_NumberOfQuestionsInvalid_Should_Return_()
+    public async Task GetManyQuestions_NumberOfQuestionsInvalid_Should_Return_BadRequest()
     {
         // Arrange
         int numberOfQuestions = 0;
@@ -570,6 +573,238 @@ public class QuizControllerTests
         response.Should().NotBeNull();
         response.Result.Should().NotBeNull();
         response.Result.Should().BeOfType<BadRequestObjectResult>();
+    }
+
+    [TestMethod]
+    public async Task InitializeQuiz_Should_Return_String()
+    {
+        // Arrange
+        InitializeQuizRequest initializeQuizRequest = new()
+        {
+            PlayerName = "Åke",
+            AmountOfQuestions = 1,
+            QuestionType = "Geography",
+        };
+
+        InitializeQuizCommandResponse commandResponse = new()
+        {
+            Details = "Quiz has been initialized successfully for player Åke",
+            Success = true,
+            Error = null,
+        };
+
+        IValidator<BaseRequest> validator = new BaseRequestValidator();
+
+        _mediatorMock.Setup(m => m.Send(It.IsAny<InitializeQuizCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(commandResponse);
+
+        _validatorFactoryMock.Setup(v => v.GetValidator<BaseRequest>())
+            .Returns(validator);
+
+        // Act
+        var response = await _controller.InitializeQuiz(initializeQuizRequest);
+        ResetAllMocks();
+
+        // Assert
+        response.Should().NotBeNull();
+        response.Result.Should().NotBeNull();
+
+        ObjectResult objectResult = (ObjectResult)response.Result!;
+        objectResult.StatusCode.Should().Be(200);
+        objectResult.Value.Should().NotBeNull();
+
+        string returnString = (string)objectResult.Value!;
+        returnString.Should().Be("Quiz has been initialized successfully for player Åke");
+    }
+
+    [TestMethod]
+    public async Task InitializeQuiz_PlayerNameEmpty_Should_Return_BadRequest()
+    {
+        // Arrange
+        InitializeQuizRequest initializeQuizRequest = new()
+        {
+            PlayerName = "",
+            AmountOfQuestions = 1,
+            QuestionType = "Geography",
+        };
+
+        IValidator<BaseRequest> validator = new BaseRequestValidator();
+
+        _validatorFactoryMock.Setup(v => v.GetValidator<BaseRequest>())
+            .Returns(validator);
+
+        // Act
+        var response = await _controller.InitializeQuiz(initializeQuizRequest);
+        ResetAllMocks();
+
+        // Assert
+        response.Should().NotBeNull();
+        response.Result.Should().NotBeNull();
+        response.Result.Should().BeOfType<BadRequestObjectResult>();
+        VerifyLog(LogLevel.Warning);
+    }
+
+    [TestMethod]
+    public async Task InitializeQuiz_InitializeQuizRequestNull_Should_Return_()
+    {
+        // Arrange
+        InitializeQuizRequest? initializeQuizRequest = null;
+
+        // Act
+#pragma warning disable CS8604 // Possible null reference argument.
+        var response = await _controller.InitializeQuiz(initializeQuizRequest);
+#pragma warning restore CS8604 // Possible null reference argument.
+
+        // Assert
+        response.Should().NotBeNull();
+        response.Result.Should().NotBeNull();
+        response.Result.Should().BeOfType<BadRequestObjectResult>();
+        VerifyLog(LogLevel.Warning);
+    }
+
+    [TestMethod]
+    public async Task GetQuestion_QuestionsLeft_Should_Return_GetQuestionResponse_WithQuestion()
+    {
+        // Arrange
+        GetQuestionRequest getQuestionRequest = new()
+        {
+            PlayerName = "Åke",
+        };
+
+        GetQuestionCommandResponse commandResponse = new()
+        {
+            Question = new()
+            {
+                Question = "What is Eyjafjallajökull?",
+                Option1 = "A glacier in Norway",
+                Option2 = "A volcano on Iceland",
+                Option3 = "A crater in China",
+                Option4 = "A city in Greenland",
+            },
+            Details = null,
+            Success = true,
+            Error = null,
+        };
+
+        IValidator<BaseRequest> validator = new BaseRequestValidator();
+
+        _mediatorMock.Setup(m => m.Send(It.IsAny<GetQuestionCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(commandResponse);
+
+        _validatorFactoryMock.Setup(v => v.GetValidator<BaseRequest>())
+            .Returns(validator);
+
+        // Act
+        var response = await _controller.GetQuestion(getQuestionRequest);
+        ResetAllMocks();
+
+        // Assert
+        response.Should().NotBeNull();
+        response.Result.Should().NotBeNull();
+
+        ObjectResult objectResult = (ObjectResult) response.Result!;
+        objectResult.StatusCode.Should().Be(200);
+        objectResult.Value.Should().NotBeNull();
+
+        GetQuestionResponse questionResponse = (GetQuestionResponse) objectResult.Value!;
+        questionResponse.FourOptionQuestion.Should().NotBeNull();
+        questionResponse.Details.Should().BeNull();
+
+        FourOptionQuestionDto question = questionResponse.FourOptionQuestion!;
+        question.Question.Should().Be("What is Eyjafjallajökull?");
+        question.Option1.Should().Be("A glacier in Norway");
+        question.Option2.Should().Be("A volcano on Iceland");
+        question.Option3.Should().Be("A crater in China");
+        question.Option4.Should().Be("A city in Greenland");
+    }
+
+    [TestMethod]
+    public async Task GetQuestion_NoQuestionsLeft_Should_Return_GetQuestionResponse_WithoutQuestion()
+    {
+        // Arrange
+        GetQuestionRequest getQuestionRequest = new()
+        {
+            PlayerName = "Åke",
+        };
+
+        GetQuestionCommandResponse commandResponse = new()
+        {
+            Question = null,
+            Details = "That's all the questions. Thanks for playing! Your final score was: 1/1. " +
+            "To play again, please initialize the quiz once more.",
+            Success = true,
+            Error = null,
+        };
+
+        IValidator<BaseRequest> validator = new BaseRequestValidator();
+
+        _mediatorMock.Setup(m => m.Send(It.IsAny<GetQuestionCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(commandResponse);
+
+        _validatorFactoryMock.Setup(v => v.GetValidator<BaseRequest>())
+            .Returns(validator);
+
+        // Act
+        var response = await _controller.GetQuestion(getQuestionRequest);
+        ResetAllMocks();
+
+        // Assert
+        response.Should().NotBeNull();
+        response.Result.Should().NotBeNull();
+
+        ObjectResult objectResult = (ObjectResult)response.Result!;
+        objectResult.StatusCode.Should().Be(200);
+        objectResult.Value.Should().NotBeNull();
+
+        GetQuestionResponse questionResponse = (GetQuestionResponse)objectResult.Value!;
+        questionResponse.FourOptionQuestion.Should().BeNull();
+        questionResponse.Details.Should().NotBeNull();
+
+        string details = questionResponse.Details!;
+        details.Should().Be("That's all the questions. Thanks for playing! Your final score was: 1/1. " +
+            "To play again, please initialize the quiz once more.");
+    }
+
+    [TestMethod]
+    public async Task GetQuestion_PlayerNameEmpty_Should_Return_BadRequest()
+    {
+        // Arrange
+        GetQuestionRequest getQuestionRequest = new()
+        {
+            PlayerName = "",
+        };
+
+        IValidator<BaseRequest> validator = new BaseRequestValidator();
+
+        _validatorFactoryMock.Setup(v => v.GetValidator<BaseRequest>())
+            .Returns(validator);
+
+        // Act
+        var response = await _controller.GetQuestion(getQuestionRequest);
+
+        // Assert
+        response.Should().NotBeNull();
+        response.Result.Should().NotBeNull();
+        response.Result.Should().BeOfType<BadRequestObjectResult>();
+        VerifyLog(LogLevel.Warning);
+    }
+
+    [TestMethod]
+    public async Task GetQuestion_Null_Should_Return_BadRequest()
+    {
+        // Arrange
+        GetQuestionRequest? getQuestionRequest = null;
+
+        // Act
+#pragma warning disable CS8604 // Possible null reference argument.
+        var response = await _controller.GetQuestion(getQuestionRequest);
+#pragma warning restore CS8604 // Possible null reference argument.
+
+        // Assert
+        response.Should().NotBeNull();
+        response.Result.Should().NotBeNull();
+        response.Result.Should().BeOfType<BadRequestObjectResult>();
+        VerifyLog(LogLevel.Warning);
     }
 
     private void VerifyLog(LogLevel level)
