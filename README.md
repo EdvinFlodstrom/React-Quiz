@@ -237,3 +237,9 @@ And if no questions remiain:
 I guess this is what I was technically after, since I can now check "Is question null? Render the details instead". It doesn't look as slick in Postman, but I suppose that's not what I was after anyway, so what do I know? I'll leave it like this for now, since it'll make the tests a lot more comprehendable (relatively speaking, that is).
 
 Hm. I've written many a test today. Well and yesterday. In about two days, I've written 22 functional tests. 825 lines. Yeesh. Only one controller method remains to test now - `CheckAnswer`. And then I'll have to test all the MediatR commands. And all the `QuizService` methods. This is going to take a while, eh?
+
+2024-05-02
+-----------
+Alright! All the controller tests are now done. Maybe I went overboard, I don't really know. 909 lines of tests is a bit. But each controller method is tested in at least three ways (the more complex ones (such as `CreateQuestion`) are tested even more), so at least I've covered most cases. Now, I suppose I'll write some MediatR command and `QuizService` tests?
+
+Alrighty, first test's up and running for the `CreateQuestionCommand` MediatR command. I did run into a bit of a problem when I needed to mock `QuizService` for the test. I recall hearing that it's always far easier and generally better to mock an interface rather than the class directly. So, I added `IQuizService` and replaced `QuizService` with it in every related class. And I actually realized that the current registration of `QuizService` would need to be adjusted in `Program.cs` with this new interface class. So I fixed that before getting an error, and hey, it worked first try! So, with this new interface class, I can easily mock `IQuizService` for the tests. I'll create more of these unit tests tomorrow.
