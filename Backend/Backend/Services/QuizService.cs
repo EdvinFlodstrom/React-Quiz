@@ -10,7 +10,7 @@ using System.Globalization;
 
 namespace Backend.Services;
 
-public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<QuizService> logger)
+public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<QuizService> logger) : IQuizService
 {
     private readonly QuizDbContext _quizDbContext = quizDbContext;
     private readonly IMapper _mapper = mapper;
