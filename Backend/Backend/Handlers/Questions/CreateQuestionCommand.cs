@@ -10,9 +10,9 @@ public class CreateQuestionCommand : IRequest<CreateQuestionCommandResponse>
     public required FourOptionQuestion FourOptionQuestion { get; set; }
 }
 
-public class CreateQuestionCommandHandler(QuizService quizService) : IRequestHandler<CreateQuestionCommand, CreateQuestionCommandResponse>
+public class CreateQuestionCommandHandler(IQuizService quizService) : IRequestHandler<CreateQuestionCommand, CreateQuestionCommandResponse>
 {
-    private readonly QuizService _quizService = quizService;
+    private readonly IQuizService _quizService = quizService;
 
     public async Task<CreateQuestionCommandResponse> Handle(CreateQuestionCommand request, CancellationToken cancellationToken)
     {

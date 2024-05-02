@@ -11,9 +11,9 @@ public class GetManyQuestionsCommand : IRequest<GetManyQuestionsCommandResponse>
     public string? QuestionType { get; set; }
 }
 
-public class GetManyQuestionsCommandHandler(QuizService quizService) : IRequestHandler<GetManyQuestionsCommand, GetManyQuestionsCommandResponse>
+public class GetManyQuestionsCommandHandler(IQuizService quizService) : IRequestHandler<GetManyQuestionsCommand, GetManyQuestionsCommandResponse>
 {
-    private readonly QuizService _quizService = quizService;
+    private readonly IQuizService _quizService = quizService;
 
     public Task<GetManyQuestionsCommandResponse> Handle(GetManyQuestionsCommand request, CancellationToken cancellationToken)
     {

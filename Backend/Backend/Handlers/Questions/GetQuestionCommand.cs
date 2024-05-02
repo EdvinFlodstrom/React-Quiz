@@ -9,9 +9,9 @@ public class GetQuestionCommand : IRequest<GetQuestionCommandResponse>
     public required string PlayerName { get; set; }
 }
 
-public class GetQuestionCommandHandler(QuizService quizService) : IRequestHandler<GetQuestionCommand, GetQuestionCommandResponse>
+public class GetQuestionCommandHandler(IQuizService quizService) : IRequestHandler<GetQuestionCommand, GetQuestionCommandResponse>
 {
-    private readonly QuizService _quizService = quizService;
+    private readonly IQuizService _quizService = quizService;
 
     public Task<GetQuestionCommandResponse> Handle(GetQuestionCommand request, CancellationToken cancellationToken)
     {

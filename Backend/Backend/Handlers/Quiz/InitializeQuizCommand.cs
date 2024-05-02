@@ -12,9 +12,9 @@ public class InitializeQuizCommand : IRequest<InitializeQuizCommandResponse>
     public string? QuestionType { get; set; }
 }
 
-public class InitializeQuizCommandHandler(QuizService quizService) : IRequestHandler<InitializeQuizCommand, InitializeQuizCommandResponse>
+public class InitializeQuizCommandHandler(IQuizService quizService) : IRequestHandler<InitializeQuizCommand, InitializeQuizCommandResponse>
 {
-    private readonly QuizService _quizService = quizService;
+    private readonly IQuizService _quizService = quizService;
 
     public async Task<InitializeQuizCommandResponse> Handle(InitializeQuizCommand request, CancellationToken cancellationToken)
     {

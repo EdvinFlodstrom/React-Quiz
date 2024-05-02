@@ -34,7 +34,7 @@ builder.Services.AddScoped<IValidator<FourOptionQuestion>, FourOptionQuestionVal
 builder.Services.AddScoped<IValidator<PatchQuestionRequest>, PatchQuestionRequestValidator>();
 builder.Services.AddScoped<IValidator<BaseRequest>, BaseRequestValidator>();
 
-builder.Services.AddScoped<QuizService>();
+builder.Services.AddScoped<IQuizService, QuizService>();
 
 builder.Services.AddCors(options =>
 {

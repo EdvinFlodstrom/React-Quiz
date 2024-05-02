@@ -9,9 +9,9 @@ public class DeleteQuestionCommand : IRequest<DeleteQuestionCommandResponse>
     public required int QuestionId { get; set; }
 }
 
-public class DeleteQuestionCommandHandler(QuizService quizService) : IRequestHandler<DeleteQuestionCommand, DeleteQuestionCommandResponse>
+public class DeleteQuestionCommandHandler(IQuizService quizService) : IRequestHandler<DeleteQuestionCommand, DeleteQuestionCommandResponse>
 {
-    private readonly QuizService _quizService = quizService;
+    private readonly IQuizService _quizService = quizService;
 
     public async Task<DeleteQuestionCommandResponse> Handle(DeleteQuestionCommand request, CancellationToken cancellationToken)
     {

@@ -12,9 +12,9 @@ public class PatchQuestionCommand : IRequest<PatchQuestionCommandResponse>
     public required PatchQuestionRequest Request { get; set; }
 }
 
-public class PatchQuestionCommandHandler(QuizService quizService) : IRequestHandler<PatchQuestionCommand, PatchQuestionCommandResponse>
+public class PatchQuestionCommandHandler(IQuizService quizService) : IRequestHandler<PatchQuestionCommand, PatchQuestionCommandResponse>
 {
-    private readonly QuizService _quizService = quizService;
+    private readonly IQuizService _quizService = quizService;
 
     public async Task<PatchQuestionCommandResponse> Handle(PatchQuestionCommand request, CancellationToken cancellationToken)
     {

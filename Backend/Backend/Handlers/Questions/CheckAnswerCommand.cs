@@ -10,9 +10,9 @@ public class CheckAnswerCommand : IRequest<CheckAnswerCommandResponse>
     public required int QuestionAnswer { get; set; }
 }
 
-public class CheckAnswerCommandHandler(QuizService quizService) : IRequestHandler<CheckAnswerCommand, CheckAnswerCommandResponse>
+public class CheckAnswerCommandHandler(IQuizService quizService) : IRequestHandler<CheckAnswerCommand, CheckAnswerCommandResponse>
 {
-    private readonly QuizService _quizService = quizService;
+    private readonly IQuizService _quizService = quizService;
 
     public async Task<CheckAnswerCommandResponse> Handle(CheckAnswerCommand request, CancellationToken cancellationToken)
     {
