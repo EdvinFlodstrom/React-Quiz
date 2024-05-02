@@ -701,11 +701,11 @@ public class QuizControllerTests
         response.Should().NotBeNull();
         response.Result.Should().NotBeNull();
 
-        ObjectResult objectResult = (ObjectResult) response.Result!;
+        ObjectResult objectResult = (ObjectResult)response.Result!;
         objectResult.StatusCode.Should().Be(200);
         objectResult.Value.Should().NotBeNull();
 
-        GetQuestionResponse questionResponse = (GetQuestionResponse) objectResult.Value!;
+        GetQuestionResponse questionResponse = (GetQuestionResponse)objectResult.Value!;
         questionResponse.FourOptionQuestion.Should().NotBeNull();
         questionResponse.Details.Should().BeNull();
 
