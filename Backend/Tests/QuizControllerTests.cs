@@ -14,7 +14,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
-using Newtonsoft.Json.Serialization;
 using System.Text.Json;
 
 namespace Tests;
@@ -798,6 +797,91 @@ public class QuizControllerTests
         // Act
 #pragma warning disable CS8604 // Possible null reference argument.
         var response = await _controller.GetQuestion(getQuestionRequest);
+#pragma warning restore CS8604 // Possible null reference argument.
+
+        // Assert
+        response.Should().NotBeNull();
+        response.Result.Should().NotBeNull();
+        response.Result.Should().BeOfType<BadRequestObjectResult>();
+        VerifyLog(LogLevel.Warning);
+    }
+
+    [TestMethod]
+    public async Task CheckAnswer_Should_Return_String()
+    {
+        // Arrange
+        CheckAnswerRequest checkAnswerRequest = new()
+        {
+            PlayerName = "Åke",
+            QuestionAnswer = 4,
+        };
+
+        CheckAnswerCommandResponse commandResponse = new()
+        {
+            Message = "Correct!",
+            Success = true,
+            Error = null,
+        };
+
+        IValidator<BaseRequest> validator = new BaseRequestValidator();
+
+        _mediatorMock.Setup(m => m.Send(It.IsAny<CheckAnswerCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(commandResponse);
+
+        _validatorFactoryMock.Setup(v => v.GetValidator<BaseRequest>())
+            .Returns(validator);
+
+        // Act
+        var response = await _controller.CheckAnswer(checkAnswerRequest);
+        ResetAllMocks();
+
+        // Assert
+        response.Should().NotBeNull();
+        response.Result.Should().NotBeNull();
+
+        ObjectResult objectResult = (ObjectResult)response.Result!;
+        objectResult.StatusCode.Should().Be(200);
+        objectResult.Value.Should().NotBeNull();
+
+        string message = (string)objectResult.Value!;
+        message.Should().Be("Correct!");
+    }
+
+    [TestMethod]
+    public async Task CheckAnswer_PlayerNameEmpty_Should_Return_BadRequest()
+    {
+        // Arrange
+        CheckAnswerRequest checkAnswerRequest = new()
+        {
+            PlayerName = "",
+            QuestionAnswer = 4,
+        };
+
+        IValidator<BaseRequest> validator = new BaseRequestValidator();
+
+        _validatorFactoryMock.Setup(v => v.GetValidator<BaseRequest>())
+            .Returns(validator);
+
+        // Act
+        var response = await _controller.CheckAnswer(checkAnswerRequest);
+        ResetAllMocks();
+
+        // Assert
+        response.Should().NotBeNull();
+        response.Result.Should().NotBeNull();
+        response.Result.Should().BeOfType<BadRequestObjectResult>();
+        VerifyLog(LogLevel.Warning);
+    }
+
+    [TestMethod]
+    public async Task CheckAnswer_Null_Should_Return_BadRequest()
+    {
+        // Arrange
+        CheckAnswerRequest? checkAnswerRequest = null;
+
+        // Act
+#pragma warning disable CS8604 // Possible null reference argument.
+        var response = await _controller.CheckAnswer(checkAnswerRequest);
 #pragma warning restore CS8604 // Possible null reference argument.
 
         // Assert
