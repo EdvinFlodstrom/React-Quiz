@@ -4,7 +4,6 @@
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
 .vs
-backend.sln
 backend/database
 
 # User-specific files
