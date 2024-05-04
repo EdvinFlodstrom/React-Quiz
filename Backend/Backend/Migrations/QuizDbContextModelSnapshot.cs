@@ -16,7 +16,7 @@ namespace Backend.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.4");
 
-            modelBuilder.Entity("Backend.Infrastructure.Models.Entities.FloatingIds", b =>
+            modelBuilder.Entity("Backend.Models.Entities.FloatingIds", b =>
                 {
                     b.Property<int>("Id")
                         .HasColumnType("INTEGER");
@@ -26,7 +26,7 @@ namespace Backend.Migrations
                     b.ToTable("FloatingIds", (string)null);
                 });
 
-            modelBuilder.Entity("Backend.Infrastructure.Models.Entities.FourOptionQuestion", b =>
+            modelBuilder.Entity("Backend.Models.Entities.FourOptionQuestion", b =>
                 {
                     b.Property<int>("Id")
                         .HasColumnType("INTEGER");
@@ -68,7 +68,7 @@ namespace Backend.Migrations
                     b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("Backend.Infrastructure.Models.Entities.PlayerStatistics", b =>
+            modelBuilder.Entity("Backend.Models.Entities.PlayerStatistics", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -89,7 +89,7 @@ namespace Backend.Migrations
                     b.ToTable("PlayerStatistics", (string)null);
                 });
 
-            modelBuilder.Entity("Backend.Infrastructure.Models.Entities.PlayerStatisticsFourOptionQuestion", b =>
+            modelBuilder.Entity("Backend.Models.Entities.PlayerStatisticsFourOptionQuestion", b =>
                 {
                     b.Property<int>("PlayerStatisticsId")
                         .HasColumnType("INTEGER");
@@ -104,88 +104,88 @@ namespace Backend.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("PlayerStatisticsFourOptionQuestion");
+                    b.ToTable("PlayerStatisticsFourOptionQuestion", (string)null);
                 });
 
-            modelBuilder.Entity("Backend.Infrastructure.Models.Entities.QuestionTypes.ChemistryQuestion", b =>
+            modelBuilder.Entity("Backend.Models.Entities.QuestionTypes.ChemistryQuestion", b =>
                 {
-                    b.HasBaseType("Backend.Infrastructure.Models.Entities.FourOptionQuestion");
+                    b.HasBaseType("Backend.Models.Entities.FourOptionQuestion");
 
                     b.HasDiscriminator().HasValue("Chemistry");
                 });
 
-            modelBuilder.Entity("Backend.Infrastructure.Models.Entities.QuestionTypes.FoodQuestion", b =>
+            modelBuilder.Entity("Backend.Models.Entities.QuestionTypes.FoodQuestion", b =>
                 {
-                    b.HasBaseType("Backend.Infrastructure.Models.Entities.FourOptionQuestion");
+                    b.HasBaseType("Backend.Models.Entities.FourOptionQuestion");
 
                     b.HasDiscriminator().HasValue("Food");
                 });
 
-            modelBuilder.Entity("Backend.Infrastructure.Models.Entities.QuestionTypes.GameQuestion", b =>
+            modelBuilder.Entity("Backend.Models.Entities.QuestionTypes.GameQuestion", b =>
                 {
-                    b.HasBaseType("Backend.Infrastructure.Models.Entities.FourOptionQuestion");
+                    b.HasBaseType("Backend.Models.Entities.FourOptionQuestion");
 
                     b.HasDiscriminator().HasValue("Game");
                 });
 
-            modelBuilder.Entity("Backend.Infrastructure.Models.Entities.QuestionTypes.GeographyQuestion", b =>
+            modelBuilder.Entity("Backend.Models.Entities.QuestionTypes.GeographyQuestion", b =>
                 {
-                    b.HasBaseType("Backend.Infrastructure.Models.Entities.FourOptionQuestion");
+                    b.HasBaseType("Backend.Models.Entities.FourOptionQuestion");
 
                     b.HasDiscriminator().HasValue("Geography");
                 });
 
-            modelBuilder.Entity("Backend.Infrastructure.Models.Entities.QuestionTypes.HistoryQuestion", b =>
+            modelBuilder.Entity("Backend.Models.Entities.QuestionTypes.HistoryQuestion", b =>
                 {
-                    b.HasBaseType("Backend.Infrastructure.Models.Entities.FourOptionQuestion");
+                    b.HasBaseType("Backend.Models.Entities.FourOptionQuestion");
 
                     b.HasDiscriminator().HasValue("History");
                 });
 
-            modelBuilder.Entity("Backend.Infrastructure.Models.Entities.QuestionTypes.LiteratureQuestion", b =>
+            modelBuilder.Entity("Backend.Models.Entities.QuestionTypes.LiteratureQuestion", b =>
                 {
-                    b.HasBaseType("Backend.Infrastructure.Models.Entities.FourOptionQuestion");
+                    b.HasBaseType("Backend.Models.Entities.FourOptionQuestion");
 
                     b.HasDiscriminator().HasValue("Literature");
                 });
 
-            modelBuilder.Entity("Backend.Infrastructure.Models.Entities.QuestionTypes.MathQuestion", b =>
+            modelBuilder.Entity("Backend.Models.Entities.QuestionTypes.MathQuestion", b =>
                 {
-                    b.HasBaseType("Backend.Infrastructure.Models.Entities.FourOptionQuestion");
+                    b.HasBaseType("Backend.Models.Entities.FourOptionQuestion");
 
                     b.HasDiscriminator().HasValue("Math");
                 });
 
-            modelBuilder.Entity("Backend.Infrastructure.Models.Entities.QuestionTypes.MusicQuestion", b =>
+            modelBuilder.Entity("Backend.Models.Entities.QuestionTypes.MusicQuestion", b =>
                 {
-                    b.HasBaseType("Backend.Infrastructure.Models.Entities.FourOptionQuestion");
+                    b.HasBaseType("Backend.Models.Entities.FourOptionQuestion");
 
                     b.HasDiscriminator().HasValue("Music");
                 });
 
-            modelBuilder.Entity("Backend.Infrastructure.Models.Entities.QuestionTypes.SportsQuestion", b =>
+            modelBuilder.Entity("Backend.Models.Entities.QuestionTypes.SportsQuestion", b =>
                 {
-                    b.HasBaseType("Backend.Infrastructure.Models.Entities.FourOptionQuestion");
+                    b.HasBaseType("Backend.Models.Entities.FourOptionQuestion");
 
                     b.HasDiscriminator().HasValue("Sports");
                 });
 
-            modelBuilder.Entity("Backend.Infrastructure.Models.Entities.QuestionTypes.TechnologyQuestion", b =>
+            modelBuilder.Entity("Backend.Models.Entities.QuestionTypes.TechnologyQuestion", b =>
                 {
-                    b.HasBaseType("Backend.Infrastructure.Models.Entities.FourOptionQuestion");
+                    b.HasBaseType("Backend.Models.Entities.FourOptionQuestion");
 
                     b.HasDiscriminator().HasValue("Technology");
                 });
 
-            modelBuilder.Entity("Backend.Infrastructure.Models.Entities.PlayerStatisticsFourOptionQuestion", b =>
+            modelBuilder.Entity("Backend.Models.Entities.PlayerStatisticsFourOptionQuestion", b =>
                 {
-                    b.HasOne("Backend.Infrastructure.Models.Entities.PlayerStatistics", "PlayerStatistics")
+                    b.HasOne("Backend.Models.Entities.PlayerStatistics", "PlayerStatistics")
                         .WithMany("PlayerStatisticsFourOptionQuestions")
                         .HasForeignKey("PlayerStatisticsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Backend.Infrastructure.Models.Entities.FourOptionQuestion", "Question")
+                    b.HasOne("Backend.Models.Entities.FourOptionQuestion", "Question")
                         .WithMany("PlayerStatisticsFourOptionQuestion")
                         .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -196,12 +196,12 @@ namespace Backend.Migrations
                     b.Navigation("Question");
                 });
 
-            modelBuilder.Entity("Backend.Infrastructure.Models.Entities.FourOptionQuestion", b =>
+            modelBuilder.Entity("Backend.Models.Entities.FourOptionQuestion", b =>
                 {
                     b.Navigation("PlayerStatisticsFourOptionQuestion");
                 });
 
-            modelBuilder.Entity("Backend.Infrastructure.Models.Entities.PlayerStatistics", b =>
+            modelBuilder.Entity("Backend.Models.Entities.PlayerStatistics", b =>
                 {
                     b.Navigation("PlayerStatisticsFourOptionQuestions");
                 });
