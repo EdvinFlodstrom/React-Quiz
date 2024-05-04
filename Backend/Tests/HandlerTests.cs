@@ -14,11 +14,11 @@ namespace Tests;
 [TestClass]
 public class HandlerTests
 {
-    private readonly Mock<IQuizService> _service;
+    private readonly Mock<IQuizService> _serviceMock;
 
     public HandlerTests()
     {
-        _service = new Mock<IQuizService>();
+        _serviceMock = new Mock<IQuizService>();
     }
 
     [TestMethod]
@@ -52,14 +52,14 @@ public class HandlerTests
             Error = null,
         };
 
-        _service.Setup(s => s.CreateQuestion(It.IsAny<FourOptionQuestion>()))
+        _serviceMock.Setup(s => s.CreateQuestion(It.IsAny<FourOptionQuestion>()))
             .ReturnsAsync(createQuestionCommandResponse);
 
-        CreateQuestionCommandHandler handler = new(_service.Object);
+        CreateQuestionCommandHandler handler = new(_serviceMock.Object);
 
         // Act
         var response = await handler.Handle(createQuestionCommand, CancellationToken.None);
-        _service.Reset();
+        _serviceMock.Reset();
 
         // Assert
         response.Should().NotBeNull();
@@ -99,14 +99,14 @@ public class HandlerTests
             Error = new DbUpdateException("Database error."),
         };
 
-        _service.Setup(s => s.CreateQuestion(It.IsAny<FourOptionQuestion>()))
+        _serviceMock.Setup(s => s.CreateQuestion(It.IsAny<FourOptionQuestion>()))
             .ReturnsAsync(createQuestionCommandResponse);
 
-        CreateQuestionCommandHandler handler = new(_service.Object);
+        CreateQuestionCommandHandler handler = new(_serviceMock.Object);
 
         // Act
         var response = await handler.Handle(createQuestionCommand, CancellationToken.None);
-        _service.Reset();
+        _serviceMock.Reset();
 
         // Assert
         response.Should().NotBeNull();
@@ -151,14 +151,14 @@ public class HandlerTests
             Error = null,
         };
 
-        _service.Setup(s => s.PatchQuestion(It.IsAny<int>(), It.IsAny<PatchQuestionRequest>()))
+        _serviceMock.Setup(s => s.PatchQuestion(It.IsAny<int>(), It.IsAny<PatchQuestionRequest>()))
             .ReturnsAsync(patchQuestionCommandResponse);
 
-        PatchQuestionCommandHandler handler = new(_service.Object);
+        PatchQuestionCommandHandler handler = new(_serviceMock.Object);
 
         // Act
         var response = await handler.Handle(patchQuestionCommand, CancellationToken.None);
-        _service.Reset();
+        _serviceMock.Reset();
 
         // Assert
         response.Should().NotBeNull();
@@ -196,14 +196,14 @@ public class HandlerTests
             Error = new DbUpdateException("Database error."),
         };
 
-        _service.Setup(s => s.PatchQuestion(It.IsAny<int>(), It.IsAny<PatchQuestionRequest>()))
+        _serviceMock.Setup(s => s.PatchQuestion(It.IsAny<int>(), It.IsAny<PatchQuestionRequest>()))
             .ReturnsAsync(patchQuestionCommandResponse);
 
-        PatchQuestionCommandHandler handler = new(_service.Object);
+        PatchQuestionCommandHandler handler = new(_serviceMock.Object);
 
         // Act
         var response = await handler.Handle(patchQuestionCommand, CancellationToken.None);
-        _service.Reset();
+        _serviceMock.Reset();
 
         // Assert
         response.Should().NotBeNull();
@@ -239,14 +239,14 @@ public class HandlerTests
             Error = null,
         };
 
-        _service.Setup(s => s.DeleteQuestion(It.IsAny<int>()))
+        _serviceMock.Setup(s => s.DeleteQuestion(It.IsAny<int>()))
             .ReturnsAsync(deleteQuestionCommandResponse);
 
-        DeleteQuestionCommandHandler handler = new(_service.Object);
+        DeleteQuestionCommandHandler handler = new(_serviceMock.Object);
 
         // Act
         var response = await handler.Handle(deleteQuestionCommand, CancellationToken.None);
-        _service.Reset();
+        _serviceMock.Reset();
 
         // Assert
         response.Should().NotBeNull();
@@ -279,14 +279,14 @@ public class HandlerTests
             Error = new DbUpdateException("Database error."),
         };
 
-        _service.Setup(s => s.DeleteQuestion(It.IsAny<int>()))
+        _serviceMock.Setup(s => s.DeleteQuestion(It.IsAny<int>()))
             .ReturnsAsync(deleteQuestionCommandResponse);
 
-        DeleteQuestionCommandHandler handler = new(_service.Object);
+        DeleteQuestionCommandHandler handler = new(_serviceMock.Object);
 
         // Act
         var response = await handler.Handle(deleteQuestionCommand, CancellationToken.None);
-        _service.Reset();
+        _serviceMock.Reset();
 
         // Assert
         response.Should().NotBeNull();
@@ -326,14 +326,14 @@ public class HandlerTests
             Error = null,
         };
 
-        _service.Setup(s => s.GetManyQuestions(It.IsAny<int>(), It.IsAny<string>()))
+        _serviceMock.Setup(s => s.GetManyQuestions(It.IsAny<int>(), It.IsAny<string>()))
             .Returns(getManyQuestionsCommandResponse);
 
-        GetManyQuestionsCommandHandler handler = new(_service.Object);
+        GetManyQuestionsCommandHandler handler = new(_serviceMock.Object);
 
         // Act
         var response = await handler.Handle(getManyQuestionsCommand, CancellationToken.None);
-        _service.Reset();
+        _serviceMock.Reset();
 
         // Assert
         response.Questions.Should().NotBeNull();
@@ -366,14 +366,14 @@ public class HandlerTests
             Error = new DbUpdateException("Database error."),
         };
 
-        _service.Setup(s => s.GetManyQuestions(It.IsAny<int>(), It.IsAny<string>()))
+        _serviceMock.Setup(s => s.GetManyQuestions(It.IsAny<int>(), It.IsAny<string>()))
             .Returns(getManyQuestionsCommandResponse);
 
-        GetManyQuestionsCommandHandler handler = new(_service.Object);
+        GetManyQuestionsCommandHandler handler = new(_serviceMock.Object);
 
         // Act
         var response = await handler.Handle(getManyQuestionsCommand, CancellationToken.None);
-        _service.Reset();
+        _serviceMock.Reset();
 
         // Assert
         response.Should().NotBeNull();
@@ -403,14 +403,14 @@ public class HandlerTests
             Error = null,
         };
 
-        _service.Setup(s => s.InitializeQuiz(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<string>()))
+        _serviceMock.Setup(s => s.InitializeQuiz(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<string>()))
             .ReturnsAsync(initializeQuizCommandResponse);
 
-        InitializeQuizCommandHandler handler = new(_service.Object);
+        InitializeQuizCommandHandler handler = new(_serviceMock.Object);
 
         // Act
         var response = await handler.Handle(initializeQuizCommand, CancellationToken.None);
-        _service.Reset();
+        _serviceMock.Reset();
 
         // Assert
         response.Should().NotBeNull();
@@ -440,14 +440,14 @@ public class HandlerTests
         Error = new DbUpdateException("Database error."),
     };
 
-        _service.Setup(s => s.InitializeQuiz(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<string>())) // string or string? See above.
+        _serviceMock.Setup(s => s.InitializeQuiz(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<string>())) // string or string? See above.
             .ReturnsAsync(initializeQuizCommandResponse);
 
-        InitializeQuizCommandHandler handler = new(_service.Object);
+        InitializeQuizCommandHandler handler = new(_serviceMock.Object);
 
         // Act
         var response = await handler.Handle(initializeQuizCommand, CancellationToken.None);
-        _service.Reset();
+        _serviceMock.Reset();
 
         // Assert
         response.Should().NotBeNull();
@@ -483,14 +483,14 @@ public class HandlerTests
             Error = null,
         };
 
-        _service.Setup(s => s.GetQuestion(It.IsAny<string>()))
+        _serviceMock.Setup(s => s.GetQuestion(It.IsAny<string>()))
             .Returns(getQuestionCommandResponse);
 
-        GetQuestionCommandHandler handler = new(_service.Object);
+        GetQuestionCommandHandler handler = new(_serviceMock.Object);
 
         // Act
         var response = await handler.Handle(getQuestionCommand, CancellationToken.None);
-        _service.Reset();
+        _serviceMock.Reset();
 
         // Assert
         response.Should().NotBeNull();
@@ -524,14 +524,14 @@ public class HandlerTests
             Error = null,
         };
 
-        _service.Setup(s => s.GetQuestion(It.IsAny<string>()))
+        _serviceMock.Setup(s => s.GetQuestion(It.IsAny<string>()))
             .Returns(getQuestionCommandResponse);
 
-        GetQuestionCommandHandler handler = new(_service.Object);
+        GetQuestionCommandHandler handler = new(_serviceMock.Object);
 
         // Act
         var response = await handler.Handle(getQuestionCommand, CancellationToken.None);
-        _service.Reset();
+        _serviceMock.Reset();
 
         // Assert
         response.Should().NotBeNull();
@@ -561,14 +561,14 @@ public class HandlerTests
             Error = new DbUpdateException("Database error."),
         };
 
-        _service.Setup(s => s.GetQuestion(It.IsAny<string>()))
+        _serviceMock.Setup(s => s.GetQuestion(It.IsAny<string>()))
             .Returns(getQuestionCommandResponse);
 
-        GetQuestionCommandHandler handler = new(_service.Object);
+        GetQuestionCommandHandler handler = new(_serviceMock.Object);
 
         // Act
         var response = await handler.Handle(getQuestionCommand, CancellationToken.None);
-        _service.Reset();
+        _serviceMock.Reset();
 
         // Assert
         response.Should().NotBeNull();
@@ -598,14 +598,14 @@ public class HandlerTests
             Error = null,
         };
 
-        _service.Setup(s => s.CheckAnswer(It.IsAny<string>(), It.IsAny<int>()))
+        _serviceMock.Setup(s => s.CheckAnswer(It.IsAny<string>(), It.IsAny<int>()))
             .ReturnsAsync(checkAnswerCommandResponse);
 
-        CheckAnswerCommandHandler handler = new(_service.Object);
+        CheckAnswerCommandHandler handler = new(_serviceMock.Object);
 
         // Act
         var response = await handler.Handle(checkAnswerCommand, CancellationToken.None);
-        _service.Reset();
+        _serviceMock.Reset();
 
         // Assert
         response.Should().NotBeNull();
@@ -634,14 +634,14 @@ public class HandlerTests
             Error = new ArgumentException("You've already answered all your questions."),
         };
 
-        _service.Setup(s => s.CheckAnswer(It.IsAny<string>(), It.IsAny<int>()))
+        _serviceMock.Setup(s => s.CheckAnswer(It.IsAny<string>(), It.IsAny<int>()))
             .ReturnsAsync(checkAnswerCommandResponse);
 
-        CheckAnswerCommandHandler handler = new(_service.Object);
+        CheckAnswerCommandHandler handler = new(_serviceMock.Object);
 
         // Act
         var response = await handler.Handle(checkAnswerCommand, CancellationToken.None);
-        _service.Reset();
+        _serviceMock.Reset();
 
         // Assert
         response.Should().NotBeNull();
@@ -670,14 +670,14 @@ public class HandlerTests
             Error = new DbUpdateException("Database error."),
         };
 
-        _service.Setup(s => s.CheckAnswer(It.IsAny<string>(), It.IsAny<int>()))
+        _serviceMock.Setup(s => s.CheckAnswer(It.IsAny<string>(), It.IsAny<int>()))
             .ReturnsAsync(checkAnswerCommandResponse);
 
-        CheckAnswerCommandHandler handler = new(_service.Object);
+        CheckAnswerCommandHandler handler = new(_serviceMock.Object);
 
         // Act
         var response = await handler.Handle(checkAnswerCommand, CancellationToken.None);
-        _service.Reset();
+        _serviceMock.Reset();
 
         // Assert
         response.Should().NotBeNull();
