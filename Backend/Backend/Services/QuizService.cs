@@ -255,7 +255,7 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
                 };
 
             return new GetManyQuestionsCommandResponse
-            { // Choose X amount of questions. Randomization happens when getting individual question.
+            { // Choose X amount of questions and randomize their order before returning them.
                 Questions = questions
                     .AsEnumerable()
                     .OrderBy(q => Guid.NewGuid())
