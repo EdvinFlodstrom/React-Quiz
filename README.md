@@ -243,3 +243,27 @@ Hm. I've written many a test today. Well and yesterday. In about two days, I've 
 Alright! All the controller tests are now done. Maybe I went overboard, I don't really know. 909 lines of tests is a bit. But each controller method is tested in at least three ways (the more complex ones (such as `CreateQuestion`) are tested even more), so at least I've covered most cases. Now, I suppose I'll write some MediatR command and `QuizService` tests?
 
 Alrighty, first test's up and running for the `CreateQuestionCommand` MediatR command. I did run into a bit of a problem when I needed to mock `QuizService` for the test. I recall hearing that it's always far easier and generally better to mock an interface rather than the class directly. So, I added `IQuizService` and replaced `QuizService` with it in every related class. And I actually realized that the current registration of `QuizService` would need to be adjusted in `Program.cs` with this new interface class. So I fixed that before getting an error, and hey, it worked first try! So, with this new interface class, I can easily mock `IQuizService` for the tests. I'll create more of these unit tests tomorrow.
+
+2024-05-03
+-----------
+All the handler unit tests have now been written. These ones clocked in (wrote in?) at 691 lines. All of them pass, and I'm pretty sure they all work as intended. Each test contains around 3-8 assertions, so I'd be very surprised if any single one of them passed in a way I did not indend. Anyway, now it's time for what I can only imagine as the most challenging of these unit tests. `QuizService`. This is going to be a hefty testing file.
+
+Hm. Already I've run into a problem, and I only just created the file. The problem I previously postponed. `QuizDbContext`. I have barely any clue how to mock a database context, let alone mocking the entire database. Hm.
+
+2024-05-04
+-----------
+Alright! The basics are now set up. I've yet to write a full, test, but I've verified that the `QuizDbContext` instance and that an in-memory SQLite database both appear functional. Something to note is that all tests share the same `Mock<ILogger<QuizService>>` and `Mock<IMapper>`, but don't share the same `QuizDbContext` and `IQuizService`. Each test gets its own instance of these two, so that any database interaction in each test stays unique to that test - an item added to the database in one test should not mean an item is added to the database in another test. And it works! From what I can tell, this is because each SQLite in-memory database thingamajig is destroyed once it exits the scope. And the scope in question is (if my understanding is correct) each unit test. So a small, resource efficient database is created and destroyed for each test. I thought it sounded inefficient at first, but it seems like this is the usual way to do it. So I'll roll with it and see where it takes me.
+
+Hohohoh, the first test is functioning just as planned! It's successfully tested that a question is created and added to the database, this one when there is a 'floating IDs' present. The next test shall test what happens if there are none present.
+
+Worked flawlessly! So, I think I know everything I need to know about unit testing the service class now. So, time to get the ball rolling...
+
+Hm. I noticed that I cannot manually insert a question's ID into the in-memory database using these unit tests. This is because of how I've handled the setting of the ID property. It's not a problem, *yet*, but it's worth noting for the future - as it may or may not become a problem later.
+
+Hm. There are more test cases I could cover for some of these methods, but some of them are *probably* not necessary. For example, for PATCH, the `PatchRequest` will never be null as I've added error handling for that in the controller class. So, I'll probably mainly focus on the major test cases for the service class.
+
+Heh, guess what's come back to haunt me? That's [probably] right: The unability to manually set question IDs. For the `GetManyQuestions` endpoint, naturally I'll want to add multiple questions to make sure they can all be retrieved at once. Aaaand as I figured, that's not possible. If I don't set the ID property, it's default value will be 0. Which means trying to add multiple questions is a quick ticket to an Exception. Time for some testing...
+
+Hmkay. Problem above should be solved. The solution I used was one that I've actually experimented with previously, adding `[JsonIgnore]` to the property. Means I can set it in the code, but JSON being deserialized won't affect it. I think this is a good solution?
+
+Okay. More tests have been added. I know I previously stated that I'm not complaining about doing unit tests rather than frontend, but I can't deny that I'm starting to grow a tad tired of unit tests now. I think I've written more than 1700 lines of unit tests in the past three days. Thing is, I know I've been copy-pasting a lot of arranging, but I was pondering whether or not that is the intended way to do it. I could add methods for preparing the set ups, but might that make it less clear *exactly* what is being tested and included in each test? Not sure. But I digress, I have tested every method in `QuizService` but two. The remaining tests will be written either later today or tomorrow.
