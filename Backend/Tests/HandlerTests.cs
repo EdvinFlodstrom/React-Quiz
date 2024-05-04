@@ -432,13 +432,13 @@ public class HandlerTests
             AmountOfQuestions = 1,
             QuestionType = "Geography",
         };
-    
-    InitializeQuizCommandResponse initializeQuizCommandResponse = new()
-    {
-        Details = null,
-        Success = false,
-        Error = new DbUpdateException("Database error."),
-    };
+
+        InitializeQuizCommandResponse initializeQuizCommandResponse = new()
+        {
+            Details = null,
+            Success = false,
+            Error = new DbUpdateException("Database error."),
+        };
 
         _serviceMock.Setup(s => s.InitializeQuiz(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<string>())) // string or string? See above.
             .ReturnsAsync(initializeQuizCommandResponse);
