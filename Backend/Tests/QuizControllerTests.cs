@@ -894,7 +894,7 @@ public class QuizControllerTests
     private void VerifyLog(LogLevel level)
     {
         _loggerMock.Verify(l => l.Log(
-            It.Is<LogLevel>(loglevel => loglevel == level),
+            It.Is<LogLevel>(logLevel => logLevel == level),
             It.IsAny<EventId>(),
             It.IsAny<It.IsAnyType>(),
             It.IsAny<Exception>(),
