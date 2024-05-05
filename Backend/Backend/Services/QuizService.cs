@@ -414,6 +414,7 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
 
     private static string FormatAndReturnPlayerName(string playerName)
     {
+        playerName = playerName.ToLowerInvariant();
         TextInfo textInfo = new CultureInfo("sv-SE", false).TextInfo;
         return textInfo.ToTitleCase(playerName);
     }
