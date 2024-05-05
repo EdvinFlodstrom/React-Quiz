@@ -1,0 +1,17 @@
+* {
+    margin-inline: 0.125em;
+}
+
+h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-block-end: 20px;
+    color: oklch(25.14% 0 0);
+}
+  
+h3 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-block-end: 15px;
+    color: oklch(24.75% 0 0);
+}

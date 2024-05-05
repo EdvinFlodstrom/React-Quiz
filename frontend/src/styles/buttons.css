@@ -1,0 +1,17 @@
+.optionsButton {
+    display: inline-block;
+    padding: 15px 40px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-align: center;
+    color: oklch(98.44% 0 0);
+    background-color: oklch(59.03% 0.224 259.96);
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.optionsButton:hover {
+    background-color: oklch(43.74% 0.155 263.49);
+}
