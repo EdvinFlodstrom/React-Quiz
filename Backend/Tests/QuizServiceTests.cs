@@ -19,7 +19,7 @@ public class QuizServiceTests
     private readonly Mock<IMapper> _mapperMock;
     private readonly Mock<ILogger<QuizService>> _loggerMock;
     private QuizDbContext _context;
-    private IQuizService _service;
+    private QuizService _service;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     public QuizServiceTests()
@@ -350,8 +350,8 @@ public class QuizServiceTests
     public async Task GetManyQuestions_QuestionTypeNull_Should_Return_GetManyQuestionsCommandResponse()
     {
         // Arrange
-        List<FourOptionQuestion> questionList = new()
-        {
+        List<FourOptionQuestion> questionList =
+        [
             new GeographyQuestion()
             {
                 Id = 1,
@@ -372,7 +372,7 @@ public class QuizServiceTests
                 Option4 = "1337",
                 CorrectOptionNumber = 3,
             },
-        };
+        ];
 
         _context.FourOptionQuestions.AddRange(questionList);
 
@@ -419,8 +419,8 @@ public class QuizServiceTests
     public async Task GetManyQuestions_QuestionTypeNotNull_Should_Return_GetManyQuestionsCommandResponse()
     {
         // Arrange
-        List<FourOptionQuestion> questionList = new()
-        {
+        List<FourOptionQuestion> questionList =
+        [
             new GeographyQuestion()
             {
                 Id = 1,
@@ -441,7 +441,7 @@ public class QuizServiceTests
                 Option4 = "1337",
                 CorrectOptionNumber = 3,
             },
-        };
+        ];
 
         _context.FourOptionQuestions.AddRange(questionList);
 
@@ -638,6 +638,298 @@ public class QuizServiceTests
 
         Exception error = response.Error!;
         error.Message.Should().Be("The requested question type does not exist, or matches no questions.");
+    }
+
+    [TestMethod]
+    public async Task GetQuestion_ExistingPlayer_HasQuestionsLeft_Should_Return_GetQuestionCommandResponse()
+    {
+        // Arrange
+        PlayerStatistics playerObject = new()
+        {
+            Name = "Åke Åkman",
+            CorrectAnswers = 0,
+            TotalAmountOfQuestions = 1,
+            PlayerStatisticsFourOptionQuestions = [],
+        };
+
+        playerObject.PlayerStatisticsFourOptionQuestions.Add(new()
+        {
+            QuestionId = 1,
+            Question = new GeographyQuestion()
+            {
+                Id = 1,
+                Question = "What is Eyjafjallajökull?",
+                Option1 = "A glacier in Norway",
+                Option2 = "A volcano on Iceland",
+                Option3 = "A crater in China",
+                Option4 = "A city in Greenland",
+                CorrectOptionNumber = 2,
+            },
+            Order = 1,
+            PlayerStatisticsId = 1,
+            PlayerStatistics = playerObject,
+        });
+
+        _context.PlayerStatistics.Add(playerObject);
+
+        await _context.SaveChangesAsync();
+
+        string playerName = "åke ÅKMAN";
+
+        FourOptionQuestionDto fourOptionQuestionDto = new()
+        {
+            Question = "What is Eyjafjallajökull?",
+            Option1 = "A glacier in Norway",
+            Option2 = "A volcano on Iceland",
+            Option3 = "A crater in China",
+            Option4 = "A city in Greenland",
+        };
+
+        _mapperMock.Setup(m => m.Map<FourOptionQuestion, FourOptionQuestionDto>(It.IsAny<FourOptionQuestion>()))
+            .Returns(fourOptionQuestionDto);
+
+        // Act
+        var response = _service.GetQuestion(playerName);
+        _mapperMock.Reset();
+
+        // Assert
+        response.Should().NotBeNull();
+        response.Question.Should().NotBeNull();
+        response.Details.Should().BeNull();
+        response.Success.Should().BeTrue();
+        response.Error.Should().BeNull();
+
+        FourOptionQuestionDto question = response.Question!;
+        question.Question.Should().Be("What is Eyjafjallajökull?");
+        question.Option1.Should().Be("A glacier in Norway");
+        question.Option2.Should().Be("A volcano on Iceland");
+        question.Option3.Should().Be("A crater in China");
+        question.Option4.Should().Be("A city in Greenland");
+        _context.PlayerStatistics.Should().NotBeEmpty();
+        _context.PlayerStatistics.Count().Should().Be(1);
+
+        var player = _context.PlayerStatistics.FirstOrDefault()!;
+        player.Id.Should().Be(1);
+        player.Name.Should().Be("Åke Åkman");
+        player.CorrectAnswers.Should().Be(0);
+        player.TotalAmountOfQuestions.Should().Be(1);
+        player.PlayerStatisticsFourOptionQuestions.Should().NotBeEmpty();
+    }
+
+    [TestMethod]
+    public async Task GetQuestion_ExistingPlayer_HasNoQuestionsLeft_Should_Return_GetQuestionCommandResponse()
+    {
+        // Arrange
+        _context.PlayerStatistics.Add(new()
+        {
+            Name = "Åke Åkman",
+            CorrectAnswers = 1337,
+            TotalAmountOfQuestions = 1337,
+            PlayerStatisticsFourOptionQuestions = [],
+        });
+
+        await _context.SaveChangesAsync();
+
+        string playerName = "ÅKE ÅKMAN";
+
+        // Act
+        var response = _service.GetQuestion(playerName);
+
+        // Assert
+        response.Should().NotBeNull();
+        response.Question.Should().BeNull();
+        response.Details.Should().NotBeNull();
+        response.Success.Should().BeTrue();
+        response.Error.Should().BeNull();
+
+        string details = response.Details!;
+        details.Should().NotBeEmpty();
+    }
+
+    [TestMethod]
+    public void GetQuestion_UnexistingPlayer_Should_Return_GetQuestionCommandResponseFalse()
+    {
+        // Arrange
+        string playerName = "Kool-Kalle";
+
+        // Act
+        var response = _service.GetQuestion(playerName);
+
+        // Assert
+        response.Should().NotBeNull();
+        response.Question.Should().BeNull();
+        response.Details.Should().BeNull();
+        response.Success.Should().BeFalse();
+        response.Error.Should().NotBeNull();
+
+        Exception error = response.Error!;
+        error.Message.Should().Be("No database entry matched the requested name.");
+
+        _context.PlayerStatistics.Should().BeEmpty();
+    }
+
+    [TestMethod]
+    public async Task CheckAnswer_ExistingPlayer_HasQuestionsLeft_CorrectAnswer_Should_Return_CheckAnswerCommandResponse()
+    {
+        // Arrange
+        PlayerStatistics playerObject = new()
+        {
+            Name = "Åke Åkman",
+            CorrectAnswers = 0,
+            TotalAmountOfQuestions = 1,
+            PlayerStatisticsFourOptionQuestions = [],
+        };
+
+        playerObject.PlayerStatisticsFourOptionQuestions.Add(new()
+        {
+            QuestionId = 1,
+            Question = new GeographyQuestion()
+            {
+                Id = 1,
+                Question = "What is Eyjafjallajökull?",
+                Option1 = "A glacier in Norway",
+                Option2 = "A volcano on Iceland",
+                Option3 = "A crater in China",
+                Option4 = "A city in Greenland",
+                CorrectOptionNumber = 2,
+            },
+            Order = 1,
+            PlayerStatisticsId = 1,
+            PlayerStatistics = playerObject,
+        });
+
+        _context.PlayerStatistics.Add(playerObject);
+
+        await _context.SaveChangesAsync();
+
+        string playerName = "Åke Åkman";
+        int questionAnswer = 2;
+
+        // Act
+        var response = await _service.CheckAnswer(playerName, questionAnswer);
+
+        // Assert
+        response.Should().NotBeNull();
+        response.Message.Should().NotBeNull();
+        response.Success.Should().BeTrue();
+        response.Error.Should().BeNull();
+
+        string message = response.Message!;
+        message.Should().Be("Correct!");
+        _context.PlayerStatistics.Should().NotBeEmpty();
+
+        PlayerStatistics player = _context.PlayerStatistics.FirstOrDefault(p => p.Name == playerName)!;
+        player.Should().NotBeNull();
+        player.PlayerStatisticsFourOptionQuestions.Count.Should().Be(0);
+        player.TotalAmountOfQuestions.Should().Be(1);
+        player.CorrectAnswers.Should().Be(1);
+    }
+
+    [TestMethod]
+    public async Task CheckAnswer_ExistingPlayer_HasQuestionsLeft_IncorrectAnswer_Should_Return_CheckAnswerCommandResponse()
+    {
+        // Arrange
+        PlayerStatistics playerObject = new()
+        {
+            Name = "Åke Åkman",
+            CorrectAnswers = 0,
+            TotalAmountOfQuestions = 1,
+            PlayerStatisticsFourOptionQuestions = [],
+        };
+
+        playerObject.PlayerStatisticsFourOptionQuestions.Add(new()
+        {
+            QuestionId = 1,
+            Question = new GeographyQuestion()
+            {
+                Id = 1,
+                Question = "What is Eyjafjallajökull?",
+                Option1 = "A glacier in Norway",
+                Option2 = "A volcano on Iceland",
+                Option3 = "A crater in China",
+                Option4 = "A city in Greenland",
+                CorrectOptionNumber = 2,
+            },
+            Order = 1,
+            PlayerStatisticsId = 1,
+            PlayerStatistics = playerObject,
+        });
+
+        _context.PlayerStatistics.Add(playerObject);
+
+        await _context.SaveChangesAsync();
+
+        string playerName = "Åke Åkman";
+        int questionAnswer = 4;
+
+        // Act
+        var response = await _service.CheckAnswer(playerName, questionAnswer);
+
+        // Assert
+        response.Should().NotBeNull();
+        response.Message.Should().NotBeNull();
+        response.Success.Should().BeTrue();
+        response.Error.Should().BeNull();
+
+        string message = response.Message!;
+        message.Should().Be("Incorrect.");
+        _context.PlayerStatistics.Should().NotBeEmpty();
+
+        PlayerStatistics player = _context.PlayerStatistics.FirstOrDefault(p => p.Name == playerName)!;
+        player.Should().NotBeNull();
+        player.PlayerStatisticsFourOptionQuestions.Count.Should().Be(0);
+        player.TotalAmountOfQuestions.Should().Be(1);
+        player.CorrectAnswers.Should().Be(0);
+    }
+
+    [TestMethod]
+    public async Task CheckAnswer_ExistingPlayer_HasNoQuestionsLeft_Should_Return_CheckAnswerCommandResponseFalse()
+    {
+        // Arrange
+        _context.PlayerStatistics.Add(new()
+        {
+            Name = "Åke Åkman",
+            CorrectAnswers = 1337,
+            TotalAmountOfQuestions = 1337,
+            PlayerStatisticsFourOptionQuestions = [],
+        });
+
+        await _context.SaveChangesAsync();
+
+        string playerName = "Åke Åkman";
+        int questionAnswer = 4;
+
+        // Act
+        var response = await _service.CheckAnswer(playerName, questionAnswer);
+
+        // Assert
+        response.Should().NotBeNull();
+        response.Message.Should().BeNull();
+        response.Success.Should().BeFalse();
+        response.Error.Should().NotBeNull();
+
+        Exception error = response.Error!;
+        error.Message.Should().NotBeEmpty();
+    }
+
+    [TestMethod]
+    public async Task CheckAnswer_UnexistingPlayer_Should_Return_CheckAnswerCommandResponseFalse()
+    {
+        // Arrange
+        string playerName = "Kool-Kalle";
+        int questionAnswer = 4;
+
+        // Act
+        var response = await _service.CheckAnswer(playerName, questionAnswer);
+
+        // Assert
+        response.Should().NotBeNull();
+        response.Message.Should().BeNull();
+        response.Success.Should().BeFalse();
+        response.Error.Should().NotBeNull();
+
+        Exception error = response.Error!;
+        error.Message.Should().Be("No database entry matched the requested name.");
     }
 
     private void VerifyLog(LogLevel level)
