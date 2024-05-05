@@ -290,6 +290,7 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
 
             // If no IDs of deleted questions are present, count the number of questions and assign that + 1 as the ID.
             fourOptionQuestion.Id = floatingId is not null ? floatingId.Id : await _quizDbContext.FourOptionQuestions.CountAsync() + 1;
+            fourOptionQuestion.Question = FormatAndReturnQuestion(fourOptionQuestion.Question);
 
             _quizDbContext.FourOptionQuestions.Add(fourOptionQuestion);
 
@@ -335,6 +336,9 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
                     Success = false,
                     Error = new ArgumentException("A question with the provided ID does not exist in the database."),
                 };
+
+            if (request.Question is not null)
+                request.Question = FormatAndReturnQuestion(request.Question);
 
             question.Question = request.Question ?? question.Question;
             question.Option1 = request.Option1 ?? question.Option1;
@@ -417,5 +421,14 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
         playerName = playerName.ToLowerInvariant();
         TextInfo textInfo = new CultureInfo("sv-SE", false).TextInfo;
         return textInfo.ToTitleCase(playerName);
+    }
+
+    private static string FormatAndReturnQuestion(string question)
+    {
+        question = question.Trim();
+        if (question.Last() != '?')
+            question += '?';
+
+        return question;
     }
 }

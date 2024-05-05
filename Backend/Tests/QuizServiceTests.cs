@@ -233,7 +233,7 @@ public class QuizServiceTests
         int questionId = 1;
         PatchQuestionRequest patchQuestionRequest = new()
         {
-            Question = "Patched question!",
+            Question = "Patched question",
             Option1 = "Patched option 1!",
         };
 
@@ -247,7 +247,7 @@ public class QuizServiceTests
         response.Error.Should().BeNull();
 
         FourOptionQuestion question = response.Question!;
-        question.Question.Should().Be("Patched question!");
+        question.Question.Should().Be("Patched question?");
         question.Option1.Should().Be("Patched option 1!");
         question.Option2.Should().Be("A volcano on Iceland");
         question.Option3.Should().Be("A crater in China");
@@ -256,7 +256,7 @@ public class QuizServiceTests
         _context.FourOptionQuestions.Should().NotBeEmpty();
 
         FourOptionQuestion dbQuestion = _context.FourOptionQuestions.FirstOrDefault()!;
-        dbQuestion.Question.Should().Be("Patched question!");
+        dbQuestion.Question.Should().Be("Patched question?");
         dbQuestion.Option1.Should().Be("Patched option 1!");
         dbQuestion.Option2.Should().Be("A volcano on Iceland");
         dbQuestion.Option3.Should().Be("A crater in China");
