@@ -23,7 +23,7 @@ public class QuizControllerTests
 {
     private readonly Mock<IMediator> _mediatorMock;
     private readonly JsonSerializerOptions options;
-    private readonly Mock<IQuestionValidatorFactory> _validatorFactoryMock;
+    private readonly Mock<IQuizValidatorFactory> _validatorFactoryMock;
     private readonly Mock<ILogger<QuizController>> _loggerMock;
     private readonly QuizController _controller;
 

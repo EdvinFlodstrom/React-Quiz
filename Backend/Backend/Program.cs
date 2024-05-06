@@ -29,7 +29,7 @@ builder.Services.AddSingleton(new JsonSerializerOptions
     PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
 });
 
-builder.Services.AddScoped<Backend.Infrastructure.Validation.ValidatorFactory.IQuestionValidatorFactory, QuestionValidatorFactory>();
+builder.Services.AddScoped<IQuizValidatorFactory, QuestionValidatorFactory>();
 builder.Services.AddScoped<IValidator<FourOptionQuestion>, FourOptionQuestionValidator>();
 builder.Services.AddScoped<IValidator<PatchQuestionRequest>, PatchQuestionRequestValidator>();
 builder.Services.AddScoped<IValidator<BaseRequest>, BaseRequestValidator>();

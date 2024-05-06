@@ -14,11 +14,11 @@ namespace Backend.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerializerOptions, IQuestionValidatorFactory validatorFactory, ILogger<QuizController> logger) : ControllerBase
+public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerializerOptions, IQuizValidatorFactory validatorFactory, ILogger<QuizController> logger) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
     private readonly JsonSerializerOptions _serializerOptions = jsonSerializerOptions;
-    private readonly IQuestionValidatorFactory _validatorFactory = validatorFactory;
+    private readonly IQuizValidatorFactory _validatorFactory = validatorFactory;
     private readonly ILogger<QuizController> _logger = logger;
 
     private const string BadRequestMessageTemplate = "Invalid request data: ";

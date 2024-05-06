@@ -2,7 +2,7 @@
 
 namespace Backend.Infrastructure.Validation.ValidatorFactory;
 
-public interface IQuestionValidatorFactory
+public interface IQuizValidatorFactory
 {
     IValidator<T> GetValidator<T>();
 }

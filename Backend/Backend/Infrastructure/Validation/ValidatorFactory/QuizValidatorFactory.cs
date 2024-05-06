@@ -2,7 +2,7 @@
 
 namespace Backend.Infrastructure.Validation.ValidatorFactory;
 
-public class QuestionValidatorFactory(IServiceProvider serviceProvider) : IQuestionValidatorFactory
+public class QuestionValidatorFactory(IServiceProvider serviceProvider) : IQuizValidatorFactory
 {
     private readonly IServiceProvider _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
 
