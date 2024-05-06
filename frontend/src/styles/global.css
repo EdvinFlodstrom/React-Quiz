@@ -1,17 +1,24 @@
-* {
+body {
+    color: oklch(29.26% 0 0);
+    padding: 20px;
     margin-inline: 0.125em;
+    height: 100vh;
+    background: linear-gradient(to bottom right, oklch(75.26% 0.119 144.21), oklch(35.85% 0.105 248.81));
 }
 
 h1 {
-    font-size: 2rem;
+    font-size: 2.2rem;
     font-weight: bold;
     margin-block-end: 20px;
     color: oklch(25.14% 0 0);
+    border-bottom: 2.5px solid oklch(10.03% 0.222 310.51);
+    text-shadow: 3px 3px 4px oklch(21.97% 0.041 323.68 / 30%);
 }
   
 h3 {
-    font-size: 1.5rem;
+    font-size: 1.35rem;
     font-weight: bold;
     margin-block-end: 15px;
     color: oklch(24.75% 0 0);
+    text-shadow: 3px 3px 4px oklch(11.97% 0.041 323.68 / 30%);
 }

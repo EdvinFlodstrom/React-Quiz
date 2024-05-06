@@ -10,6 +10,7 @@
     border-radius: 20px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    box-shadow: 0 4.4px 15px oklch(12.91% 0.031 276.04);
 }
 
 .optionsButton:hover {
