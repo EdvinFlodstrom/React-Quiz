@@ -5,14 +5,18 @@
     font-weight: bold;
     text-align: center;
     color: oklch(98.44% 0 0);
-    background-color: oklch(59.03% 0.224 259.96);
     border: none;
     border-radius: 20px;
     cursor: pointer;
     transition: background-color 0.3s ease;
     box-shadow: 0 4.4px 15px oklch(12.91% 0.031 276.04);
+    background-color: oklch(59.03% 0.224 259.96);
 }
 
 .optionsButton:hover {
     background-color: oklch(43.74% 0.155 263.49);
+}
+
+.optionsButton:active {
+    transform: scale(0.95);
 }

@@ -1,9 +1,20 @@
 body {
     color: oklch(29.26% 0 0);
     padding: 20px;
-    margin-inline: 0.125em;
     height: 100vh;
     background: linear-gradient(to bottom right, oklch(75.26% 0.119 144.21), oklch(35.85% 0.105 248.81));
+
+    background-size: 325% 250%;
+    background-position: 0 0;
+    transition: background-position 0.75s;
+}
+
+body.moveGradient {
+    background-position: 100% 0;
+}
+
+body.moveBackGradient {
+    background-position: 100% 1;
 }
 
 h1 {

@@ -1,4 +1,4 @@
-const InitializeQuiz = () => {
+const InitializeQuiz = ({ adjustGradient }) => {
     return (
         <>
             <h3>Initialize the quiz...</h3>
