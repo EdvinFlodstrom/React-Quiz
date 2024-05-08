@@ -41,6 +41,10 @@ p {
     text-shadow: 3px 3px 4px oklch(16.68% 0 323.68 / 35%);
 }
 
+.error-message {
+    color: oklch(59.79% 0.1929 28.91);
+}
+
 h1 span.slide-in {
     display: flex;
     justify-content: center;

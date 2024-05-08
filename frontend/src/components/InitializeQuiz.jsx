@@ -11,6 +11,7 @@ const InitializeQuiz = ({ adjustGradient }) => {
         numberOfQuestions: 2,
         questionType: '',
     });
+    const [errorMessage, setErrorMessage] = useState('');
 
     const handleFormChange = (e) => {
         const { name, value } = e.target;
@@ -35,10 +36,37 @@ const InitializeQuiz = ({ adjustGradient }) => {
         return false;
     }
 
-    const handleFormSubmit = (e) => {
+    const handleFormSubmit = async (e) => {
         e.preventDefault();
-        adjustGradient();
-        setQuizStarted(true);
+
+        try {
+            const response = await fetch(
+                'https://localhost:7030/api/quiz/initialize',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        playerName: formData.name,
+                        amountOfQuestions: formData.numberOfQuestions,
+                        questionType: formData.questionType,
+                    }),
+                }
+            );
+
+            if (response.ok) {
+                adjustGradient();
+                setQuizStarted(true);
+            } else {
+                const error = await response.text();
+                setErrorMessage(error);
+                console.error('Failed to initialize quiz:', error);
+            }
+        } catch (exception) {
+            setErrorMessage(exception.message);
+            console.error('Failed to initialize quiz:', exception.message);
+        }
     };
 
     return (
@@ -99,6 +127,7 @@ const InitializeQuiz = ({ adjustGradient }) => {
                             Initialize Quiz
                         </button>
                     </form>
+                    <p className='error-message'>{errorMessage}</p>
                 </>
             ) : (
                 <TakeQuiz />
