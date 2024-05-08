@@ -239,7 +239,7 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
     {
         try
         { // If any question type is chosen, take all questions of that type. Otherwise, take any.
-            var questions = questionType is null
+            var questions = string.IsNullOrEmpty(questionType)
                 ? _quizDbContext.FourOptionQuestions
                 : _quizDbContext.FourOptionQuestions
                 .Where(q => string.Equals(
