@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import Instructions from "../components/Instructions";
-import InitializeQuiz from "../components/InitializeQuiz";
-import "../styles/buttons.css"
+import React, { useState } from 'react';
+import Instructions from '../components/Instructions';
+import InitializeQuiz from '../components/InitializeQuiz';
+import '../styles/buttons.css';
 
 const InitialPage = () => {
     const [componentToShow, setComponentToShow] = useState(null);
@@ -20,13 +20,16 @@ const InitialPage = () => {
             {!componentToShow ? (
                 <>
                     <Instructions />
-                    <button className='quiz-alternatives-button'
-                    onClick={() => {
-                        setComponentToShow(
-                        <InitializeQuiz adjustGradient={AdjustGradient} 
-                        />); 
-                        AdjustGradient()
-                    }}>
+                    <button
+                        className='button'
+                        onClick={() => {
+                            setComponentToShow(
+                                <InitializeQuiz
+                                    adjustGradient={AdjustGradient}
+                                />
+                            );
+                            AdjustGradient();
+                        }}>
                         Take Quiz
                     </button>
                 </>

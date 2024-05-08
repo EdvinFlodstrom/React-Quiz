@@ -1,4 +1,4 @@
-.quiz-alternatives-button {
+.button {
     display: inline-block;
     padding: 15px 40px;
     font-size: 1.1rem;
@@ -13,10 +13,32 @@
     background-color: oklch(59.03% 0.224 259.96);
 }
 
-.quiz-alternatives-button:hover {
+.button:hover {
     background-color: oklch(43.74% 0.155 263.49);
 }
 
-.quiz-alternatives-button:active {
+.button:active {
     transform: scale(0.95);
+}
+
+.button:disabled {
+    transform: none; /* Disabled buttons should not shrink */
+    background-color: oklch(53.21% 0.156 28.48);
+    cursor: not-allowed;
+}
+
+.take-quiz-options-button {
+
+}
+
+.take-quiz-options-button:hover {
+    
+}
+
+.take-quiz-options-button:active {
+    
+}
+
+.take-quiz-options-button:disabled {
+    
 }
