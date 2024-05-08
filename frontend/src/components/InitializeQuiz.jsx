@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import TakeQuiz from './TakeQuiz';
 
 const InitializeQuiz = ({ adjustGradient }) => {
     const [initializeQuizButtonDisabled, setInitializeQuizButtonDisabled] =
@@ -100,7 +101,7 @@ const InitializeQuiz = ({ adjustGradient }) => {
                     </form>
                 </>
             ) : (
-                <></>
+                <TakeQuiz />
             )}
         </>
     );

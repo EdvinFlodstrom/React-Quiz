@@ -41,6 +41,21 @@ p {
     text-shadow: 3px 3px 4px oklch(16.68% 0 323.68 / 35%);
 }
 
+h1 span.slide-in {
+    display: flex;
+    justify-content: center;
+    animation: slideIn 2s forwards;
+}
+  
+@keyframes slideIn {
+    0% {
+        transform: translateX(-80%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
 .form-container {
     max-width: 25rem;
 }
