@@ -10,14 +10,7 @@ const InitialPage = () => {
     function AdjustGradient() {
         setAdjustGradient((currentValue) => {
             const newValue = !currentValue;
-            console.log(newValue);
-            if (!newValue) {
-                document.body.classList.add('moveGradient');
-                document.body.classList.remove('moveBackGradient');
-            } else {
-                document.body.classList.remove('moveGradient');
-                document.body.classList.add('moveBackGradient');
-            }
+            document.body.classList.toggle('moveGradient', currentValue);
             return newValue;
         });
     }
@@ -27,7 +20,7 @@ const InitialPage = () => {
             {!componentToShow ? (
                 <>
                     <Instructions />
-                    <button className="optionsButton" 
+                    <button className='quiz-alternatives-button'
                     onClick={() => {
                         setComponentToShow(
                         <InitializeQuiz adjustGradient={AdjustGradient} 

@@ -1,4 +1,4 @@
-.optionsButton {
+.quiz-alternatives-button {
     display: inline-block;
     padding: 15px 40px;
     font-size: 1.1rem;
@@ -13,10 +13,10 @@
     background-color: oklch(59.03% 0.224 259.96);
 }
 
-.optionsButton:hover {
+.quiz-alternatives-button:hover {
     background-color: oklch(43.74% 0.155 263.49);
 }
 
-.optionsButton:active {
+.quiz-alternatives-button:active {
     transform: scale(0.95);
 }
