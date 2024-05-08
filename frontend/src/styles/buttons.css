@@ -1,12 +1,12 @@
 .button {
     display: inline-block;
-    padding: 15px 40px;
+    padding: 1.75rem 4rem;
     font-size: 1.1rem;
     font-weight: bold;
     text-align: center;
     color: oklch(98.44% 0 0);
     border: none;
-    border-radius: 20px;
+    border-radius: 1.25rem;
     cursor: pointer;
     transition: background-color 0.3s ease;
     box-shadow: 0 4.4px 15px oklch(12.91% 0.031 276.04);

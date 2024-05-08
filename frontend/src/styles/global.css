@@ -18,18 +18,43 @@ body.moveBackGradient {
 }
 
 h1 {
-    font-size: 2.2rem;
+    font-size: 3rem;
     font-weight: bold;
     margin-block-end: 20px;
     color: oklch(25.14% 0 0);
     border-bottom: 2.5px solid oklch(10.03% 0.222 310.51);
-    text-shadow: 3px 3px 4px oklch(21.97% 0.041 323.68 / 30%);
+    text-shadow: 3px 3px 4px oklch(21.97% 0.041 323.68 / 40%);
 }
   
 h3 {
-    font-size: 1.35rem;
+    font-size: 2rem;
     font-weight: bold;
     margin-block-end: 15px;
     color: oklch(24.75% 0 0);
-    text-shadow: 3px 3px 4px oklch(11.97% 0.041 323.68 / 30%);
+    text-shadow: 3px 3px 4px oklch(11.97% 0.041 323.68 / 25%);
+}
+
+p {
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: oklch(22.53% 0 0);
+    text-shadow: 3px 3px 4px oklch(16.68% 0 323.68 / 35%);
+}
+
+.form-container {
+    max-width: 25rem;
+}
+
+.form-label {
+    font-size: 1.25rem;
+    display: block;
+    margin-block-end: 1rem;
+    font-weight: bold;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 0.15rem solid oklch(24.52% 0 0);
+    border-radius: 0.6rem;
 }
