@@ -57,10 +57,12 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
             playerObject.PlayerStatisticsFourOptionQuestions.Remove(playerStatisticsQuestion);
 
             string message = "Incorrect.";
+            bool correct = false;
             if (questionAnswer == playerStatisticsQuestion.Question.CorrectOptionNumber)
             {
                 playerObject.CorrectAnswers++;
                 message = "Correct!";
+                correct = true;
             }
 
             await _quizDbContext.SaveChangesAsync();
@@ -68,6 +70,7 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
             return new CheckAnswerCommandResponse
             {
                 Message = message,
+                Correct = correct,
                 Success = true,
                 Error = null,
             };

@@ -807,7 +807,7 @@ public class QuizControllerTests
     }
 
     [TestMethod]
-    public async Task CheckAnswer_Should_Return_String()
+    public async Task CheckAnswer_Should_Return_CheckAnswerResponse()
     {
         // Arrange
         CheckAnswerRequest checkAnswerRequest = new()
@@ -819,6 +819,7 @@ public class QuizControllerTests
         CheckAnswerCommandResponse commandResponse = new()
         {
             Message = "Correct!",
+            Correct = true,
             Success = true,
             Error = null,
         };
@@ -843,8 +844,9 @@ public class QuizControllerTests
         objectResult.StatusCode.Should().Be(200);
         objectResult.Value.Should().NotBeNull();
 
-        string message = (string)objectResult.Value!;
-        message.Should().Be("Correct!");
+        CheckAnswerResponse checkAnswerResponse = (CheckAnswerResponse)objectResult.Value!;
+        checkAnswerResponse.Message.Should().Be("Correct!");
+        checkAnswerResponse.Correct.Should().BeTrue();
     }
 
     [TestMethod]

@@ -26,7 +26,7 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
     private const string LogErrorMessageTemplate = "An unexpected error occured: ";
 
     [HttpPost("answer")]
-    public async Task<ActionResult<string>> CheckAnswer([FromBody] CheckAnswerRequest request)
+    public async Task<ActionResult<CheckAnswerResponse>> CheckAnswer([FromBody] CheckAnswerRequest request)
     {
         if (!ModelState.IsValid || request is null)
         {
@@ -49,7 +49,11 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
             var response = await _mediator.Send(command);
 
             return response.Success == true
-                ? Ok(response.Message)
+                ? Ok(new CheckAnswerResponse
+                {
+                    Message = response.Message!,
+                    Correct = response.Correct,
+                })
                 : BadRequest(response.Error is not null ? response.Error.Message : ErrorMessageTemplate);
         }
         catch (Exception ex)
