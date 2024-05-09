@@ -130,7 +130,7 @@ const InitializeQuiz = ({ adjustGradient }) => {
                     <p className='error-message'>{errorMessage}</p>
                 </>
             ) : (
-                <TakeQuiz />
+                <TakeQuiz playerName={formData.name} />
             )}
         </>
     );

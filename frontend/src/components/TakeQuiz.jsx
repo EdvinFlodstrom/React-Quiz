@@ -17,6 +17,12 @@ const TakeQuiz = ({ playerName }) => {
         option4: '',
     });
     const [backgroundFlash, setBackGroundFlash] = useState('');
+    const [correctOptionButton, setCorrectOptionButton] = useState({
+        option1Button: '',
+        option2Button: '',
+        option3Button: '',
+        option4Button: '',
+    });
     let timerRef = useRef(null);
 
     const startTimer = () => {
@@ -115,7 +121,28 @@ const TakeQuiz = ({ playerName }) => {
                 setBackGroundFlash('flashRed');
             }
             await delay(1000);
+
             setBackGroundFlash('');
+
+            const correctOptionNumber = Number(responseData.correctOption);
+            const correctOptionButtonKey = `option${correctOptionNumber}Button`;
+            const chosenOptionButtonKey = `option${answer}Button`;
+            setCorrectOptionButton((prevButtons) => ({
+                ...prevButtons,
+                [correctOptionButtonKey]: 'take-quiz-options-button-flashGreen',
+                [chosenOptionButtonKey]:
+                    answer === correctOptionNumber
+                        ? 'take-quiz-options-button-flashGreen'
+                        : 'take-quiz-options-button-flashRed',
+            }));
+
+            await delay(2500);
+            setCorrectOptionButton({
+                option1Button: '',
+                option2Button: '',
+                option3Button: '',
+                option4Button: '',
+            });
             setQuestionButtonDisabled(false);
         } catch (error) {
             console.error('Error while checking answer:', error);
@@ -148,25 +175,25 @@ const TakeQuiz = ({ playerName }) => {
 
                 <div className='take-quiz-options-buttons-container'>
                     <button
-                        className='button take-quiz-options-button'
+                        className={`button take-quiz-options-button ${correctOptionButton.option1Button}`}
                         onClick={() => handleAnswer(1)}
                         disabled={submitAnswerButtonDisabled}>
                         1: {questionOptions.option1}
                     </button>
                     <button
-                        className='button take-quiz-options-button'
+                        className={`button take-quiz-options-button ${correctOptionButton.option2Button}`}
                         onClick={() => handleAnswer(2)}
                         disabled={submitAnswerButtonDisabled}>
                         2: {questionOptions.option2}
                     </button>
                     <button
-                        className='button take-quiz-options-button'
+                        className={`button take-quiz-options-button ${correctOptionButton.option3Button}`}
                         onClick={() => handleAnswer(3)}
                         disabled={submitAnswerButtonDisabled}>
                         3: {questionOptions.option3}
                     </button>
                     <button
-                        className='button take-quiz-options-button'
+                        className={`button take-quiz-options-button ${correctOptionButton.option4Button}`}
                         onClick={() => handleAnswer(4)}
                         disabled={submitAnswerButtonDisabled}>
                         4: {questionOptions.option4}
