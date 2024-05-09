@@ -1,9 +1,18 @@
 import React, { useRef, useState } from 'react';
 import '../styles/timer.css';
 
-const TakeQuiz = () => {
+const TakeQuiz = ({ playerName }) => {
     const [timerExpired, setTimerExpired] = useState(false);
     const [timerStarted, setTimerStarted] = useState(false);
+    const [canGetQuestion, setCanGetQuestion] = useState(true);
+    const [canSubmitAnswer, setCanSubmitAnswer] = useState(false);
+    const [question, setQuestion] = useState('');
+    const [questionOptions, setQuestionOptions] = useState({
+        option1: '',
+        option2: '',
+        option3: '',
+        option4: '',
+    });
     let timerRef = useRef(null);
 
     const startTimer = () => {
@@ -13,6 +22,10 @@ const TakeQuiz = () => {
             setTimerStarted(false);
             console.log('Time is up.');
         }, 15000);
+    };
+
+    const handleGetQuestion = () => {
+        console.log(playerName);
     };
 
     const handleAnswer = (e) => {
@@ -37,13 +50,25 @@ const TakeQuiz = () => {
                 </div>
             </div>
 
-            <button className='button' onClick={startTimer}>
-                Start timer
-            </button>
+            <div className='centered-buttons-container'>
+                <button className='button'>Get Question</button>
+                <h2>Q: {question}</h2>
 
-            <button className='button' onClick={handleAnswer}>
-                Submit option 1 answer
-            </button>
+                <div className='take-quiz-options-buttons-container'>
+                    <button className='button take-quiz-options-button'>
+                        Option 1: {questionOptions.option1}
+                    </button>
+                    <button className='button take-quiz-options-button'>
+                        Option 2: {questionOptions.option2}
+                    </button>
+                    <button className='button take-quiz-options-button'>
+                        Option 3: {questionOptions.option3}
+                    </button>
+                    <button className='button take-quiz-options-button'>
+                        Option 4: {questionOptions.option4}
+                    </button>
+                </div>
+            </div>
         </>
     );
 };

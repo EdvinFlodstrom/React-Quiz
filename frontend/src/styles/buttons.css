@@ -1,6 +1,6 @@
 .button {
     display: inline-block;
-    padding: 1.75rem 4rem;
+    padding: 2.2rem 5rem;
     font-size: 1.1rem;
     font-weight: bold;
     text-align: center;
@@ -27,18 +27,35 @@
     cursor: not-allowed;
 }
 
-.take-quiz-options-button {
+.centered-buttons-container {
+    margin-block-start: 2rem;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
 
+.take-quiz-options-buttons-container {
+    margin-block-start: 3rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    width: 83%;
+    height: 58vh;
+}
+
+.take-quiz-options-button {
+    background-color: oklch(51.26% 0.132 305.26 / 85%);
 }
 
 .take-quiz-options-button:hover {
-    
+    background-color: oklch(41.26% 0.132 305.26 / 75%);
 }
 
 .take-quiz-options-button:active {
-    
+    transform: scale(0.98);
 }
 
 .take-quiz-options-button:disabled {
-    
+    transform: none; /* Reapply the same no-shrink */
+    background-color: oklch(45.25% 0.147 359.26 / 85%);
 }
