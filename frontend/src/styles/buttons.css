@@ -45,6 +45,7 @@
 
 .take-quiz-options-button {
     background-color: oklch(51.26% 0.132 305.26 / 85%);
+    font-size: 2rem;
 }
 
 .take-quiz-options-button:hover {

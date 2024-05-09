@@ -24,8 +24,53 @@ const TakeQuiz = ({ playerName }) => {
         }, 15000);
     };
 
-    const handleGetQuestion = () => {
-        console.log(playerName);
+    const handleGetQuestion = async () => {
+        try {
+            const response = await fetch(
+                'https://localhost:7030/api/quiz/get',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        playerName: playerName,
+                    }),
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error('Failed to get question');
+            }
+
+            const responseData = await response.json();
+            console.log('response data:', responseData);
+
+            if (responseData.fourOptionQuestion) {
+                // Question data is received
+                setQuestion(responseData.fourOptionQuestion.question);
+
+                await delay(3000);
+
+                setQuestionOptions({
+                    option1: responseData.fourOptionQuestion.option1,
+                    option2: responseData.fourOptionQuestion.option2,
+                    option3: responseData.fourOptionQuestion.option3,
+                    option4: responseData.fourOptionQuestion.option4,
+                });
+                setCanSubmitAnswer(true);
+                startTimer(); // Start the timer after receiving the question
+            } else {
+                // Question data is not received
+                setQuestion(responseData.details);
+            }
+        } catch (error) {
+            console.error('Error while getting question:', error);
+        }
+    };
+
+    const delay = (ms) => {
+        return new Promise((resolve) => setTimeout(resolve, ms));
     };
 
     const handleAnswer = (e) => {
@@ -51,21 +96,23 @@ const TakeQuiz = ({ playerName }) => {
             </div>
 
             <div className='centered-buttons-container'>
-                <button className='button'>Get Question</button>
+                <button className='button' onClick={handleGetQuestion}>
+                    Get Question
+                </button>
                 <h2>Q: {question}</h2>
 
                 <div className='take-quiz-options-buttons-container'>
                     <button className='button take-quiz-options-button'>
-                        Option 1: {questionOptions.option1}
+                        1: {questionOptions.option1}
                     </button>
                     <button className='button take-quiz-options-button'>
-                        Option 2: {questionOptions.option2}
+                        2: {questionOptions.option2}
                     </button>
                     <button className='button take-quiz-options-button'>
-                        Option 3: {questionOptions.option3}
+                        3: {questionOptions.option3}
                     </button>
                     <button className='button take-quiz-options-button'>
-                        Option 4: {questionOptions.option4}
+                        4: {questionOptions.option4}
                     </button>
                 </div>
             </div>
