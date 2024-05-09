@@ -53,6 +53,7 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
                 {
                     Message = response.Message!,
                     Correct = response.Correct,
+                    CorrectOption = Convert.ToInt32(response.CorrectOption),
                 })
                 : BadRequest(response.Error is not null ? response.Error.Message : ErrorMessageTemplate);
         }

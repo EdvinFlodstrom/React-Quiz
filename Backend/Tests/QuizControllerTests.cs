@@ -820,6 +820,7 @@ public class QuizControllerTests
         {
             Message = "Correct!",
             Correct = true,
+            CorrectOption = 4,
             Success = true,
             Error = null,
         };
@@ -846,6 +847,7 @@ public class QuizControllerTests
 
         CheckAnswerResponse checkAnswerResponse = (CheckAnswerResponse)objectResult.Value!;
         checkAnswerResponse.Message.Should().Be("Correct!");
+        checkAnswerResponse.CorrectOption.Should().Be(4);
         checkAnswerResponse.Correct.Should().BeTrue();
     }
 

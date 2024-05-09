@@ -71,6 +71,7 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
             {
                 Message = message,
                 Correct = correct,
+                CorrectOption = playerStatisticsQuestion.Question.CorrectOptionNumber,
                 Success = true,
                 Error = null,
             };

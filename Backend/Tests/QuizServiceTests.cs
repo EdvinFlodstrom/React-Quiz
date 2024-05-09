@@ -812,6 +812,7 @@ public class QuizServiceTests
         response.Should().NotBeNull();
         response.Message.Should().NotBeNull();
         response.Correct.Should().BeTrue();
+        response.CorrectOption.Should().Be(2);
         response.Success.Should().BeTrue();
         response.Error.Should().BeNull();
 
@@ -870,6 +871,7 @@ public class QuizServiceTests
         response.Should().NotBeNull();
         response.Message.Should().NotBeNull();
         response.Correct.Should().BeFalse();
+        response.CorrectOption.Should().Be(2);
         response.Success.Should().BeTrue();
         response.Error.Should().BeNull();
 
@@ -908,6 +910,7 @@ public class QuizServiceTests
         response.Should().NotBeNull();
         response.Message.Should().BeNull();
         response.Correct.Should().BeFalse();
+        response.CorrectOption.Should().BeNull();
         response.Success.Should().BeFalse();
         response.Error.Should().NotBeNull();
 
@@ -929,6 +932,7 @@ public class QuizServiceTests
         response.Should().NotBeNull();
         response.Message.Should().BeNull();
         response.Correct.Should().BeFalse();
+        response.CorrectOption.Should().BeNull();
         response.Success.Should().BeFalse();
         response.Error.Should().NotBeNull();
 

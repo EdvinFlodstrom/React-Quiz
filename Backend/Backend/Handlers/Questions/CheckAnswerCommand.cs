@@ -38,6 +38,8 @@ public class CheckAnswerCommandResponse
 
     public bool Correct { get; set; }
 
+    public int? CorrectOption { get; set; }
+
     public bool Success { get; set; }
 
     public Exception? Error { get; set; }
