@@ -20,13 +20,14 @@ body.moveBackGradient {
 h1 {
     font-size: 3rem;
     font-weight: bold;
-    margin-block-end: 1.25rem;
+    margin-block: 1.25rem;
     color: oklch(25.14% 0 0);
     border-bottom: 0.15rem solid oklch(2.03% 0.222 310.51);
     text-shadow: 0.25rem 0.2rem 0.25rem oklch(21.97% 0.041 323.68 / 40%);
 }
 
 h2 {
+    max-width: 82vw;
     margin-block-end: 1.1rem;
     font-size: 2.4rem;
     font-weight: bold;

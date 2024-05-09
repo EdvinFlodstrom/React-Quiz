@@ -1,0 +1,24 @@
+#flash {
+    margin-inline: -1rem;
+    margin-block: -2.25rem;
+}
+
+@keyframes flashGreen {
+    0% { background-color: initial; }
+    50% { background-color: oklch(43.32% 0.118 147.49); }
+    100% { background-color: initial; }
+}
+
+@keyframes flashRed {
+    0% { background-color: initial; }
+    50% { background-color: oklch(43.32% 0.16 23.61); }
+    100% { background-color: initial; }
+}
+
+#flash.flashGreen {
+    animation: flashGreen 0.8s;
+}
+
+#flash.flashRed {
+    animation: flashRed 0.8s;
+}
