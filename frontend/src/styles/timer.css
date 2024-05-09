@@ -21,7 +21,7 @@
 }
 
 .timer--decrease {
-    animation: timerAnimation 15s linear forwards;
+    animation: timerAnimation 10s linear forwards;
 }
 
 @keyframes timerAnimation {

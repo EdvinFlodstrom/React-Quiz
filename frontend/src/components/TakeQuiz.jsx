@@ -24,11 +24,17 @@ const TakeQuiz = ({ playerName }) => {
         timerRef.current = setTimeout(() => {
             setTimerExpired(true);
             setTimerStarted(false);
-            console.log('Time is up.');
-        }, 15000);
+            handleAnswer(0);
+        }, 10000);
     };
 
     const handleGetQuestion = async () => {
+        setQuestionOptions({
+            option1: '',
+            option2: '',
+            option3: '',
+            option4: '',
+        });
         setQuestionButtonDisabled(true);
         try {
             const response = await fetch(
@@ -63,7 +69,7 @@ const TakeQuiz = ({ playerName }) => {
                     option4: responseData.fourOptionQuestion.option4,
                 });
                 setsubmitAnswerButtonDisabled(false);
-                startTimer(); // Start the timer after receiving the question
+                startTimer(); // Start the timer shortly after receiving the question
             } else {
                 // Question data is not received
                 setQuestion(responseData.details);
@@ -79,11 +85,9 @@ const TakeQuiz = ({ playerName }) => {
 
     const handleAnswer = async (answer) => {
         setsubmitAnswerButtonDisabled(true);
-        console.log('Stop timer.');
         setTimerExpired(true);
         setTimerStarted(false);
         clearTimeout(timerRef.current);
-
         try {
             const response = await fetch(
                 'https://localhost:7030/api/quiz/answer',
@@ -112,6 +116,7 @@ const TakeQuiz = ({ playerName }) => {
             }
             await delay(1000);
             setBackGroundFlash('');
+            setQuestionButtonDisabled(false);
         } catch (error) {
             console.error('Error while checking answer:', error);
         }

@@ -28,14 +28,13 @@
 }
 
 .centered-buttons-container {
-    margin-block-start: 2rem;
+    margin-block-start: 1rem;
     display: flex;
     align-items: center;
     flex-direction: column;
 }
 
 .take-quiz-options-buttons-container {
-    margin-block-start: 3rem;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
