@@ -4,6 +4,6 @@ namespace Backend.Infrastructure.Models.Requests;
 
 public class CheckAnswerRequest : BaseRequest
 {
-    [Range(1, 4, ErrorMessage = "Question answer must be in the range 1-4.")]
+    [Range(0, 4, ErrorMessage = "Question answer must be in the range 0-4. 0 always returns incorrect.")]
     public required int QuestionAnswer { get; set; }
 }
