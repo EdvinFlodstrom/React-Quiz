@@ -122,7 +122,7 @@ const InitializeQuiz = ({ adjustGradient }) => {
                         </label>
                         <br />
                         <button
-                            className='button'
+                            className='button form-button'
                             disabled={initializeQuizButtonDisabled}>
                             Initialize Quiz
                         </button>

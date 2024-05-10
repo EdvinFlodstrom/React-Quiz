@@ -1,6 +1,7 @@
 .button {
     display: inline-block;
     padding: 2.2rem 5rem;
+    margin-inline: 1rem;
     font-size: 1.1rem;
     font-weight: bold;
     text-align: center;
@@ -27,6 +28,10 @@
     cursor: not-allowed;
 }
 
+.form-button {
+    margin: 0;
+}
+
 .centered-buttons-container {
     margin-block-start: 1rem;
     display: flex;
@@ -37,14 +42,16 @@
 .take-quiz-options-buttons-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    width: 83%;
-    height: 58vh;
+    gap: 1rem;
+    width: 70%;
+    height: 45vh;
 }
 
 .take-quiz-options-button {
     background-color: oklch(51.26% 0.132 305.26 / 85%);
-    font-size: 2rem;
+    font-size: 2.5vw;
+    padding: 0; /* Remove inherited padding. Makes the grid more responsive for smaller screen sizes. */
+    margin: 0; /* Remove inherited margin. Makes button size fill the grid. */
 }
 
 .take-quiz-options-button:hover {

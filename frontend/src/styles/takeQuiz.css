@@ -1,6 +1,6 @@
 #flash {
-    margin-inline: -1rem;
-    margin-block: -2.25rem;
+    margin-block-start: -1rem;
+    padding-block-end: 8rem;
 }
 
 @keyframes flashGreen {
