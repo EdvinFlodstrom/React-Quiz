@@ -164,6 +164,48 @@ public class QuizServiceTests
     }
 
     [TestMethod]
+    public async Task CreateQuestion_DuplicateQuestion_Should_Return_CreateQuestionCommandResponseFalse()
+    {
+        // Arrange
+        _context.FourOptionQuestions.Add(new GeographyQuestion
+        {
+            Id = 1,
+            Question = "What is What is Eyjafjallajökull?",
+            Option1 = "A glacier in Norway",
+            Option2 = "A volcano on Iceland",
+            Option3 = "A crater in China",
+            Option4 = "A city in Greenland",
+            CorrectOptionNumber = 2,
+        });
+
+        await _context.SaveChangesAsync();
+
+        GeographyQuestion geographyQuestion = new()
+        {
+            Question = "What is What is Eyjafjallajökull",
+            Option1 = "A glacier in Norway",
+            Option2 = "A volcano on Iceland",
+            Option3 = "A crater in China",
+            Option4 = "A city in Greenland",
+            CorrectOptionNumber = 2,
+        };
+
+        // Act
+        var response = await _service.CreateQuestion(geographyQuestion);
+
+        // Assert
+        response.Should().NotBeNull();
+        response.Question.Should().BeNull();
+        response.Success.Should().BeFalse();
+        response.Error.Should().NotBeNull();
+
+        Exception error = response.Error!;
+        error.Message.Should().Be("The same question already exists in the database.");
+
+        _context.FourOptionQuestions.Count().Should().Be(1);
+    }
+
+    [TestMethod]
     public async Task CreateQuestion_Error_Should_Return_CreateQuestionCommandResponseFalse()
     {
         // Arrange
@@ -185,18 +227,19 @@ public class QuizServiceTests
 
         await _context.SaveChangesAsync();
 
-        GeographyQuestion geographyQuestion = new()
+        MathQuestion mathQuestion = new()
         {
-            Question = "What is Eyjafjallajökull?",
-            Option1 = "A glacier in Norway",
-            Option2 = "A volcano on Iceland",
-            Option3 = "A crater in China",
-            Option4 = "A city in Greenland",
-            CorrectOptionNumber = 2,
+            Id = 2,
+            Question = "What is 1 + 1?",
+            Option1 = "Probably a large number",
+            Option2 = "3",
+            Option3 = "11",
+            Option4 = "1337",
+            CorrectOptionNumber = 3,
         };
 
         // Act
-        var response = await _service.CreateQuestion(geographyQuestion);
+        var response = await _service.CreateQuestion(mathQuestion);
 
         // Assert
         response.Should().NotBeNull();
