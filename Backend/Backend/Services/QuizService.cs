@@ -290,11 +290,25 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
     {
         try
         {
-            var floatingId = _quizDbContext.FloatingIds.FirstOrDefault();
+            fourOptionQuestion.Question = FormatAndReturnQuestion(fourOptionQuestion.Question);
 
+            var existingQuestion = await _quizDbContext.FourOptionQuestions
+                .FirstOrDefaultAsync(q => q.Question == fourOptionQuestion.Question);
+
+            if (existingQuestion is not null)
+            {
+                return new CreateQuestionCommandResponse
+                {
+                    Question = null,
+                    Success = false,
+                    Error = new ArgumentException("The same question already exists in the database."),
+                };
+            }
+
+            var floatingId = _quizDbContext.FloatingIds.FirstOrDefault();
+            
             // If no IDs of deleted questions are present, count the number of questions and assign that + 1 as the ID.
             fourOptionQuestion.Id = floatingId is not null ? floatingId.Id : await _quizDbContext.FourOptionQuestions.CountAsync() + 1;
-            fourOptionQuestion.Question = FormatAndReturnQuestion(fourOptionQuestion.Question);
 
             _quizDbContext.FourOptionQuestions.Add(fourOptionQuestion);
 
