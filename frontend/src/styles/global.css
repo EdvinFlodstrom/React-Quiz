@@ -93,8 +93,9 @@ h1 span.slide-in {
 
 .form-input {
     width: 100%;
-    padding: 0.8rem;
-    border: 0.15rem solid oklch(24.52% 0 0);
+    font-size: 1vw;
+    padding: 0.7vw;
+    border: 0.12vw solid oklch(24.52% 0 0);
     border-radius: 0.6rem;
 }
 
@@ -103,16 +104,16 @@ h1 span.slide-in {
         font-size: 1.5rem;
     }
     h2 {
-        font-size: 1.2rem;
+        font-size: 1.3rem;
     }
     h3 {
-        font-size: 0.9rem;
-    }
-    p {
-        font-size: 0.75rem;
+        font-size: 1.2rem;
     }
     .form-label {
         font-size: 0.9rem;
         margin-block-end: 0;
+    }
+    p, .form-input {
+        font-size: 1rem;
     }
 }
