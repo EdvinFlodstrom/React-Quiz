@@ -1,7 +1,7 @@
 .button {
-    padding: 2.2rem 5rem;
+    padding: 2.2vw 5.5vw;
     margin-inline: 1rem;
-    font-size: 1.1rem;
+    font-size: 1vw;
     font-weight: bold;
     text-align: center;
     color: oklch(98.44% 0 0);
@@ -67,15 +67,15 @@
 }
 
 @keyframes buttonFlashGreen {
-    0% { background-color: oklch(45.25% 0.147 359.26 / 85%); } /* :disabled color */
+    0% { background-color: oklch(45.25% 0.147 359.26 / 85%); } /* disabled color */
     50% { background-color: oklch(43.32% 0.118 147.49); }
-    100% { background-color: oklch(45.25% 0.147 359.26 / 85%); } /* :disabled color */
+    100% { background-color: oklch(45.25% 0.147 359.26 / 85%); } /* disabled color */
 }
 
 @keyframes buttonFlashRed {
-    0% { background-color: oklch(45.25% 0.147 359.26 / 85%); } /* :disabled color */
+    0% { background-color: oklch(45.25% 0.147 359.26 / 85%); } /* disabled color */
     50% { background-color: oklch(32.94% 0.133 23.61); }
-    100% { background-color: oklch(45.25% 0.147 359.26 / 85%); } /* :disabled color */
+    100% { background-color: oklch(45.25% 0.147 359.26 / 85%); } /* disabled color */
 }
 
 .take-quiz-options-button-flashGreen {
@@ -87,7 +87,12 @@
 }
 
 @media screen and (max-width: 600px) {
+    .button {
+        padding: 1.5rem 3.5rem;
+        font-size: 1rem;
+    }
     .take-quiz-options-button {
+        padding: 0;
         font-size: 1rem;
     }
 }
