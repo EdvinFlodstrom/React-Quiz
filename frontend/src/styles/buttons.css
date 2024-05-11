@@ -85,3 +85,9 @@
 .take-quiz-options-button-flashRed {
     animation: buttonFlashRed 2.5s;
 }
+
+@media screen and (max-width: 600px) {
+    .take-quiz-options-button {
+        font-size: 1rem;
+    }
+}
