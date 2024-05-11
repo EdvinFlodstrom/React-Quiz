@@ -263,38 +263,48 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
 
     private (FourOptionQuestion? fourOptionQuestion, string? message) DeserializeAndReturnQuestion(string questionType, JsonElement fourOptionQuestionJson)
     {
-        FourOptionQuestion? question = questionType.ToLower() switch
+        FourOptionQuestion? question = null;
+        
+        try
         {
-            "chemistry" => JsonSerializer.Deserialize<ChemistryQuestion>(fourOptionQuestionJson, _serializerOptions),
-
-            "food" => JsonSerializer.Deserialize<FoodQuestion>(fourOptionQuestionJson, _serializerOptions),
-
-            "game" => JsonSerializer.Deserialize<GameQuestion>(fourOptionQuestionJson, _serializerOptions),
-
-            "geography" => JsonSerializer.Deserialize<GeographyQuestion>(fourOptionQuestionJson, _serializerOptions),
-
-            "history" => JsonSerializer.Deserialize<HistoryQuestion>(fourOptionQuestionJson, _serializerOptions),
-
-            "literature" => JsonSerializer.Deserialize<LiteratureQuestion>(fourOptionQuestionJson, _serializerOptions),
-
-            "math" => JsonSerializer.Deserialize<MathQuestion>(fourOptionQuestionJson, _serializerOptions),
-
-            "music" => JsonSerializer.Deserialize<MusicQuestion>(fourOptionQuestionJson, _serializerOptions),
-
-            "sports" => JsonSerializer.Deserialize<SportsQuestion>(fourOptionQuestionJson, _serializerOptions),
-
-            "technology" => JsonSerializer.Deserialize<TechnologyQuestion>(fourOptionQuestionJson, _serializerOptions),
-
-            _ => new InvalidQuestionType // Use only to differentiate from JSON deserialization failures.
+            question = questionType.ToLower() switch
             {
-                Question = "",
-                Option1 = "",
-                Option2 = "",
-                Option3 = "",
-                Option4 = "",
-                CorrectOptionNumber = 1,
-            },
-        };
+                "chemistry" => JsonSerializer.Deserialize<ChemistryQuestion>(fourOptionQuestionJson, _serializerOptions),
+
+                "food" => JsonSerializer.Deserialize<FoodQuestion>(fourOptionQuestionJson, _serializerOptions),
+
+                "game" => JsonSerializer.Deserialize<GameQuestion>(fourOptionQuestionJson, _serializerOptions),
+
+                "geography" => JsonSerializer.Deserialize<GeographyQuestion>(fourOptionQuestionJson, _serializerOptions),
+
+                "history" => JsonSerializer.Deserialize<HistoryQuestion>(fourOptionQuestionJson, _serializerOptions),
+
+                "literature" => JsonSerializer.Deserialize<LiteratureQuestion>(fourOptionQuestionJson, _serializerOptions),
+
+                "math" => JsonSerializer.Deserialize<MathQuestion>(fourOptionQuestionJson, _serializerOptions),
+
+                "music" => JsonSerializer.Deserialize<MusicQuestion>(fourOptionQuestionJson, _serializerOptions),
+
+                "sports" => JsonSerializer.Deserialize<SportsQuestion>(fourOptionQuestionJson, _serializerOptions),
+
+                "technology" => JsonSerializer.Deserialize<TechnologyQuestion>(fourOptionQuestionJson, _serializerOptions),
+
+                _ => new InvalidQuestionType // Use only to differentiate from JSON deserialization failures.
+                {
+                    Question = "",
+                    Option1 = "",
+                    Option2 = "",
+                    Option3 = "",
+                    Option4 = "",
+                    CorrectOptionNumber = 1,
+                },
+            };
+        }
+        catch (JsonException ex)
+        {
+            _logger.LogWarning("JSON deserialization failed: {JsonException}", ex.Message);
+            return (null, "Deserialization failed: " + ex.Message);
+        }
 
         if (question is null)
             return (null, "Deserialization failed. Please verify your request body.");
