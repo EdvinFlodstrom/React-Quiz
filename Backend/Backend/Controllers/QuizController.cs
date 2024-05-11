@@ -101,6 +101,39 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
         }
     }
 
+    [HttpGet("get/{questionId:int}")]
+    public async Task<ActionResult<FourOptionQuestionByIdDto>> GetQuestionById(int questionId)
+    {
+        if (questionId <= 0)
+            return BadRequest(BadRequestMessageTemplate);
+
+        try
+        {
+            GetQuestionByIdCommand command = new()
+            {
+                QuestionId = questionId,
+            };
+
+            var response = await _mediator.Send(command);
+
+            if (response.Success == true)
+                return Ok(response.Question);
+
+            if (response.Error is not null)
+            {
+                if (response.Error is ArgumentException)
+                    return NotFound(response.Error.Message);
+                return BadRequest(response.Error.Message);
+            }
+            return BadRequest(ErrorMessageTemplate);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, LogErrorMessageTemplate + "{Error}", ex.Message);
+            return StatusCode(500, ErrorMessageTemplate + ex.Message);
+        }
+    }
+
     [HttpPost("initialize")]
     public async Task<ActionResult<string>> InitializeQuiz([FromBody] InitializeQuizRequest request)
     {

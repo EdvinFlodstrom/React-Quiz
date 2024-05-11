@@ -11,6 +11,8 @@ public interface IQuizService
 
     GetQuestionCommandResponse GetQuestion(string playerName);
 
+    Task<GetQuestionByIdCommandResponse> GetQuestionById(int questionId);
+
     Task<InitializeQuizCommandResponse> InitializeQuiz(string playerName, int amountOfQuestions, string? questionType);
 
     GetManyQuestionsCommandResponse GetManyQuestions(int numberOfQuestions, string? questionType);

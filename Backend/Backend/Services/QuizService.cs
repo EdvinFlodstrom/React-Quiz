@@ -32,7 +32,7 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
                  .FirstOrDefault(ps => ps.Name == playerName);
 
             if (playerObject is null)
-                return new CheckAnswerCommandResponse
+                return new()
                 {
                     Message = null,
                     Success = false,
@@ -44,7 +44,7 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
                 .OrderBy(ps => ps.Order);
 
             if (!playerStatisticsQuestionList.Any())
-                return new CheckAnswerCommandResponse
+                return new()
                 {
                     Message = null,
                     Success = false,
@@ -67,7 +67,7 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
 
             await _quizDbContext.SaveChangesAsync();
 
-            return new CheckAnswerCommandResponse
+            return new()
             {
                 Message = message,
                 Correct = correct,
@@ -84,7 +84,7 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
                 ? "Database" : "Regular"
                 , ex.Message);
 
-            return new CheckAnswerCommandResponse
+            return new()
             {
                 Message = null,
                 Success = false,
@@ -133,7 +133,7 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
 
             var question = questionList.First();
 
-            return new GetQuestionCommandResponse
+            return new()
             {
                 Question = _mapper.Map<FourOptionQuestion, FourOptionQuestionDto>(question),
                 Details = null,
@@ -149,10 +149,48 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
                 ? "Database" : "Regular"
                 , ex.Message);
 
-            return new GetQuestionCommandResponse
+            return new()
             {
                 Question = null,
                 Details = null,
+                Success = false,
+                Error = ex,
+            };
+        }
+    }
+
+    public async Task<GetQuestionByIdCommandResponse> GetQuestionById(int questionId)
+    {
+        try
+        {
+            var question = await _quizDbContext.FourOptionQuestions.FindAsync(questionId);
+
+            if (question is null)
+                return new()
+                {
+                    Question = null,
+                    Success = false,
+                    Error = new ArgumentException("No question with the requested ID exists in the database."),
+                };
+
+            return new()
+            {
+                Question = _mapper.Map<FourOptionQuestion, FourOptionQuestionByIdDto>(question),
+                Success = true,
+                Error = null,
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(
+                LogWarningStringTemplate
+                , ex is DbUpdateException
+                ? "Database" : "Regular"
+                , ex.Message);
+
+            return new()
+            {
+                Question = null,
                 Success = false,
                 Error = ex,
             };
@@ -215,7 +253,7 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
 
             await _quizDbContext.SaveChangesAsync();
 
-            return new InitializeQuizCommandResponse
+            return new()
             {
                 Details = $"Quiz has been initialized successfully for player {playerName}",
                 Success = true,
@@ -230,7 +268,7 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
                 ? "Database" : "Regular"
                 , ex.Message);
 
-            return new InitializeQuizCommandResponse
+            return new()
             {
                 Details = null,
                 Success = false,
@@ -251,7 +289,7 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
                 );
 
             if (questions.FirstOrDefault() is null)
-                return new GetManyQuestionsCommandResponse
+                return new()
                 {
                     Questions = null,
                     Success = false,
@@ -277,7 +315,7 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
                 ? "Database" : "Regular"
                 , ex.Message);
 
-            return new GetManyQuestionsCommandResponse
+            return new()
             {
                 Questions = null,
                 Success = false,
@@ -297,7 +335,7 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
 
             if (existingQuestion is not null)
             {
-                return new CreateQuestionCommandResponse
+                return new()
                 {
                     Question = null,
                     Success = false,
@@ -317,7 +355,7 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
 
             await _quizDbContext.SaveChangesAsync();
 
-            return new CreateQuestionCommandResponse
+            return new()
             {
                 Question = _mapper.Map<FourOptionQuestionDto>(fourOptionQuestion),
                 Success = true,
@@ -332,7 +370,7 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
                 ? "Database" : "Regular"
                 , ex.Message);
 
-            return new CreateQuestionCommandResponse
+            return new()
             {
                 Question = null,
                 Success = false,
@@ -348,7 +386,7 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
             var question = _quizDbContext.FourOptionQuestions.Find(questionId);
 
             if (question is null)
-                return new PatchQuestionCommandResponse
+                return new()
                 {
                     Question = null,
                     Success = false,
@@ -367,7 +405,7 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
 
             await _quizDbContext.SaveChangesAsync();
 
-            return new PatchQuestionCommandResponse
+            return new()
             {
                 Question = question,
                 Success = true,
@@ -382,7 +420,7 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
                 ? "Database" : "Regular"
                 , ex.Message);
 
-            return new PatchQuestionCommandResponse
+            return new()
             {
                 Question = null,
                 Success = false,
@@ -398,7 +436,7 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
             var questionToRemove = _quizDbContext.FourOptionQuestions.Find(questionId);
 
             if (questionToRemove is null)
-                return new DeleteQuestionCommandResponse
+                return new()
                 {
                     Question = null,
                     Success = false,
@@ -410,7 +448,7 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
 
             await _quizDbContext.SaveChangesAsync();
 
-            return new DeleteQuestionCommandResponse
+            return new()
             {
                 Question = questionToRemove,
                 Success = true,
@@ -425,7 +463,7 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
                 ? "Database" : "Regular"
                 , ex.Message);
 
-            return new DeleteQuestionCommandResponse
+            return new()
             {
                 Question = null,
                 Success = false,

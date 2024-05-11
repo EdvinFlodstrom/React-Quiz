@@ -9,5 +9,7 @@ internal class MappingProfile : Profile
     public MappingProfile()
     {
         CreateMap<FourOptionQuestion, FourOptionQuestionDto>();
+ 
+        CreateMap<FourOptionQuestion, FourOptionQuestionByIdDto>();
     }
 }
