@@ -47,13 +47,19 @@ h3 {
 
 p {
     font-weight: bold;
-    font-size: 1.5rem;
+    font-size: 1.45vw;
     color: oklch(22.53% 0 0);
     text-shadow: 0.2rem 0.2rem 0.25rem oklch(16.68% 0 323.68 / 35%);
 }
 
 .error-message {
+    margin-inline: 1rem;
     color: oklch(59.79% 0.1929 28.91);
+}
+
+.success-message {
+    margin-inline: 1rem;
+    color: oklch(80% 0.138 147.18);
 }
 
 h1 span.slide-in {
@@ -81,7 +87,7 @@ h1 span.slide-in {
 .form-label {
     font-size: 1.1vw;
     display: block;
-    margin-block-end: 1rem;
+    margin-block-end: 0.25rem;
     font-weight: bold;
 }
 
@@ -101,6 +107,9 @@ h1 span.slide-in {
     }
     h3 {
         font-size: 0.9rem;
+    }
+    p {
+        font-size: 0.75rem;
     }
     .form-label {
         font-size: 0.9rem;

@@ -75,7 +75,7 @@ const QuestionForm = ({
                 />
             </label>
             <br />
-            <label htmlFor='questionType' className='form-label'>
+            <label htmlFor='correctOptionNumber' className='form-label'>
                 Correct option number:
                 <input
                     type='number'

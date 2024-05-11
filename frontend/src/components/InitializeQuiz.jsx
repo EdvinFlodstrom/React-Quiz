@@ -16,17 +16,16 @@ const InitializeQuiz = ({ adjustGradient }) => {
     const handleFormChange = (e) => {
         const { name, value } = e.target;
 
-        let updatedFormData;
         if (name === 'numberOfQuestions') {
             setNumberOfQuestions(value);
         }
 
-        updatedFormData = { ...formData, [name]: value };
+        const updatedFormData = { ...formData, [name]: value };
         setFormData(updatedFormData);
-        setInitializeQuizButtonDisabled(FormInputIsInvalid(updatedFormData));
+        setInitializeQuizButtonDisabled(formInputIsInvalid(updatedFormData));
     };
 
-    function FormInputIsInvalid(updatedFormData) {
+    function formInputIsInvalid(updatedFormData) {
         const name = updatedFormData.name;
         const numberOfQuestions = updatedFormData.numberOfQuestions;
 
@@ -65,7 +64,7 @@ const InitializeQuiz = ({ adjustGradient }) => {
             }
         } catch (exception) {
             setErrorMessage(exception.message);
-            console.error('Failed to initialize quiz:', exception.message);
+            console.error('An error occured:', exception.message);
         }
     };
 
@@ -97,7 +96,7 @@ const InitializeQuiz = ({ adjustGradient }) => {
                         <label
                             htmlFor='numberOfQuestions'
                             className='form-label'>
-                            Number of Questions (between 2 and 30):
+                            Number of Questions (2-30):
                             <input
                                 type='number'
                                 name='numberOfQuestions'
