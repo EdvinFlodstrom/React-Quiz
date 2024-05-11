@@ -807,6 +807,92 @@ public class QuizControllerTests
     }
 
     [TestMethod]
+    public async Task GetQuestionById_Should_Return_FourOptionQuestionByIdDto()
+    {
+        // Arrange
+        int questionId = 4;
+
+        GetQuestionByIdCommandResponse commandResponse = new()
+        {
+            Question = new()
+            {
+                Question = "What is Eyjafjallajökull?",
+                Option1 = "A glacier in Norway",
+                Option2 = "A volcano on Iceland",
+                Option3 = "A crater in China",
+                Option4 = "A city in Greenland",
+                CorrectOptionNumber = 2,
+            },
+            Success = true,
+            Error = null,
+        };
+
+        _mediatorMock.Setup(m => m.Send(It.IsAny<GetQuestionByIdCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(commandResponse);
+
+        // Act
+        var response = await _controller.GetQuestionById(questionId);
+        ResetAllMocks();
+
+        // Assert
+        response.Should().NotBeNull();
+        response.Result.Should().NotBeNull();
+
+        ObjectResult objectResult = (ObjectResult)response.Result!;
+        objectResult.StatusCode.Should().Be(200);
+        objectResult.Value.Should().NotBeNull();
+
+        FourOptionQuestionByIdDto question = (FourOptionQuestionByIdDto)objectResult.Value!;
+        question.Question.Should().Be("What is Eyjafjallajökull?");
+        question.Option1.Should().Be("A glacier in Norway");
+        question.Option2.Should().Be("A volcano on Iceland");
+        question.Option3.Should().Be("A crater in China");
+        question.Option4.Should().Be("A city in Greenland");
+        question.CorrectOptionNumber.Should().Be(2);
+    }
+
+    [TestMethod]
+    public async Task GetQuestionById_QuestionIdNotFound_Should_Return_NotFound()
+    {
+        // Arrange
+        int questionId = 1337;
+
+        GetQuestionByIdCommandResponse commandResponse = new()
+        {
+            Question = null,
+            Success = false,
+            Error = new ArgumentException("No question with the requested ID exists in the database."),
+        };
+
+        _mediatorMock.Setup(m => m.Send(It.IsAny<GetQuestionByIdCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(commandResponse);
+
+        // Act
+        var response = await _controller.GetQuestionById(questionId);
+        ResetAllMocks();
+
+        // Assert
+        response.Should().NotBeNull();
+        response.Result.Should().NotBeNull();
+        response.Result.Should().BeOfType<NotFoundObjectResult>();
+    }
+
+    [TestMethod]
+    public async Task GetQuestionById_QuestionIdInvalid_Should_Return_BadRequest()
+    {
+        // Arrange
+        int questionId = -1337;
+
+        // Act
+        var response = await _controller.GetQuestionById(questionId);
+
+        // Assert
+        response.Should().NotBeNull();
+        response.Result.Should().NotBeNull();
+        response.Result.Should().BeOfType<BadRequestObjectResult>();
+    }
+
+    [TestMethod]
     public async Task CheckAnswer_Should_Return_CheckAnswerResponse()
     {
         // Arrange

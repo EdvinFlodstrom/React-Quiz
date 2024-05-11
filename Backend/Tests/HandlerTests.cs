@@ -582,6 +582,89 @@ public class HandlerTests
     }
 
     [TestMethod]
+    public async Task GetQuestionById_Should_Return_Response()
+    {
+        // Arrange
+        GetQuestionByIdCommand getQuestionByIdCommand = new()
+        {
+            QuestionId = 4,
+        };
+
+        GetQuestionByIdCommandResponse getQuestionByIdCommandResponse = new()
+        {
+            Question = new()
+            {
+                Question = "What is Eyjafjallajökull?",
+                Option1 = "A glacier in Norway",
+                Option2 = "A volcano on Iceland",
+                Option3 = "A crater in China",
+                Option4 = "A city in Greenland",
+                CorrectOptionNumber = 2,
+            },
+            Success = true,
+            Error = null,
+        };
+
+        _serviceMock.Setup(s => s.GetQuestionById(It.IsAny<int>()))
+            .ReturnsAsync(getQuestionByIdCommandResponse);
+
+        GetQuestionByIdCommandHandler handler = new(_serviceMock.Object);
+
+        // Act
+        var response = await handler.Handle(getQuestionByIdCommand, CancellationToken.None);
+        _serviceMock.Reset();
+
+        // Assert
+        response.Should().NotBeNull();
+        response.Question.Should().NotBeNull();
+        response.Success.Should().BeTrue();
+        response.Error.Should().BeNull();
+
+        FourOptionQuestionByIdDto question = response.Question!;
+        question.Question.Should().Be("What is Eyjafjallajökull?");
+        question.Option1.Should().Be("A glacier in Norway");
+        question.Option2.Should().Be("A volcano on Iceland");
+        question.Option3.Should().Be("A crater in China");
+        question.Option4.Should().Be("A city in Greenland");
+        question.CorrectOptionNumber.Should().Be(2);
+    }
+
+    [TestMethod]
+    public async Task GetQuestionById_QuestionIdNotFound_Should_Return_ResponseFalse()
+    {
+        // Arrange
+        GetQuestionByIdCommand getQuestionByIdCommand = new()
+        {
+            QuestionId = 1337,
+        };
+
+        GetQuestionByIdCommandResponse getQuestionByIdCommandResponse = new()
+        {
+            Question = null,
+            Success = false,
+            Error = new ArgumentException("No question with the requested ID exists in the database."),
+        };
+
+        _serviceMock.Setup(s => s.GetQuestionById(It.IsAny<int>()))
+            .ReturnsAsync(getQuestionByIdCommandResponse);
+
+        GetQuestionByIdCommandHandler handler = new(_serviceMock.Object);
+
+        // Act
+        var response = await handler.Handle(getQuestionByIdCommand, CancellationToken.None);
+        _serviceMock.Reset();
+
+        // Assert
+        response.Should().NotBeNull();
+        response.Question.Should().BeNull();
+        response.Success.Should().BeFalse();
+        response.Error.Should().NotBeNull();
+
+        Exception error = response.Error!;
+        error.Message.Should().Be("No question with the requested ID exists in the database.");
+    }
+
+    [TestMethod]
     public async Task CheckAnswerCommand_QuestionsLeft_Should_Return_Response()
     {
         // Arrange

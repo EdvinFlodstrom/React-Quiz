@@ -812,6 +812,74 @@ public class QuizServiceTests
     }
 
     [TestMethod]
+    public async Task GetQuestionById_Should_Return_GetQuestionByIdCommandResponse()
+    {
+        // Arrange
+        _context.FourOptionQuestions.Add(new GeographyQuestion()
+        {
+            Id = 1,
+            Question = "What is Eyjafjallajökull?",
+            Option1 = "A glacier in Norway",
+            Option2 = "A volcano on Iceland",
+            Option3 = "A crater in China",
+            Option4 = "A city in Greenland",
+            CorrectOptionNumber = 2,
+        });
+
+        FourOptionQuestionByIdDto fourOptionQuestionByIdDto = new()
+        {
+            Question = "What is Eyjafjallajökull?",
+            Option1 = "A glacier in Norway",
+            Option2 = "A volcano on Iceland",
+            Option3 = "A crater in China",
+            Option4 = "A city in Greenland",
+            CorrectOptionNumber = 2,
+        };
+
+        int questionId = 1;
+
+        _mapperMock.Setup(m => m.Map<FourOptionQuestion, FourOptionQuestionByIdDto>(It.IsAny<FourOptionQuestion>()))
+            .Returns(fourOptionQuestionByIdDto);
+
+        // Act
+        var response = await _service.GetQuestionById(questionId);
+        _mapperMock.Reset();
+
+        // Assert
+        response.Should().NotBeNull();
+        response.Question.Should().NotBeNull();
+        response.Success.Should().BeTrue();
+        response.Error.Should().BeNull();
+
+        FourOptionQuestionByIdDto question = response.Question!;
+        question.Question.Should().Be("What is Eyjafjallajökull?");
+        question.Option1.Should().Be("A glacier in Norway");
+        question.Option2.Should().Be("A volcano on Iceland");
+        question.Option3.Should().Be("A crater in China");
+        question.Option4.Should().Be("A city in Greenland");
+        question.CorrectOptionNumber.Should().Be(2);
+    }
+
+    [TestMethod]
+    public async Task GetQuestionById_QuestionNotFound_Should_Return_GetQuestionByIdCommandResponseFalse()
+    {
+        // Arrange
+        int questionId = 1337;
+
+        // Act
+        var response = await _service.GetQuestionById(questionId);
+
+        // Assert
+        response.Should().NotBeNull();
+        response.Question.Should().BeNull();
+        response.Success.Should().BeFalse();
+        response.Error.Should().NotBeNull();
+
+        Exception error = response.Error!;
+        error.Message.Should().Be("No question with the requested ID exists in the database.");
+    }
+
+    [TestMethod]
     public async Task CheckAnswer_ExistingPlayer_HasQuestionsLeft_CorrectAnswer_Should_Return_CheckAnswerCommandResponse()
     {
         // Arrange
