@@ -65,8 +65,6 @@ const CreateQuestion = ({ adjustGradient }) => {
     const handleFormSubmit = async (e) => {
         e.preventDefault();
 
-        console.log(formData.correctOptionNumber === 2);
-
         try {
             const response = await fetch(
                 `https://localhost:7030/api/quiz/create/${formData.questionType}`,
