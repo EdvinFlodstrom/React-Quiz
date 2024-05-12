@@ -355,3 +355,7 @@ Hm, so I've been considering for a bit now how to implement the question modific
 Hm, no. I'm probably doing it wrong, but test-driven development doesn't seem like my cup of tea. Mostly because I'm getting errors because I haven't yet created the classes, which I assume it's actually the intended development way. Oh well.
 
 Alright, the tests are now up and running. What was it I added, like 7 tests I think? Nothing too crazy, because the endpoint is rather simple. Either a quesiton exists or it doesn't. Not too much can happen in between that.
+
+2024-05-12
+-----------
+Hm, so I don't have much time today. But I've successfully created one more little component, `GetQuestionByIdForm.jsx`. I'll use it for fetching a question when modifying questions or deleting them. So that people can verify that "hm, this is the one I want to remove, yes" before unknowingly annihilating the wrong one. Next up, which will be tomorrow (maybe later today, but probably not) is to move some logic from `CreateQuestion.jsx` to a new component. This is to keep the project DRY. I *can* copy paste a lot of the code, but it hurts to do so. Even though it's frontend, I'd rather try not to make it too ugly. It's React, after all. Might as well use component functionality and compatibility as much as I can.
