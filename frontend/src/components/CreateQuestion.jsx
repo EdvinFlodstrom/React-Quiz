@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { formInputIsInvalid } from '../utils/createOrModifyQuestionUtils';
 import QuestionForm from './QuestionForm';
 
 const CreateQuestion = ({ adjustGradient }) => {
@@ -32,35 +33,6 @@ const CreateQuestion = ({ adjustGradient }) => {
         setFormData(updatedFormData);
         setCreateQuestionButtonDisabled(formInputIsInvalid(updatedFormData));
     };
-
-    function propertiesAreValid(...properties) {
-        return properties.every(
-            (property) =>
-                property !== undefined && property !== null && property !== ''
-        );
-    }
-
-    function formInputIsInvalid(updatedFormData) {
-        if (
-            !propertiesAreValid(
-                updatedFormData.questionType,
-                updatedFormData.question,
-                updatedFormData.option1,
-                updatedFormData.option2,
-                updatedFormData.option3,
-                updatedFormData.option4
-            )
-        )
-            return true;
-
-        if (
-            updatedFormData.correctOptionNumber < 1 ||
-            updatedFormData.correctOptionNumber > 4
-        )
-            return true;
-
-        return false;
-    }
 
     const handleFormSubmit = async (e) => {
         e.preventDefault();
