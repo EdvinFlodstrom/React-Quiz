@@ -310,8 +310,8 @@ public class HandlerTests
 
         GetManyQuestionsCommandResponse getManyQuestionsCommandResponse = new()
         {
-            Questions = new List<FourOptionQuestion>
-        {
+            Questions =
+        [
             new GeographyQuestion()
             {
                 Question = "What is Eyjafjallajökull?",
@@ -321,7 +321,7 @@ public class HandlerTests
                 Option4 = "A city in Greenland",
                 CorrectOptionNumber = 2,
             },
-        },
+        ],
             Success = true,
             Error = null,
         };
@@ -594,6 +594,7 @@ public class HandlerTests
         {
             Question = new()
             {
+                QuestionType = "Geography",
                 Question = "What is Eyjafjallajökull?",
                 Option1 = "A glacier in Norway",
                 Option2 = "A volcano on Iceland",

@@ -816,6 +816,7 @@ public class QuizControllerTests
         {
             Question = new()
             {
+                QuestionType = "Geography",
                 Question = "What is Eyjafjallajökull?",
                 Option1 = "A glacier in Norway",
                 Option2 = "A volcano on Iceland",

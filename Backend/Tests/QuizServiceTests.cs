@@ -826,8 +826,11 @@ public class QuizServiceTests
             CorrectOptionNumber = 2,
         });
 
+        await _context.SaveChangesAsync();
+
         FourOptionQuestionByIdDto fourOptionQuestionByIdDto = new()
         {
+            QuestionType = "Geography",
             Question = "What is Eyjafjallajökull?",
             Option1 = "A glacier in Norway",
             Option2 = "A volcano on Iceland",
@@ -852,6 +855,7 @@ public class QuizServiceTests
         response.Error.Should().BeNull();
 
         FourOptionQuestionByIdDto question = response.Question!;
+        question.QuestionType.Should().Be("Geography");
         question.Question.Should().Be("What is Eyjafjallajökull?");
         question.Option1.Should().Be("A glacier in Norway");
         question.Option2.Should().Be("A volcano on Iceland");
