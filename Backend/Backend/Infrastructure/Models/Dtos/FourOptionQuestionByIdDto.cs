@@ -2,6 +2,8 @@
 
 public class FourOptionQuestionByIdDto
 {
+    public required string QuestionType { get; set; }
+
     public required string Question { get; set; }
 
     public required string Option1 { get; set; }

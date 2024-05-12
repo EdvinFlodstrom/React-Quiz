@@ -163,9 +163,15 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
     {
         try
         {
-            var question = await _quizDbContext.FourOptionQuestions.FindAsync(questionId);
+            var question = await _quizDbContext.FourOptionQuestions
+                .Where(q => q.Id == questionId)
+                .Select(q => new {
+                    Question = q,
+                    QuestionType = EF.Property<string>(q, "QuestionType")
+                })
+                .FirstOrDefaultAsync();
 
-            if (question is null)
+            if (question is null || question.Question is null)
                 return new()
                 {
                     Question = null,
@@ -173,9 +179,14 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
                     Error = new ArgumentException("No question with the requested ID exists in the database."),
                 };
 
+            ArgumentException.ThrowIfNullOrWhiteSpace(question.QuestionType);
+
+            FourOptionQuestionByIdDto questionWithType = _mapper.Map<FourOptionQuestion, FourOptionQuestionByIdDto>(question.Question);
+            questionWithType.QuestionType = question.QuestionType;
+
             return new()
             {
-                Question = _mapper.Map<FourOptionQuestion, FourOptionQuestionByIdDto>(question),
+                Question = questionWithType,
                 Success = true,
                 Error = null,
             };
