@@ -6,8 +6,13 @@ import QuestionForm from './QuestionForm';
 const ModifyQuestion = ({ adjustGradient }) => {
     const [getQuestionByIdButtonDisabled, setGetQuestionByIdButtonDisabled] =
         useState(true);
-    const [questionId, setQuestionId] = useState('');
+    const [questionId, setQuestionId] = useState(0);
     const [getQuestionMessageAndState, setGetQuestionMessageAndState] =
+        useState({
+            success: true,
+            message: '',
+        });
+    const [modifyQuestionMessageAndState, setModifyQuestionMessageAndState] =
         useState({
             success: true,
             message: '',
@@ -32,6 +37,7 @@ const ModifyQuestion = ({ adjustGradient }) => {
 
         setQuestionId(intValue);
         setGetQuestionByIdButtonDisabled(intValue <= 0);
+        setModifyQuestionButtonDisabled(!(intValue > 0));
     };
 
     const handleGetQuestion = async (e) => {
@@ -54,7 +60,9 @@ const ModifyQuestion = ({ adjustGradient }) => {
                     success: true,
                     message: 'Sucesss!',
                 });
+
                 const deserializedResponse = await response.json();
+
                 setFormData({
                     questionType: deserializedResponse.questionType,
                     question: deserializedResponse.question,
@@ -65,6 +73,9 @@ const ModifyQuestion = ({ adjustGradient }) => {
                     correctOptionNumber:
                         deserializedResponse.correctOptionNumber,
                 });
+                setCorrectOptionNumber(
+                    deserializedResponse.correctOptionNumber
+                );
             } else {
                 const error = await response.text();
                 setGetQuestionMessageAndState({
@@ -93,11 +104,54 @@ const ModifyQuestion = ({ adjustGradient }) => {
         const updatedFormData = { ...formData, [name]: newValue };
 
         setFormData(updatedFormData);
-        setModifyQuestionButtonDisabled(formInputIsInvalid(updatedFormData));
+        setModifyQuestionButtonDisabled(
+            formInputIsInvalid(updatedFormData) || !(questionId > 0)
+        );
     };
 
     const handleFormSubmit = async (e) => {
         e.preventDefault();
+
+        try {
+            const response = await fetch(
+                `https://localhost:7030/api/quiz/patch/${questionId}`,
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        question: formData.question,
+                        option1: formData.option1,
+                        option2: formData.option2,
+                        option3: formData.option3,
+                        option4: formData.option4,
+                        correctOptionNumber: formData.correctOptionNumber,
+                    }),
+                }
+            );
+
+            if (response.ok) {
+                adjustGradient();
+                setModifyQuestionMessageAndState({
+                    success: true,
+                    message: 'Success!',
+                });
+            } else {
+                const error = await response.text();
+                setModifyQuestionMessageAndState({
+                    success: false,
+                    message: error,
+                });
+                console.error('Failed to modify question:', error);
+            }
+        } catch (exception) {
+            setModifyQuestionMessageAndState({
+                success: false,
+                message: exception.message,
+            });
+            console.error('An error occured:', exception.message);
+        }
     };
 
     return (
@@ -133,6 +187,15 @@ const ModifyQuestion = ({ adjustGradient }) => {
                 correctOptionNumber={correctOptionNumber}
                 isModifyingQuestion={true}
             />
+
+            <p
+                className={
+                    modifyQuestionMessageAndState.success
+                        ? 'success-message'
+                        : 'error-message'
+                }>
+                {modifyQuestionMessageAndState.message}
+            </p>
         </>
     );
 };
