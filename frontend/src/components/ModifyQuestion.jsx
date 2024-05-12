@@ -1,11 +1,12 @@
 import { useState } from 'react';
+import { formInputIsInvalid } from '../utils/createOrModifyQuestionUtils';
 import GetQuestionByIdForm from './GetQuestionByIdForm';
 import QuestionForm from './QuestionForm';
 
 const ModifyQuestion = ({ adjustGradient }) => {
     const [getQuestionByIdButtonDisabled, setGetQuestionByIdButtonDisabled] =
         useState(true);
-    const [questionId, setQuestionId] = useState(0);
+    const [questionId, setQuestionId] = useState('');
     const [getQuestionMessageAndState, setGetQuestionMessageAndState] =
         useState({
             success: true,
@@ -54,12 +55,16 @@ const ModifyQuestion = ({ adjustGradient }) => {
                     message: 'Sucesss!',
                 });
                 const deserializedResponse = await response.json();
-                console.log(deserializedResponse.question);
-                console.log(deserializedResponse.option1);
-                console.log(deserializedResponse.option2);
-                console.log(deserializedResponse.option3);
-                console.log(deserializedResponse.option4);
-                console.log(deserializedResponse.correctOptionNumber);
+                setFormData({
+                    questionType: deserializedResponse.questionType,
+                    question: deserializedResponse.question,
+                    option1: deserializedResponse.option1,
+                    option2: deserializedResponse.option2,
+                    option3: deserializedResponse.option3,
+                    option4: deserializedResponse.option4,
+                    correctOptionNumber:
+                        deserializedResponse.correctOptionNumber,
+                });
             } else {
                 const error = await response.text();
                 setGetQuestionMessageAndState({
@@ -77,7 +82,19 @@ const ModifyQuestion = ({ adjustGradient }) => {
         }
     };
 
-    const handleFormChange = () => {};
+    const handleFormChange = (e) => {
+        const { name, value } = e.target;
+
+        let newValue = value;
+        if (name === 'correctOptionNumber') {
+            newValue = Number(newValue);
+            setCorrectOptionNumber(newValue);
+        }
+        const updatedFormData = { ...formData, [name]: newValue };
+
+        setFormData(updatedFormData);
+        setModifyQuestionButtonDisabled(formInputIsInvalid(updatedFormData));
+    };
 
     const handleFormSubmit = async (e) => {
         e.preventDefault();
