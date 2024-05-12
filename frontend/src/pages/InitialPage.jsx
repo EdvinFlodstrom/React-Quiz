@@ -3,6 +3,7 @@ import Instructions from '../components/Instructions';
 import InitializeQuiz from '../components/InitializeQuiz';
 import CreateQuestion from '../components/CreateQuestion';
 import ModifyQuestion from '../components/ModifyQuestion';
+import DeleteQuestion from '../components/DeleteQuestion';
 import '../styles/buttons.css';
 import '../styles/initialPage.css';
 
@@ -61,6 +62,19 @@ const InitialPage = () => {
                                 AdjustGradient();
                             }}>
                             Modify Question
+                        </button>
+
+                        <button
+                            className='button delete-question-button'
+                            onClick={() => {
+                                setComponentToShow(
+                                    <DeleteQuestion
+                                        adjustGradient={AdjustGradient}
+                                    />
+                                );
+                                AdjustGradient();
+                            }}>
+                            Delete Question
                         </button>
                     </div>
                 </>
