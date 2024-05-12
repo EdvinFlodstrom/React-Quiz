@@ -54,7 +54,7 @@ p {
 
 .error-message {
     margin-inline: 1rem;
-    color: oklch(59.79% 0.1929 28.91);
+    color: oklch(72.79% 0.1929 28.91);
 }
 
 .success-message {
@@ -79,8 +79,7 @@ h1 span.slide-in {
 
 .form-container {
     margin-inline: 1rem;
-    width: 25vw;
-    max-width: 20vw;
+    width: 30vw;
     min-width: 10rem;
 }
 
