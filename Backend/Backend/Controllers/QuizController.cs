@@ -297,7 +297,7 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
     private (FourOptionQuestion? fourOptionQuestion, string? message) DeserializeAndReturnQuestion(string questionType, JsonElement fourOptionQuestionJson)
     {
         FourOptionQuestion? question = null;
-        
+
         try
         {
             question = questionType.ToLower() switch

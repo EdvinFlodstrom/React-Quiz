@@ -344,7 +344,7 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
             }
 
             var floatingId = _quizDbContext.FloatingIds.FirstOrDefault();
-            
+
             // If no IDs of deleted questions are present, count the number of questions and assign that + 1 as the ID.
             fourOptionQuestion.Id = floatingId is not null ? floatingId.Id : await _quizDbContext.FourOptionQuestions.CountAsync() + 1;
 
