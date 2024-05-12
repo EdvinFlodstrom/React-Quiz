@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Instructions from '../components/Instructions';
 import InitializeQuiz from '../components/InitializeQuiz';
 import CreateQuestion from '../components/CreateQuestion';
+import ModifyQuestion from '../components/ModifyQuestion';
 import '../styles/buttons.css';
 import '../styles/initialPage.css';
 
@@ -47,6 +48,19 @@ const InitialPage = () => {
                                 AdjustGradient();
                             }}>
                             Create Question
+                        </button>
+
+                        <button
+                            className='button modify-question-button'
+                            onClick={() => {
+                                setComponentToShow(
+                                    <ModifyQuestion
+                                        adjustGradient={AdjustGradient}
+                                    />
+                                );
+                                AdjustGradient();
+                            }}>
+                            Modify Question
                         </button>
                     </div>
                 </>
