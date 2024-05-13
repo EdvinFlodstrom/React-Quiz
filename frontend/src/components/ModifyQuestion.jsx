@@ -37,7 +37,7 @@ const ModifyQuestion = ({ adjustGradient }) => {
 
         setQuestionId(intValue);
         setGetQuestionByIdButtonDisabled(intValue <= 0);
-        setModifyQuestionButtonDisabled(!(intValue > 0));
+        setModifyQuestionButtonDisabled(intValue <= 0);
     };
 
     const handleGetQuestion = async (e) => {
@@ -105,7 +105,7 @@ const ModifyQuestion = ({ adjustGradient }) => {
 
         setFormData(updatedFormData);
         setModifyQuestionButtonDisabled(
-            formInputIsInvalid(updatedFormData) || !(questionId > 0)
+            formInputIsInvalid(updatedFormData) || questionId <= 0
         );
     };
 
