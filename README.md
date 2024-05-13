@@ -369,3 +369,33 @@ Also, sidenote, I feel inclined to document here that I learned about an interes
 Right, the component is now up and fully functional (I think?). All seems to work just as I'd hoped. First, you enter an ID (1 or above), and click 'Get Question'. That question is fetched from the SQLite database, and all its content is displayed in the HTML form below. Then, you can freely change anything in that form (except for the question type - that one is locked), and click 'Update Question'. 
 
 While writing the above, I realized something. What if you delete the ID before clicking 'Update Question'? Answer: The request fails. Obviously. So, I fixed that by slapping some extra `!(questionId > 0)` checks at the places in the code where I enable/disable the button in question. And now it works, so I think that's the `ModifyQuestion` component done? All that is left to do now is to add the DELETE endpoint and potentially add some extra CSS to make things look even more spicy.
+
+2024-05-13
+-----------
+Another quick backend detour later, and I've now refactored the method that deserializes the JSON related to creating a question. Previously, I had a switch statement for every question type (10 cases, 11 counting the default for invalid question type). Not very good. So, today I learned about `Type type = Type.GetType(string className)`. I feel like I recall doing something similar, long ago... Anyhow, this I wanted to use to translate the string `questionType` into a question data type to use for deserialization. Eleminates the need for the switch statement. I struggled a little bit with this, because `GetType` was returning null. I figured it would be a somewhat finicky method to use, and I wasn't completely wrong. It wasn't *quite* as straightforward as one may or may not expect. Anyway, directly supplying the class name like this: 
+
+```cs
+Type type = Type.GetType(questionType)!;
+```
+
+Did not work. `type` was null. Instead, I provided the path to the correct class, like this:
+
+```cs
+Type type = Type.GetType("Backend.Infrastructure.Models.Entities.QuestionTypes." + questionType)!;
+```
+
+And just like that, it worked. I could then use `type` like this:
+
+```cs
+FourOptionQuestion? question = (FourOptionQuestion?)JsonSerializer.Deserialize(fourOptionQuestionJson, type, _serializerOptions);
+```
+
+To get a question of the correct question type. Question is not allowed to be an instance of `FourOptionQuestion` - it's an abstract class. Instead, the question type has to be of a real question type, all of which inherit from `FourOptionQuestion`. I haven't actually tested what happens if the user decides it's time for a little trolling and supplies a question type of `FourOption`. Cause that will result in a question type `FourOptionQuestion`. Looks familar?
+
+To answer the above question that likely no one but me asked: `Invalid question type. Please verify that you chose a valid question type.` When formatting `questionType` to fit a question type, I'm doing the following:
+
+```cs
+questionType = textInfo.ToTitleCase(questionType) + "Question";
+```
+
+This works well enough. A `questionType` of 'FourOption' becomes 'Fouroption'. So that's why `type` is null - 'FouroptionQuestion' doesn't match 'FourOptionQuestion' (notice the non-capitalized 'O' in 'Option', in the former). And, this means that this solution will *only* work for question types that are one word long. It won't work with a name like `VerySpecialQuestion`, so that's worth keeping note of. But it works for the classes I have, where the names are something like `GeographyQuestion`, `LiteratureQuestion`, etc. Also, for once, the tests didn't break. So that's nice, and as a bonus, frontend question creation still works. I'd almost be more impressed if it didn't, but eh, you never know.
