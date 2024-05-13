@@ -165,7 +165,8 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
         {
             var question = await _quizDbContext.FourOptionQuestions
                 .Where(q => q.Id == questionId)
-                .Select(q => new {
+                .Select(q => new
+                {
                     Question = q,
                     QuestionType = EF.Property<string>(q, "QuestionType")
                 })

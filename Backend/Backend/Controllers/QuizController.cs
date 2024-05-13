@@ -2,12 +2,12 @@
 using Backend.Handlers.Quiz;
 using Backend.Infrastructure.Models.Dtos;
 using Backend.Infrastructure.Models.Entities;
-using Backend.Infrastructure.Models.Entities.QuestionTypes;
 using Backend.Infrastructure.Models.Requests;
 using Backend.Infrastructure.Models.Responses;
 using Backend.Infrastructure.Validation.ValidatorFactory;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 using System.Text.Json;
 
 namespace Backend.Controllers;
@@ -23,7 +23,6 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
 
     private const string BadRequestMessageTemplate = "Invalid request data: ";
     private const string ErrorMessageTemplate = "An unexpected error occured: ";
-    private const string LogErrorMessageTemplate = "An unexpected error occured: ";
 
     [HttpPost("answer")]
     public async Task<ActionResult<CheckAnswerResponse>> CheckAnswer([FromBody] CheckAnswerRequest request)
@@ -59,7 +58,7 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, LogErrorMessageTemplate + "{Error}", ex.Message);
+            _logger.LogError(ex, ErrorMessageTemplate + "{Error}", ex.Message);
             return StatusCode(500, ErrorMessageTemplate + ex.Message);
         }
     }
@@ -96,7 +95,7 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, LogErrorMessageTemplate + "{Error}", ex.Message);
+            _logger.LogError(ex, ErrorMessageTemplate + "{Error}", ex.Message);
             return StatusCode(500, ex + ErrorMessageTemplate + ex.Message);
         }
     }
@@ -129,7 +128,7 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, LogErrorMessageTemplate + "{Error}", ex.Message);
+            _logger.LogError(ex, ErrorMessageTemplate + "{Error}", ex.Message);
             return StatusCode(500, ErrorMessageTemplate + ex.Message);
         }
     }
@@ -164,7 +163,7 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, LogErrorMessageTemplate + "{Error}", ex.Message);
+            _logger.LogError(ex, ErrorMessageTemplate + "{Error}", ex.Message);
             return StatusCode(500, ErrorMessageTemplate + ex.Message);
         }
     }
@@ -191,7 +190,7 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, LogErrorMessageTemplate + "{Error}", ex.Message);
+            _logger.LogError(ex, ErrorMessageTemplate + "{Error}", ex.Message);
             return StatusCode(500, ErrorMessageTemplate + ex.Message);
         }
     }
@@ -232,7 +231,7 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, LogErrorMessageTemplate + "{Error}", ex.Message);
+            _logger.LogError(ex, ErrorMessageTemplate + "{Error}", ex.Message);
             return StatusCode(500, ErrorMessageTemplate + ex.Message);
         }
     }
@@ -266,7 +265,7 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, LogErrorMessageTemplate + "{Error}", ex.Message);
+            _logger.LogError(ex, ErrorMessageTemplate + "{Error}", ex.Message);
             return StatusCode(500, ErrorMessageTemplate + ex.Message);
         }
     }
@@ -289,62 +288,43 @@ public class QuizController(IMediator mediator, JsonSerializerOptions jsonSerial
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, LogErrorMessageTemplate + "{Error}", ex.Message);
+            _logger.LogError(ex, ErrorMessageTemplate + "{Error}", ex.Message);
             return StatusCode(500, ErrorMessageTemplate + ex.Message);
         }
     }
 
     private (FourOptionQuestion? fourOptionQuestion, string? message) DeserializeAndReturnQuestion(string questionType, JsonElement fourOptionQuestionJson)
     {
-        FourOptionQuestion? question = null;
-
         try
         {
-            question = questionType.ToLower() switch
-            {
-                "chemistry" => JsonSerializer.Deserialize<ChemistryQuestion>(fourOptionQuestionJson, _serializerOptions),
+            TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
+            questionType = textInfo.ToTitleCase(questionType) + "Question";
 
-                "food" => JsonSerializer.Deserialize<FoodQuestion>(fourOptionQuestionJson, _serializerOptions),
+            if (questionType is null)
+                return (null, "Error while deserializing data.");
 
-                "game" => JsonSerializer.Deserialize<GameQuestion>(fourOptionQuestionJson, _serializerOptions),
+            Type type = Type.GetType("Backend.Infrastructure.Models.Entities.QuestionTypes." + questionType)!;
 
-                "geography" => JsonSerializer.Deserialize<GeographyQuestion>(fourOptionQuestionJson, _serializerOptions),
+            if (type is null)
+                return (null, "Invalid question type. Please verify that you chose a valid question type.");
 
-                "history" => JsonSerializer.Deserialize<HistoryQuestion>(fourOptionQuestionJson, _serializerOptions),
+            FourOptionQuestion? question = (FourOptionQuestion?)JsonSerializer.Deserialize(fourOptionQuestionJson, type, _serializerOptions);
 
-                "literature" => JsonSerializer.Deserialize<LiteratureQuestion>(fourOptionQuestionJson, _serializerOptions),
-
-                "math" => JsonSerializer.Deserialize<MathQuestion>(fourOptionQuestionJson, _serializerOptions),
-
-                "music" => JsonSerializer.Deserialize<MusicQuestion>(fourOptionQuestionJson, _serializerOptions),
-
-                "sports" => JsonSerializer.Deserialize<SportsQuestion>(fourOptionQuestionJson, _serializerOptions),
-
-                "technology" => JsonSerializer.Deserialize<TechnologyQuestion>(fourOptionQuestionJson, _serializerOptions),
-
-                _ => new InvalidQuestionType // Use only to differentiate from JSON deserialization failures.
-                {
-                    Question = "",
-                    Option1 = "",
-                    Option2 = "",
-                    Option3 = "",
-                    Option4 = "",
-                    CorrectOptionNumber = 1,
-                },
-            };
+            if (question is null)
+                return (null, "Deserialization failed. Please verify your request body.");
+            else
+                return (question, null);
         }
         catch (JsonException ex)
         {
             _logger.LogWarning("JSON deserialization failed: {JsonException}", ex.Message);
             return (null, "Deserialization failed: " + ex.Message);
         }
-
-        if (question is null)
-            return (null, "Deserialization failed. Please verify your request body.");
-        else if (question is InvalidQuestionType)
-            return (null, "Invalid question type. Please verify that you chose a valid question type.");
-        else
-            return (question, null);
+        catch (Exception ex)
+        {
+            _logger.LogError(ErrorMessageTemplate + "{Error}", ex.Message);
+            return (null, ErrorMessageTemplate + ex.Message);
+        }
     }
 
     private (bool success, string? validationMessage) ValidateRequestAndLogErrors<T>(T instance)
