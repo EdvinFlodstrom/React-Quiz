@@ -58,8 +58,8 @@ public class QuizServiceTests
         GeographyQuestion geographyQuestion = new()
         {
             Question = "What is Eyjafjallajökull?",
-            Option1 = "A glacier in Norway",
-            Option2 = "A volcano on Iceland",
+            Option1 = "A mountain range in Norway",
+            Option2 = "A glacier in Iceland",
             Option3 = "A crater in China",
             Option4 = "A city in Greenland",
             CorrectOptionNumber = 2,
@@ -68,8 +68,8 @@ public class QuizServiceTests
         FourOptionQuestionDto fourOptionQuestionDto = new()
         {
             Question = "What is Eyjafjallajökull?",
-            Option1 = "A glacier in Norway",
-            Option2 = "A volcano on Iceland",
+            Option1 = "A mountain range in Norway",
+            Option2 = "A glacier in Iceland",
             Option3 = "A crater in China",
             Option4 = "A city in Greenland",
         };
@@ -89,8 +89,8 @@ public class QuizServiceTests
 
         FourOptionQuestionDto question = response.Question!;
         question.Question.Should().Be("What is Eyjafjallajökull?");
-        question.Option1.Should().Be("A glacier in Norway");
-        question.Option2.Should().Be("A volcano on Iceland");
+        question.Option1.Should().Be("A mountain range in Norway");
+        question.Option2.Should().Be("A glacier in Iceland");
         question.Option3.Should().Be("A crater in China");
         question.Option4.Should().Be("A city in Greenland");
         _context.FourOptionQuestions.Should().NotBeEmpty();
@@ -98,8 +98,8 @@ public class QuizServiceTests
         FourOptionQuestion dbQuestion = _context.FourOptionQuestions.FirstOrDefault()!;
         dbQuestion.Id.Should().Be(4);
         dbQuestion.Question.Should().Be("What is Eyjafjallajökull?");
-        dbQuestion.Option1.Should().Be("A glacier in Norway");
-        dbQuestion.Option2.Should().Be("A volcano on Iceland");
+        dbQuestion.Option1.Should().Be("A mountain range in Norway");
+        dbQuestion.Option2.Should().Be("A glacier in Iceland");
         dbQuestion.Option3.Should().Be("A crater in China");
         dbQuestion.Option4.Should().Be("A city in Greenland");
         dbQuestion.CorrectOptionNumber.Should().Be(2);
@@ -114,8 +114,8 @@ public class QuizServiceTests
         GeographyQuestion geographyQuestion = new()
         {
             Question = "What is Eyjafjallajökull?",
-            Option1 = "A glacier in Norway",
-            Option2 = "A volcano on Iceland",
+            Option1 = "A mountain range in Norway",
+            Option2 = "A glacier in Iceland",
             Option3 = "A crater in China",
             Option4 = "A city in Greenland",
             CorrectOptionNumber = 2,
@@ -124,8 +124,8 @@ public class QuizServiceTests
         FourOptionQuestionDto fourOptionQuestionDto = new()
         {
             Question = "What is Eyjafjallajökull?",
-            Option1 = "A glacier in Norway",
-            Option2 = "A volcano on Iceland",
+            Option1 = "A mountain range in Norway",
+            Option2 = "A glacier in Iceland",
             Option3 = "A crater in China",
             Option4 = "A city in Greenland",
         };
@@ -145,8 +145,8 @@ public class QuizServiceTests
 
         FourOptionQuestionDto question = response.Question!;
         question.Question.Should().Be("What is Eyjafjallajökull?");
-        question.Option1.Should().Be("A glacier in Norway");
-        question.Option2.Should().Be("A volcano on Iceland");
+        question.Option1.Should().Be("A mountain range in Norway");
+        question.Option2.Should().Be("A glacier in Iceland");
         question.Option3.Should().Be("A crater in China");
         question.Option4.Should().Be("A city in Greenland");
         _context.FourOptionQuestions.Should().NotBeEmpty();
@@ -154,8 +154,8 @@ public class QuizServiceTests
         FourOptionQuestion dbQuestion = _context.FourOptionQuestions.FirstOrDefault()!;
         dbQuestion.Id.Should().Be(await _context.FourOptionQuestions.CountAsync());
         dbQuestion.Question.Should().Be("What is Eyjafjallajökull?");
-        dbQuestion.Option1.Should().Be("A glacier in Norway");
-        dbQuestion.Option2.Should().Be("A volcano on Iceland");
+        dbQuestion.Option1.Should().Be("A mountain range in Norway");
+        dbQuestion.Option2.Should().Be("A glacier in Iceland");
         dbQuestion.Option3.Should().Be("A crater in China");
         dbQuestion.Option4.Should().Be("A city in Greenland");
         dbQuestion.CorrectOptionNumber.Should().Be(2);
@@ -171,8 +171,8 @@ public class QuizServiceTests
         {
             Id = 1,
             Question = "What is What is Eyjafjallajökull?",
-            Option1 = "A glacier in Norway",
-            Option2 = "A volcano on Iceland",
+            Option1 = "A mountain range in Norway",
+            Option2 = "A glacier in Iceland",
             Option3 = "A crater in China",
             Option4 = "A city in Greenland",
             CorrectOptionNumber = 2,
@@ -183,8 +183,8 @@ public class QuizServiceTests
         GeographyQuestion geographyQuestion = new()
         {
             Question = "What is What is Eyjafjallajökull",
-            Option1 = "A glacier in Norway",
-            Option2 = "A volcano on Iceland",
+            Option1 = "A mountain range in Norway",
+            Option2 = "A glacier in Iceland",
             Option3 = "A crater in China",
             Option4 = "A city in Greenland",
             CorrectOptionNumber = 2,
@@ -218,8 +218,8 @@ public class QuizServiceTests
         {
             Id = 1,
             Question = "What is Eyjafjallajökull?",
-            Option1 = "A glacier in Norway",
-            Option2 = "A volcano on Iceland",
+            Option1 = "A mountain range in Norway",
+            Option2 = "A glacier in Iceland",
             Option3 = "A crater in China",
             Option4 = "A city in Greenland",
             CorrectOptionNumber = 2,
@@ -264,8 +264,8 @@ public class QuizServiceTests
         {
             Id = 1,
             Question = "What is Eyjafjallajökull?",
-            Option1 = "A glacier in Norway",
-            Option2 = "A volcano on Iceland",
+            Option1 = "A mountain range in Norway",
+            Option2 = "A glacier in Iceland",
             Option3 = "A crater in China",
             Option4 = "A city in Greenland",
             CorrectOptionNumber = 2,
@@ -292,7 +292,7 @@ public class QuizServiceTests
         FourOptionQuestion question = response.Question!;
         question.Question.Should().Be("Patched question?");
         question.Option1.Should().Be("Patched option 1!");
-        question.Option2.Should().Be("A volcano on Iceland");
+        question.Option2.Should().Be("A glacier in Iceland");
         question.Option3.Should().Be("A crater in China");
         question.Option4.Should().Be("A city in Greenland");
         question.CorrectOptionNumber.Should().Be(2);
@@ -301,7 +301,7 @@ public class QuizServiceTests
         FourOptionQuestion dbQuestion = _context.FourOptionQuestions.FirstOrDefault()!;
         dbQuestion.Question.Should().Be("Patched question?");
         dbQuestion.Option1.Should().Be("Patched option 1!");
-        dbQuestion.Option2.Should().Be("A volcano on Iceland");
+        dbQuestion.Option2.Should().Be("A glacier in Iceland");
         dbQuestion.Option3.Should().Be("A crater in China");
         dbQuestion.Option4.Should().Be("A city in Greenland");
         dbQuestion.CorrectOptionNumber.Should().Be(2);
@@ -336,8 +336,8 @@ public class QuizServiceTests
         {
             Id = 1,
             Question = "What is Eyjafjallajökull?",
-            Option1 = "A glacier in Norway",
-            Option2 = "A volcano on Iceland",
+            Option1 = "A mountain range in Norway",
+            Option2 = "A glacier in Iceland",
             Option3 = "A crater in China",
             Option4 = "A city in Greenland",
             CorrectOptionNumber = 2,
@@ -358,8 +358,8 @@ public class QuizServiceTests
 
         FourOptionQuestion question = response.Question!;
         question.Question.Should().Be("What is Eyjafjallajökull?");
-        question.Option1.Should().Be("A glacier in Norway");
-        question.Option2.Should().Be("A volcano on Iceland");
+        question.Option1.Should().Be("A mountain range in Norway");
+        question.Option2.Should().Be("A glacier in Iceland");
         question.Option3.Should().Be("A crater in China");
         question.Option4.Should().Be("A city in Greenland");
         _context.FourOptionQuestions.Should().BeEmpty();
@@ -399,8 +399,8 @@ public class QuizServiceTests
             {
                 Id = 1,
                 Question = "What is Eyjafjallajökull?",
-                Option1 = "A glacier in Norway",
-                Option2 = "A volcano on Iceland",
+                Option1 = "A mountain range in Norway",
+                Option2 = "A glacier in Iceland",
                 Option3 = "A crater in China",
                 Option4 = "A city in Greenland",
                 CorrectOptionNumber = 2,
@@ -443,8 +443,8 @@ public class QuizServiceTests
 
         geographyQuestion.Id.Should().Be(1);
         geographyQuestion.Question.Should().Be("What is Eyjafjallajökull?");
-        geographyQuestion.Option1.Should().Be("A glacier in Norway");
-        geographyQuestion.Option2.Should().Be("A volcano on Iceland");
+        geographyQuestion.Option1.Should().Be("A mountain range in Norway");
+        geographyQuestion.Option2.Should().Be("A glacier in Iceland");
         geographyQuestion.Option3.Should().Be("A crater in China");
         geographyQuestion.Option4.Should().Be("A city in Greenland");
         geographyQuestion.CorrectOptionNumber.Should().Be(2);
@@ -468,8 +468,8 @@ public class QuizServiceTests
             {
                 Id = 1,
                 Question = "What is Eyjafjallajökull?",
-                Option1 = "A glacier in Norway",
-                Option2 = "A volcano on Iceland",
+                Option1 = "A mountain range in Norway",
+                Option2 = "A glacier in Iceland",
                 Option3 = "A crater in China",
                 Option4 = "A city in Greenland",
                 CorrectOptionNumber = 2,
@@ -511,8 +511,8 @@ public class QuizServiceTests
 
         geographyQuestion.Id.Should().Be(1);
         geographyQuestion.Question.Should().Be("What is Eyjafjallajökull?");
-        geographyQuestion.Option1.Should().Be("A glacier in Norway");
-        geographyQuestion.Option2.Should().Be("A volcano on Iceland");
+        geographyQuestion.Option1.Should().Be("A mountain range in Norway");
+        geographyQuestion.Option2.Should().Be("A glacier in Iceland");
         geographyQuestion.Option3.Should().Be("A crater in China");
         geographyQuestion.Option4.Should().Be("A city in Greenland");
         geographyQuestion.CorrectOptionNumber.Should().Be(2);
@@ -554,8 +554,8 @@ public class QuizServiceTests
         {
             Id = 1,
             Question = "What is Eyjafjallajökull?",
-            Option1 = "A glacier in Norway",
-            Option2 = "A volcano on Iceland",
+            Option1 = "A mountain range in Norway",
+            Option2 = "A glacier in Iceland",
             Option3 = "A crater in China",
             Option4 = "A city in Greenland",
             CorrectOptionNumber = 2,
@@ -593,8 +593,8 @@ public class QuizServiceTests
         question.Should().NotBeNull();
         question.Id.Should().Be(1);
         question.Question.Should().Be("What is Eyjafjallajökull?");
-        question.Option1.Should().Be("A glacier in Norway");
-        question.Option2.Should().Be("A volcano on Iceland");
+        question.Option1.Should().Be("A mountain range in Norway");
+        question.Option2.Should().Be("A glacier in Iceland");
         question.Option3.Should().Be("A crater in China");
         question.Option4.Should().Be("A city in Greenland");
         question.CorrectOptionNumber.Should().Be(2);
@@ -616,8 +616,8 @@ public class QuizServiceTests
         {
             Id = 1,
             Question = "What is Eyjafjallajökull?",
-            Option1 = "A glacier in Norway",
-            Option2 = "A volcano on Iceland",
+            Option1 = "A mountain range in Norway",
+            Option2 = "A glacier in Iceland",
             Option3 = "A crater in China",
             Option4 = "A city in Greenland",
             CorrectOptionNumber = 2,
@@ -655,8 +655,8 @@ public class QuizServiceTests
         question.Should().NotBeNull();
         question.Id.Should().Be(1);
         question.Question.Should().Be("What is Eyjafjallajökull?");
-        question.Option1.Should().Be("A glacier in Norway");
-        question.Option2.Should().Be("A volcano on Iceland");
+        question.Option1.Should().Be("A mountain range in Norway");
+        question.Option2.Should().Be("A glacier in Iceland");
         question.Option3.Should().Be("A crater in China");
         question.Option4.Should().Be("A city in Greenland");
         question.CorrectOptionNumber.Should().Be(2);
@@ -702,8 +702,8 @@ public class QuizServiceTests
             {
                 Id = 1,
                 Question = "What is Eyjafjallajökull?",
-                Option1 = "A glacier in Norway",
-                Option2 = "A volcano on Iceland",
+                Option1 = "A mountain range in Norway",
+                Option2 = "A glacier in Iceland",
                 Option3 = "A crater in China",
                 Option4 = "A city in Greenland",
                 CorrectOptionNumber = 2,
@@ -722,8 +722,8 @@ public class QuizServiceTests
         FourOptionQuestionDto fourOptionQuestionDto = new()
         {
             Question = "What is Eyjafjallajökull?",
-            Option1 = "A glacier in Norway",
-            Option2 = "A volcano on Iceland",
+            Option1 = "A mountain range in Norway",
+            Option2 = "A glacier in Iceland",
             Option3 = "A crater in China",
             Option4 = "A city in Greenland",
         };
@@ -744,8 +744,8 @@ public class QuizServiceTests
 
         FourOptionQuestionDto question = response.Question!;
         question.Question.Should().Be("What is Eyjafjallajökull?");
-        question.Option1.Should().Be("A glacier in Norway");
-        question.Option2.Should().Be("A volcano on Iceland");
+        question.Option1.Should().Be("A mountain range in Norway");
+        question.Option2.Should().Be("A glacier in Iceland");
         question.Option3.Should().Be("A crater in China");
         question.Option4.Should().Be("A city in Greenland");
         _context.PlayerStatistics.Should().NotBeEmpty();
@@ -819,8 +819,8 @@ public class QuizServiceTests
         {
             Id = 1,
             Question = "What is Eyjafjallajökull?",
-            Option1 = "A glacier in Norway",
-            Option2 = "A volcano on Iceland",
+            Option1 = "A mountain range in Norway",
+            Option2 = "A glacier in Iceland",
             Option3 = "A crater in China",
             Option4 = "A city in Greenland",
             CorrectOptionNumber = 2,
@@ -832,8 +832,8 @@ public class QuizServiceTests
         {
             QuestionType = "Geography",
             Question = "What is Eyjafjallajökull?",
-            Option1 = "A glacier in Norway",
-            Option2 = "A volcano on Iceland",
+            Option1 = "A mountain range in Norway",
+            Option2 = "A glacier in Iceland",
             Option3 = "A crater in China",
             Option4 = "A city in Greenland",
             CorrectOptionNumber = 2,
@@ -857,8 +857,8 @@ public class QuizServiceTests
         FourOptionQuestionByIdDto question = response.Question!;
         question.QuestionType.Should().Be("Geography");
         question.Question.Should().Be("What is Eyjafjallajökull?");
-        question.Option1.Should().Be("A glacier in Norway");
-        question.Option2.Should().Be("A volcano on Iceland");
+        question.Option1.Should().Be("A mountain range in Norway");
+        question.Option2.Should().Be("A glacier in Iceland");
         question.Option3.Should().Be("A crater in China");
         question.Option4.Should().Be("A city in Greenland");
         question.CorrectOptionNumber.Should().Be(2);
@@ -902,8 +902,8 @@ public class QuizServiceTests
             {
                 Id = 1,
                 Question = "What is Eyjafjallajökull?",
-                Option1 = "A glacier in Norway",
-                Option2 = "A volcano on Iceland",
+                Option1 = "A mountain range in Norway",
+                Option2 = "A glacier in Iceland",
                 Option3 = "A crater in China",
                 Option4 = "A city in Greenland",
                 CorrectOptionNumber = 2,
@@ -961,8 +961,8 @@ public class QuizServiceTests
             {
                 Id = 1,
                 Question = "What is Eyjafjallajökull?",
-                Option1 = "A glacier in Norway",
-                Option2 = "A volcano on Iceland",
+                Option1 = "A mountain range in Norway",
+                Option2 = "A glacier in Iceland",
                 Option3 = "A crater in China",
                 Option4 = "A city in Greenland",
                 CorrectOptionNumber = 2,

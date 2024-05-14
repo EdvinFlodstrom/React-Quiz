@@ -47,8 +47,8 @@ public class QuizControllerTests
         GeographyQuestion questionRequest = new()
         {
             Question = "What is Eyjafjallajökull?",
-            Option1 = "A glacier in Norway",
-            Option2 = "A volcano on Iceland",
+            Option1 = "A mountain range in Norway",
+            Option2 = "A glacier in Iceland",
             Option3 = "A crater in China",
             Option4 = "A city in Greenland",
             CorrectOptionNumber = 2,
@@ -94,8 +94,8 @@ public class QuizControllerTests
 
         FourOptionQuestionDto question = (FourOptionQuestionDto)objectResult.Value!;
         question.Question.Should().Be("What is Eyjafjallajökull?");
-        question.Option1.Should().Be("A glacier in Norway");
-        question.Option2.Should().Be("A volcano on Iceland");
+        question.Option1.Should().Be("A mountain range in Norway");
+        question.Option2.Should().Be("A glacier in Iceland");
         question.Option3.Should().Be("A crater in China");
         question.Option4.Should().Be("A city in Greenland");
     }
@@ -135,7 +135,7 @@ public class QuizControllerTests
         GeographyQuestion questionRequest = new()
         {
             Question = "",
-            Option1 = "A glacier in Norway",
+            Option1 = "A mountain range in Norway",
             Option2 = "",
             Option3 = "A crater in China",
             Option4 = "A city in Greenland",
@@ -170,8 +170,8 @@ public class QuizControllerTests
         GeographyQuestion questionRequest = new()
         {
             Question = "What is Eyjafjallajökull?",
-            Option1 = "A glacier in Norway",
-            Option2 = "A volcano on Iceland",
+            Option1 = "A mountain range in Norway",
+            Option2 = "A glacier in Iceland",
             Option3 = "A crater in China",
             Option4 = "A city in Greenland",
             CorrectOptionNumber = 2
@@ -200,8 +200,8 @@ public class QuizControllerTests
         GeographyQuestion questionRequest = new()
         {
             Question = "What is Eyjafjallajökull?",
-            Option1 = "A glacier in Norway",
-            Option2 = "A volcano on Iceland",
+            Option1 = "A mountain range in Norway",
+            Option2 = "A glacier in Iceland",
             Option3 = "A crater in China",
             Option4 = "A city in Greenland",
             CorrectOptionNumber = 2
@@ -228,8 +228,8 @@ public class QuizControllerTests
         GeographyQuestion questionRequest = new()
         {
             Question = "What is Eyjafjallajökull?",
-            Option1 = "A glacier in Norway",
-            Option2 = "A volcano on Iceland",
+            Option1 = "A mountain range in Norway",
+            Option2 = "A glacier in Iceland",
             Option3 = "A crater in China",
             Option4 = "A city in Greenland",
             CorrectOptionNumber = 2
@@ -398,8 +398,8 @@ public class QuizControllerTests
             Question = new GeographyQuestion()
             {
                 Question = "What is Eyjafjallajökull?",
-                Option1 = "A glacier in Norway",
-                Option2 = "A volcano on Iceland",
+                Option1 = "A mountain range in Norway",
+                Option2 = "A glacier in Iceland",
                 Option3 = "A crater in China",
                 Option4 = "A city in Greenland",
                 CorrectOptionNumber = 2,
@@ -425,8 +425,8 @@ public class QuizControllerTests
 
         var question = (FourOptionQuestion)objectResult.Value!;
         question.Question.Should().Be("What is Eyjafjallajökull?");
-        question.Option1.Should().Be("A glacier in Norway");
-        question.Option2.Should().Be("A volcano on Iceland");
+        question.Option1.Should().Be("A mountain range in Norway");
+        question.Option2.Should().Be("A glacier in Iceland");
         question.Option3.Should().Be("A crater in China");
         question.Option4.Should().Be("A city in Greenland");
         question.CorrectOptionNumber.Should().Be(2);
@@ -472,8 +472,8 @@ public class QuizControllerTests
                 new GeographyQuestion()
                 {
                     Question = "What is Eyjafjallajökull?",
-                    Option1 = "A glacier in Norway",
-                    Option2 = "A volcano on Iceland",
+                    Option1 = "A mountain range in Norway",
+                    Option2 = "A glacier in Iceland",
                     Option3 = "A crater in China",
                     Option4 = "A city in Greenland",
                     CorrectOptionNumber = 2,
@@ -501,8 +501,8 @@ public class QuizControllerTests
         List<FourOptionQuestion> questions = (List<FourOptionQuestion>)objectResult.Value!;
         questions.Count.Should().Be(1);
         questions[0].Question.Should().Be("What is Eyjafjallajökull?");
-        questions[0].Option1.Should().Be("A glacier in Norway");
-        questions[0].Option2.Should().Be("A volcano on Iceland");
+        questions[0].Option1.Should().Be("A mountain range in Norway");
+        questions[0].Option2.Should().Be("A glacier in Iceland");
         questions[0].Option3.Should().Be("A crater in China");
         questions[0].Option4.Should().Be("A city in Greenland");
         questions[0].CorrectOptionNumber.Should().Be(2);
@@ -522,8 +522,8 @@ public class QuizControllerTests
                 new GeographyQuestion()
                 {
                     Question = "What is Eyjafjallajökull?",
-                    Option1 = "A glacier in Norway",
-                    Option2 = "A volcano on Iceland",
+                    Option1 = "A mountain range in Norway",
+                    Option2 = "A glacier in Iceland",
                     Option3 = "A crater in China",
                     Option4 = "A city in Greenland",
                     CorrectOptionNumber = 2,
@@ -551,8 +551,8 @@ public class QuizControllerTests
         List<FourOptionQuestion> questions = (List<FourOptionQuestion>)objectResult.Value!;
         questions.Count.Should().Be(1);
         questions[0].Question.Should().Be("What is Eyjafjallajökull?");
-        questions[0].Option1.Should().Be("A glacier in Norway");
-        questions[0].Option2.Should().Be("A volcano on Iceland");
+        questions[0].Option1.Should().Be("A mountain range in Norway");
+        questions[0].Option2.Should().Be("A glacier in Iceland");
         questions[0].Option3.Should().Be("A crater in China");
         questions[0].Option4.Should().Be("A city in Greenland");
         questions[0].CorrectOptionNumber.Should().Be(2);
@@ -675,8 +675,8 @@ public class QuizControllerTests
             Question = new()
             {
                 Question = "What is Eyjafjallajökull?",
-                Option1 = "A glacier in Norway",
-                Option2 = "A volcano on Iceland",
+                Option1 = "A mountain range in Norway",
+                Option2 = "A glacier in Iceland",
                 Option3 = "A crater in China",
                 Option4 = "A city in Greenland",
             },
@@ -711,8 +711,8 @@ public class QuizControllerTests
 
         FourOptionQuestionDto question = questionResponse.FourOptionQuestion!;
         question.Question.Should().Be("What is Eyjafjallajökull?");
-        question.Option1.Should().Be("A glacier in Norway");
-        question.Option2.Should().Be("A volcano on Iceland");
+        question.Option1.Should().Be("A mountain range in Norway");
+        question.Option2.Should().Be("A glacier in Iceland");
         question.Option3.Should().Be("A crater in China");
         question.Option4.Should().Be("A city in Greenland");
     }
@@ -818,8 +818,8 @@ public class QuizControllerTests
             {
                 QuestionType = "Geography",
                 Question = "What is Eyjafjallajökull?",
-                Option1 = "A glacier in Norway",
-                Option2 = "A volcano on Iceland",
+                Option1 = "A mountain range in Norway",
+                Option2 = "A glacier in Iceland",
                 Option3 = "A crater in China",
                 Option4 = "A city in Greenland",
                 CorrectOptionNumber = 2,
@@ -845,8 +845,8 @@ public class QuizControllerTests
 
         FourOptionQuestionByIdDto question = (FourOptionQuestionByIdDto)objectResult.Value!;
         question.Question.Should().Be("What is Eyjafjallajökull?");
-        question.Option1.Should().Be("A glacier in Norway");
-        question.Option2.Should().Be("A volcano on Iceland");
+        question.Option1.Should().Be("A mountain range in Norway");
+        question.Option2.Should().Be("A glacier in Iceland");
         question.Option3.Should().Be("A crater in China");
         question.Option4.Should().Be("A city in Greenland");
         question.CorrectOptionNumber.Should().Be(2);

@@ -30,8 +30,8 @@ public class HandlerTests
             FourOptionQuestion = new GeographyQuestion()
             {
                 Question = "What is Eyjafjallajökull?",
-                Option1 = "A glacier in Norway",
-                Option2 = "A volcano on Iceland",
+                Option1 = "A mountain range in Norway",
+                Option2 = "A glacier in Iceland",
                 Option3 = "A crater in China",
                 Option4 = "A city in Greenland",
                 CorrectOptionNumber = 2,
@@ -43,8 +43,8 @@ public class HandlerTests
             Question = new()
             {
                 Question = "What is Eyjafjallajökull?",
-                Option1 = "A glacier in Norway",
-                Option2 = "A volcano on Iceland",
+                Option1 = "A mountain range in Norway",
+                Option2 = "A glacier in Iceland",
                 Option3 = "A crater in China",
                 Option4 = "A city in Greenland",
             },
@@ -69,8 +69,8 @@ public class HandlerTests
 
         FourOptionQuestionDto question = response.Question!;
         question.Question.Should().Be("What is Eyjafjallajökull?");
-        question.Option1.Should().Be("A glacier in Norway");
-        question.Option2.Should().Be("A volcano on Iceland");
+        question.Option1.Should().Be("A mountain range in Norway");
+        question.Option2.Should().Be("A glacier in Iceland");
         question.Option3.Should().Be("A crater in China");
         question.Option4.Should().Be("A city in Greenland");
     }
@@ -84,8 +84,8 @@ public class HandlerTests
             FourOptionQuestion = new GeographyQuestion()
             {
                 Question = "What is Eyjafjallajökull?",
-                Option1 = "A glacier in Norway",
-                Option2 = "A volcano on Iceland",
+                Option1 = "A mountain range in Norway",
+                Option2 = "A glacier in Iceland",
                 Option3 = "A crater in China",
                 Option4 = "A city in Greenland",
                 CorrectOptionNumber = 2,
@@ -229,8 +229,8 @@ public class HandlerTests
             Question = new GeographyQuestion()
             {
                 Question = "What is Eyjafjallajökull?",
-                Option1 = "A glacier in Norway",
-                Option2 = "A volcano on Iceland",
+                Option1 = "A mountain range in Norway",
+                Option2 = "A glacier in Iceland",
                 Option3 = "A crater in China",
                 Option4 = "A city in Greenland",
                 CorrectOptionNumber = 2,
@@ -256,8 +256,8 @@ public class HandlerTests
 
         FourOptionQuestion question = response.Question!;
         question.Question.Should().Be("What is Eyjafjallajökull?");
-        question.Option1.Should().Be("A glacier in Norway");
-        question.Option2.Should().Be("A volcano on Iceland");
+        question.Option1.Should().Be("A mountain range in Norway");
+        question.Option2.Should().Be("A glacier in Iceland");
         question.Option3.Should().Be("A crater in China");
         question.Option4.Should().Be("A city in Greenland");
         question.CorrectOptionNumber.Should().Be(2);
@@ -315,8 +315,8 @@ public class HandlerTests
             new GeographyQuestion()
             {
                 Question = "What is Eyjafjallajökull?",
-                Option1 = "A glacier in Norway",
-                Option2 = "A volcano on Iceland",
+                Option1 = "A mountain range in Norway",
+                Option2 = "A glacier in Iceland",
                 Option3 = "A crater in China",
                 Option4 = "A city in Greenland",
                 CorrectOptionNumber = 2,
@@ -342,8 +342,8 @@ public class HandlerTests
 
         List<FourOptionQuestion> questions = response.Questions!;
         questions.First().Question.Should().Be("What is Eyjafjallajökull?");
-        questions.First().Option1.Should().Be("A glacier in Norway");
-        questions.First().Option2.Should().Be("A volcano on Iceland");
+        questions.First().Option1.Should().Be("A mountain range in Norway");
+        questions.First().Option2.Should().Be("A glacier in Iceland");
         questions.First().Option3.Should().Be("A crater in China");
         questions.First().Option4.Should().Be("A city in Greenland");
         questions.First().CorrectOptionNumber.Should().Be(2);
@@ -473,8 +473,8 @@ public class HandlerTests
             Question = new FourOptionQuestionDto()
             {
                 Question = "What is Eyjafjallajökull?",
-                Option1 = "A glacier in Norway",
-                Option2 = "A volcano on Iceland",
+                Option1 = "A mountain range in Norway",
+                Option2 = "A glacier in Iceland",
                 Option3 = "A crater in China",
                 Option4 = "A city in Greenland",
             },
@@ -501,8 +501,8 @@ public class HandlerTests
 
         FourOptionQuestionDto question = response.Question!;
         question.Question.Should().Be("What is Eyjafjallajökull?");
-        question.Option1.Should().Be("A glacier in Norway");
-        question.Option2.Should().Be("A volcano on Iceland");
+        question.Option1.Should().Be("A mountain range in Norway");
+        question.Option2.Should().Be("A glacier in Iceland");
         question.Option3.Should().Be("A crater in China");
         question.Option4.Should().Be("A city in Greenland");
     }
@@ -596,8 +596,8 @@ public class HandlerTests
             {
                 QuestionType = "Geography",
                 Question = "What is Eyjafjallajökull?",
-                Option1 = "A glacier in Norway",
-                Option2 = "A volcano on Iceland",
+                Option1 = "A mountain range in Norway",
+                Option2 = "A glacier in Iceland",
                 Option3 = "A crater in China",
                 Option4 = "A city in Greenland",
                 CorrectOptionNumber = 2,
@@ -623,8 +623,8 @@ public class HandlerTests
 
         FourOptionQuestionByIdDto question = response.Question!;
         question.Question.Should().Be("What is Eyjafjallajökull?");
-        question.Option1.Should().Be("A glacier in Norway");
-        question.Option2.Should().Be("A volcano on Iceland");
+        question.Option1.Should().Be("A mountain range in Norway");
+        question.Option2.Should().Be("A glacier in Iceland");
         question.Option3.Should().Be("A crater in China");
         question.Option4.Should().Be("A city in Greenland");
         question.CorrectOptionNumber.Should().Be(2);
