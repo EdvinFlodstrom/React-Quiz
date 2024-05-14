@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import Instructions from '../components/Instructions';
 import InitializeQuiz from '../components/InitializeQuiz';
 import CreateQuestion from '../components/CreateQuestion';
 import ModifyQuestion from '../components/ModifyQuestion';
 import DeleteQuestion from '../components/DeleteQuestion';
+import '../styles/global.css';
 import '../styles/buttons.css';
 import '../styles/initialPage.css';
 
@@ -23,10 +23,15 @@ const InitialPage = () => {
         <>
             {!componentToShow ? (
                 <>
-                    <Instructions />
+                    <h1 className='centered-instructions'>
+                        Welcome to the quiz!
+                    </h1>
+                    <h3 className='centered-instructions'>
+                        These are your options:
+                    </h3>
                     <div className='options-button-container'>
                         <button
-                            className='button take-quiz-button'
+                            className='button option-button'
                             onClick={() => {
                                 setComponentToShow(
                                     <InitializeQuiz
@@ -39,7 +44,7 @@ const InitialPage = () => {
                         </button>
 
                         <button
-                            className='button create-question-button'
+                            className='button option-button'
                             onClick={() => {
                                 setComponentToShow(
                                     <CreateQuestion
@@ -52,7 +57,7 @@ const InitialPage = () => {
                         </button>
 
                         <button
-                            className='button modify-question-button'
+                            className='button option-button'
                             onClick={() => {
                                 setComponentToShow(
                                     <ModifyQuestion
@@ -65,7 +70,7 @@ const InitialPage = () => {
                         </button>
 
                         <button
-                            className='button delete-question-button'
+                            className='button option-button'
                             onClick={() => {
                                 setComponentToShow(
                                     <DeleteQuestion

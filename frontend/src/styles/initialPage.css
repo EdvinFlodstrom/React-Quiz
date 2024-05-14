@@ -1,27 +1,16 @@
 .options-button-container {
     margin-block-start: 1.5rem;
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 1.5rem;
-    grid-auto-rows: minmax(4rem, auto);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
-.take-quiz-button {
-    grid-column: 1;
-    grid-row: 1;
+.option-button {
+    width: 25vw;
+    align-self: center;
 }
 
-.create-question-button {
-    grid-column: 1;
-    grid-row: 2;
-}
-
-.modify-question-button {
-    grid-column: 1;
-    grid-row: 3;
-}
-
-.delete-question-button {
-    grid-column: 1;
-    grid-row: 4;
+.centered-instructions {
+    display: flex;
+    justify-content: center;
 }
