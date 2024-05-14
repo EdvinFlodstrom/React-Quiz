@@ -399,3 +399,9 @@ questionType = textInfo.ToTitleCase(questionType) + "Question";
 ```
 
 This works well enough. A `questionType` of 'FourOption' becomes 'Fouroption'. So that's why `type` is null - 'FouroptionQuestion' doesn't match 'FourOptionQuestion' (notice the non-capitalized 'O' in 'Option', in the former). And, this means that this solution will *only* work for question types that are one word long. It won't work with a name like `VerySpecialQuestion`, so that's worth keeping note of. But it works for the classes I have, where the names are something like `GeographyQuestion`, `LiteratureQuestion`, etc. Also, for once, the tests didn't break. So that's nice, and as a bonus, frontend question creation still works. I'd almost be more impressed if it didn't, but eh, you never know.
+
+2024-05-14
+----------
+I'm very confused. I removed a backend swagger-documentation-related NuGet package from the project and wanted to test that it still worked. So, I booted up the frontend and backend, took the quiz, requested 2 questions, and got 5. The database, however, said 2. I had received and answered five questions, 3 of which I got correct. So, my total number of questions in the database was 2. But I had 3 correct answers. I really have no clue what happened, what went wrong, or how to replicate it. Three attempts at replicating the issue failed at replicating the issue, because they all behaved as expected. Oh well, it seems to be working, so I'll just pretend like it never failed at all...
+
+I've now made some minor CSS changes to the frontend. Biggest one was to center (centralize?) the buttons and instructions for the initial page component. 2/2 of my sources have suggested this change, and so I shall test it.
