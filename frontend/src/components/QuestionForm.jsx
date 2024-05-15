@@ -1,11 +1,11 @@
 const QuestionForm = ({
     formData,
     handleFormChange,
-    createOrModifyQuestionButtonDisabled,
+    submitFormButtonDisabled,
     handleFormSubmit,
     correctOptionNumber,
     isModifyingQuestion,
-    disableAllInput
+    disableAllInput,
 }) => {
     return (
         <form onSubmit={handleFormSubmit} className='form-container'>
@@ -97,8 +97,12 @@ const QuestionForm = ({
             <br />
             <button
                 className='button form-button'
-                disabled={createOrModifyQuestionButtonDisabled}>
-                {isModifyingQuestion ? 'Update Question' : 'Create Question' || disableAllInput}
+                disabled={submitFormButtonDisabled}>
+                {disableAllInput
+                    ? 'Delete Question'
+                    : isModifyingQuestion
+                    ? 'Update Question'
+                    : 'Create Question'}
             </button>
         </form>
     );

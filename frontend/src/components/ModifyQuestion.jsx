@@ -180,9 +180,7 @@ const ModifyQuestion = ({ adjustGradient }) => {
             <QuestionForm
                 formData={formData}
                 handleFormChange={handleFormChange}
-                createOrModifyQuestionButtonDisabled={
-                    modifyQuestionButtonDisabled
-                }
+                submitFormButtonDisabled={modifyQuestionButtonDisabled}
                 handleFormSubmit={handleFormSubmit}
                 correctOptionNumber={correctOptionNumber}
                 isModifyingQuestion={true}
