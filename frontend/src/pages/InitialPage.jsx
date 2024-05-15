@@ -11,7 +11,7 @@ const InitialPage = () => {
     const [componentToShow, setComponentToShow] = useState(null);
     const [, setAdjustGradient] = useState(true);
 
-    function AdjustGradient() {
+    function adjustGradient() {
         setAdjustGradient((currentValue) => {
             const newValue = !currentValue;
             document.body.classList.toggle('moveGradient', currentValue);
@@ -21,6 +21,14 @@ const InitialPage = () => {
 
     return (
         <>
+            <button
+                className='menu-button'
+                onClick={() => {
+                    setComponentToShow(null);
+                    adjustGradient();
+                }}>
+                Menu
+            </button>
             {!componentToShow ? (
                 <>
                     <h1 className='centered-instructions'>
@@ -35,10 +43,10 @@ const InitialPage = () => {
                             onClick={() => {
                                 setComponentToShow(
                                     <InitializeQuiz
-                                        adjustGradient={AdjustGradient}
+                                        adjustGradient={adjustGradient}
                                     />
                                 );
-                                AdjustGradient();
+                                adjustGradient();
                             }}>
                             Take Quiz
                         </button>
@@ -48,10 +56,10 @@ const InitialPage = () => {
                             onClick={() => {
                                 setComponentToShow(
                                     <CreateQuestion
-                                        adjustGradient={AdjustGradient}
+                                        adjustGradient={adjustGradient}
                                     />
                                 );
-                                AdjustGradient();
+                                adjustGradient();
                             }}>
                             Create Question
                         </button>
@@ -61,10 +69,10 @@ const InitialPage = () => {
                             onClick={() => {
                                 setComponentToShow(
                                     <ModifyQuestion
-                                        adjustGradient={AdjustGradient}
+                                        adjustGradient={adjustGradient}
                                     />
                                 );
-                                AdjustGradient();
+                                adjustGradient();
                             }}>
                             Modify Question
                         </button>
@@ -74,10 +82,10 @@ const InitialPage = () => {
                             onClick={() => {
                                 setComponentToShow(
                                     <DeleteQuestion
-                                        adjustGradient={AdjustGradient}
+                                        adjustGradient={adjustGradient}
                                     />
                                 );
-                                AdjustGradient();
+                                adjustGradient();
                             }}>
                             Delete Question
                         </button>

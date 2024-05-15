@@ -27,6 +27,30 @@
     cursor: not-allowed;
 }
 
+.menu-button {
+    padding: 0.75vw 1.75vw;
+    margin-inline: 1rem;
+    margin-block-start: 0.5rem;
+    font-size: 0.6vw;
+    font-weight: bold;
+    text-align: center;
+    color: oklch(99.5% 0.126 63.53);
+    border: none;
+    border-radius: 1.25rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 3.4px 10px oklch(12.91% 0.031 276.04);
+    background-color: oklch(40% 0.081 249.88 / 80%);
+}
+
+.menu-button:hover {
+    background-color: oklch(40% 0.081 249.88);
+}
+
+.menu-button:active {
+    transform: scale(0.9);
+}
+
 .form-button {
     margin: 0;
 }
@@ -86,10 +110,14 @@
     animation: buttonFlashRed 2.5s;
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 800px) {
     .button {
         padding: 1.5rem 3.5rem;
         font-size: 1rem;
+    }
+    .menu-button {
+        padding: 0.75rem 2rem;
+        font-size: 0.5rem;
     }
     .take-quiz-options-button {
         padding: 0;
