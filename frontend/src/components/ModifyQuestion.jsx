@@ -186,6 +186,7 @@ const ModifyQuestion = ({ adjustGradient }) => {
                 handleFormSubmit={handleFormSubmit}
                 correctOptionNumber={correctOptionNumber}
                 isModifyingQuestion={true}
+                disableAllInput={false}
             />
 
             <p

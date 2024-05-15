@@ -5,6 +5,7 @@ const QuestionForm = ({
     handleFormSubmit,
     correctOptionNumber,
     isModifyingQuestion,
+    disableAllInput
 }) => {
     return (
         <form onSubmit={handleFormSubmit} className='form-container'>
@@ -16,7 +17,7 @@ const QuestionForm = ({
                     value={formData.questionType}
                     onChange={handleFormChange}
                     className='form-input'
-                    disabled={isModifyingQuestion}
+                    disabled={isModifyingQuestion || disableAllInput}
                 />
             </label>
             <br />
@@ -28,6 +29,7 @@ const QuestionForm = ({
                     value={formData.question}
                     onChange={handleFormChange}
                     className='form-input'
+                    disabled={disableAllInput}
                 />
             </label>
             <br />
@@ -39,6 +41,7 @@ const QuestionForm = ({
                     value={formData.option1}
                     onChange={handleFormChange}
                     className='form-input'
+                    disabled={disableAllInput}
                 />
             </label>
             <br />
@@ -50,6 +53,7 @@ const QuestionForm = ({
                     value={formData.option2}
                     onChange={handleFormChange}
                     className='form-input'
+                    disabled={disableAllInput}
                 />
             </label>
             <br />
@@ -61,6 +65,7 @@ const QuestionForm = ({
                     value={formData.option3}
                     onChange={handleFormChange}
                     className='form-input'
+                    disabled={disableAllInput}
                 />
             </label>
             <br />
@@ -72,6 +77,7 @@ const QuestionForm = ({
                     value={formData.option4}
                     onChange={handleFormChange}
                     className='form-input'
+                    disabled={disableAllInput}
                 />
             </label>
             <br />
@@ -85,13 +91,14 @@ const QuestionForm = ({
                     className='form-input'
                     min='1'
                     max='4'
+                    disabled={disableAllInput}
                 />
             </label>
             <br />
             <button
                 className='button form-button'
                 disabled={createOrModifyQuestionButtonDisabled}>
-                {isModifyingQuestion ? 'Update Question' : 'Create Question'}
+                {isModifyingQuestion ? 'Update Question' : 'Create Question' || disableAllInput}
             </button>
         </form>
     );
