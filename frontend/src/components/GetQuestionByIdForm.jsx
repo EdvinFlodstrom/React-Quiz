@@ -7,13 +7,14 @@ const GetQuestionByIdForm = ({
     return (
         <form onSubmit={handleGetQuestion} className='form-container'>
             <label htmlFor='questionId' className='form-label'>
-                ID of question to modify:
+                ID of question to get:
                 <input
                     type='number'
                     name='questionId'
                     value={questionId}
                     onChange={handleGetQuestionFormChange}
                     className='form-input'
+                    min={0}
                 />
             </label>
             <br />

@@ -82,7 +82,7 @@ const ModifyQuestion = ({ adjustGradient }) => {
                     success: false,
                     message: error,
                 });
-                console.error('Failed to create question:', error);
+                console.error('Failed to get question:', error);
             }
         } catch (exception) {
             setGetQuestionMessageAndState({
