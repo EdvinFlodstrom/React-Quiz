@@ -150,8 +150,8 @@ Well hey. Seems these tests sure have proven far more fruitful than I'd imagined
 ```json
 {
     "question": "What is Eyjafjallajökull?",
-    "option1": "A glacier in Norway",
-    "option2": "A volcano on Iceland",
+    "option1": "A mountain range in Norway",
+    "option2": "A glacier in Iceland",
     "option3": "A crater in China",
     "option4": "A city on Greenland",
     "correctOptionNumber": -10
@@ -217,8 +217,8 @@ Huh. Now, something like this can be returned when asking for a question:
 {
     "fourOptionQuestion": {
         "question": "What is Eyjafjallajökull?",
-        "option1": "A glacier in Norway",
-        "option2": "A volcano on Iceland",
+        "option1": "A mountain range in Norway",
+        "option2": "A glacier in Iceland",
         "option3": "A crater in China",
         "option4": "A city on Greenland"
     },
@@ -405,3 +405,11 @@ This works well enough. A `questionType` of 'FourOption' becomes 'Fouroption'. S
 I'm very confused. I removed a backend swagger-documentation-related NuGet package from the project and wanted to test that it still worked. So, I booted up the frontend and backend, took the quiz, requested 2 questions, and got 5. The database, however, said 2. I had received and answered five questions, 3 of which I got correct. So, my total number of questions in the database was 2. But I had 3 correct answers. I really have no clue what happened, what went wrong, or how to replicate it. Three attempts at replicating the issue failed at replicating the issue, because they all behaved as expected. Oh well, it seems to be working, so I'll just pretend like it never failed at all...
 
 I've now made some minor CSS changes to the frontend. Biggest one was to center (centralize?) the buttons and instructions for the initial page component. 2/2 of my sources have suggested this change, and so I shall test it.
+
+2024-05-15
+-----------
+Alright. The final option, to delete a question, has now been added and its functionality confirmed. I also tested the project as a whole by taking the quiz, adding questions, modifying questions, and then deleting them. The database seems to update accordingly each time, so I think it's almost done? I know its not done too nicely, some of the functions involved some copy-pasting, but it'll suffice. I don't feel like deep-diving into object oriented JavaScript, when the language is as unpredictable as it is. However! One feature I know I want to add is an option to return to the 'main menu'. Currently, The only way to navigate back up the chain of components is to reload the page. I'll see if I can go fix that...
+
+Hmkay, a `Menu` button has now been added. Because of how I handle the currently loaded component, it was really easy to implement. What wasn't as easy was making the button look OK, while also having it be placed at a reasonable position. It's size should be responsive, it should be big enough to be easy to click, but small enough so that it isn't in the way. And it should also fit at the same position throughout all the components... I'm not sure if I succeeded in all those steps, but at least I think it looks decent enough.
+
+I'm currently not sure what else to add to the quiz project. I think I'll add some more questions, and wait for potential input from new sources.
