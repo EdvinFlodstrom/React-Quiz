@@ -413,3 +413,9 @@ Alright. The final option, to delete a question, has now been added and its func
 Hmkay, a `Menu` button has now been added. Because of how I handle the currently loaded component, it was really easy to implement. What wasn't as easy was making the button look OK, while also having it be placed at a reasonable position. It's size should be responsive, it should be big enough to be easy to click, but small enough so that it isn't in the way. And it should also fit at the same position throughout all the components... I'm not sure if I succeeded in all those steps, but at least I think it looks decent enough.
 
 I'm currently not sure what else to add to the quiz project. I think I'll add some more questions, and wait for potential input from new sources.
+
+2024-05-16
+-----------
+So I noticed something curious regarding the menu button I added yesterday. Apparently, it was partially covered by a span in the `TakeQuiz` component. So, I slapped a `pointer-events: none;` on that span and boom. Easy fix. Other than that, I'm simply gathering postman requests for some more questions. I'd like 10 of each question type, and I'm starting to think I was a little unnecessarily ambitious with the amount of question types. I have ten of them. So that means 100 questions. That's going to take a while.
+
+Some time later, I've now added a few more questions. I have a total of 90, now. Just ten more to go, in other words. That will be tomorrow, though.
