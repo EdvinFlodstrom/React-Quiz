@@ -63,6 +63,7 @@ p {
 }
 
 h1 span.slide-in {
+    pointer-events: none;
     display: flex;
     justify-content: center;
     animation: slideIn 2s forwards;
