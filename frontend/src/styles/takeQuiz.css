@@ -1,6 +1,10 @@
 #flash {
-    margin-block-start: -1rem;
+    margin-block-start: -3rem;
     padding-block-end: 12rem;
+}
+
+#take-quiz-content {
+    padding-block-start: 3rem;
 }
 
 @keyframes flashGreen {

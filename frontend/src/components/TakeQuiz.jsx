@@ -3,7 +3,7 @@ import '../styles/timer.css';
 import '../styles/takeQuiz.css';
 
 const TakeQuiz = ({ playerName }) => {
-    const [timerExpired, setTimerExpired] = useState(false);
+    const [, setTimerExpired] = useState(false);
     const [timerStarted, setTimerStarted] = useState(false);
     const [getQuestionButtonDisabled, setQuestionButtonDisabled] =
         useState(false);
@@ -151,53 +151,55 @@ const TakeQuiz = ({ playerName }) => {
 
     return (
         <div id='flash' className={backgroundFlash}>
-            <h1>
-                <span className='slide-in'>Take Quiz</span>
-            </h1>
+            <div id='take-quiz-content'>
+                <h1>
+                    <span className='slide-in'>Take Quiz</span>
+                </h1>
 
-            <div className='timer'>
-                <div className='timer-container'>
-                    <div
-                        className={`timer-bar ${
-                            timerStarted ? 'timer--decrease' : 'timer-bar'
-                        }`}></div>
+                <div className='timer'>
+                    <div className='timer-container'>
+                        <div
+                            className={`timer-bar ${
+                                timerStarted ? 'timer--decrease' : 'timer-bar'
+                            }`}></div>
+                    </div>
                 </div>
-            </div>
 
-            <div className='centered-buttons-container'>
-                <button
-                    className='button'
-                    onClick={handleGetQuestion}
-                    disabled={getQuestionButtonDisabled}>
-                    Get Question
-                </button>
-                <h2>Q: {question}</h2>
+                <div className='centered-buttons-container'>
+                    <button
+                        className='button'
+                        onClick={handleGetQuestion}
+                        disabled={getQuestionButtonDisabled}>
+                        Get Question
+                    </button>
+                    <h2>Q: {question}</h2>
 
-                <div className='take-quiz-options-buttons-container'>
-                    <button
-                        className={`button take-quiz-options-button ${correctOptionButton.option1Button}`}
-                        onClick={() => handleAnswer(1)}
-                        disabled={submitAnswerButtonDisabled}>
-                        1: {questionOptions.option1}
-                    </button>
-                    <button
-                        className={`button take-quiz-options-button ${correctOptionButton.option2Button}`}
-                        onClick={() => handleAnswer(2)}
-                        disabled={submitAnswerButtonDisabled}>
-                        2: {questionOptions.option2}
-                    </button>
-                    <button
-                        className={`button take-quiz-options-button ${correctOptionButton.option3Button}`}
-                        onClick={() => handleAnswer(3)}
-                        disabled={submitAnswerButtonDisabled}>
-                        3: {questionOptions.option3}
-                    </button>
-                    <button
-                        className={`button take-quiz-options-button ${correctOptionButton.option4Button}`}
-                        onClick={() => handleAnswer(4)}
-                        disabled={submitAnswerButtonDisabled}>
-                        4: {questionOptions.option4}
-                    </button>
+                    <div className='take-quiz-options-buttons-container'>
+                        <button
+                            className={`button take-quiz-options-button ${correctOptionButton.option1Button}`}
+                            onClick={() => handleAnswer(1)}
+                            disabled={submitAnswerButtonDisabled}>
+                            1: {questionOptions.option1}
+                        </button>
+                        <button
+                            className={`button take-quiz-options-button ${correctOptionButton.option2Button}`}
+                            onClick={() => handleAnswer(2)}
+                            disabled={submitAnswerButtonDisabled}>
+                            2: {questionOptions.option2}
+                        </button>
+                        <button
+                            className={`button take-quiz-options-button ${correctOptionButton.option3Button}`}
+                            onClick={() => handleAnswer(3)}
+                            disabled={submitAnswerButtonDisabled}>
+                            3: {questionOptions.option3}
+                        </button>
+                        <button
+                            className={`button take-quiz-options-button ${correctOptionButton.option4Button}`}
+                            onClick={() => handleAnswer(4)}
+                            disabled={submitAnswerButtonDisabled}>
+                            4: {questionOptions.option4}
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
