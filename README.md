@@ -419,3 +419,15 @@ I'm currently not sure what else to add to the quiz project. I think I'll add so
 So I noticed something curious regarding the menu button I added yesterday. Apparently, it was partially covered by a span in the `TakeQuiz` component. So, I slapped a `pointer-events: none;` on that span and boom. Easy fix. Other than that, I'm simply gathering postman requests for some more questions. I'd like 10 of each question type, and I'm starting to think I was a little unnecessarily ambitious with the amount of question types. I have ten of them. So that means 100 questions. That's going to take a while.
 
 Some time later, I've now added a few more questions. I have a total of 90, now. Just ten more to go, in other words. That will be tomorrow, though.
+
+2024-05-17
+-----------
+I've now created a few more questions. Not quite there yet, maybe later today?
+
+Alright. One hundred questions manually added. To Postman. Gonna take a while to make those 100 HTTP POST requests, eh. I'll drop the database, rebuild it, add all the questions, and save the file. I am *not* recreating all the questions manually each time something goes sour with the database. At least I hope I won't have to - it's not like I can gurantee anything...
+
+Right, this was a confusing little journey I just embarked on. So, after adding all the questions, I wanted to back up the database. I noticed that a .db-wal file contained all the questions, instead of them being saved to the main database. Seems to be some middle-step, perhaps to make sure that nothing goes wrong while adding stuff to the database. So I wasn't sure how to back up the database, since now more files than just the .db file existed. I thought to use the sqlite3 shell to force SQLite to merge the files together, effectively adding all the data to the main .db file. But when I finally had everything set up, the merge had happened automatically. I can't exaclty complain, since it seems to be working, but still. It could have been a tad more smooth...
+
+Hm. The database should be backed up and safe now. I think. I'll test the quiz for a bit, and see if all works well.
+
+Hm. I noticed something. When I added the `Menu` button, that pushed down the `flash` div, meaning that no longer does the entire background flash green/red depending on the answer. Well, now it does, because I fixed it. But I had to fix it because it broke. So I added another div and slapped some spaghetti CSS on that. Not very clean, but that's what tends to happen when I try to write CSS. At least it seems to work, I think?
