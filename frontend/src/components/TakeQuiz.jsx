@@ -66,8 +66,12 @@ const TakeQuiz = ({ playerName }) => {
                 // Question data is not received
                 setQuestion(responseData.details);
             }
-        } catch (error) {
-            console.error('Error while getting question:', error);
+        } catch (exception) {
+            const message =
+                exception.response.data || exception.response.statusText;
+
+            console.error('Error while getting question:', exception);
+            setQuestion(message + ' Please try restarting the quiz.');
         }
     };
 
@@ -111,6 +115,13 @@ const TakeQuiz = ({ playerName }) => {
             }));
 
             await delay(2500);
+        } catch (exception) {
+            const message =
+                exception.response.data || exception.response.statusText;
+
+            console.error('Error while checking answer:', message);
+            setQuestion('Error while checking answer. Please try again.');
+        } finally {
             setCorrectOptionButton({
                 option1Button: '',
                 option2Button: '',
@@ -118,8 +129,6 @@ const TakeQuiz = ({ playerName }) => {
                 option4Button: '',
             });
             setQuestionButtonDisabled(false);
-        } catch (error) {
-            console.error('Error while checking answer:', error);
         }
     };
 
