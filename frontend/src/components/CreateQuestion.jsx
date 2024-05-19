@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { formInputIsInvalid } from '../utils/createOrModifyQuestionUtils';
 import QuestionForm from './QuestionForm';
+import quizService from '../services/quizService';
 
 const CreateQuestion = ({ adjustGradient }) => {
     const [formData, setFormData] = useState({
@@ -38,44 +39,22 @@ const CreateQuestion = ({ adjustGradient }) => {
         e.preventDefault();
 
         try {
-            const response = await fetch(
-                `https://localhost:7030/api/quiz/create/${formData.questionType}`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        question: formData.question,
-                        option1: formData.option1,
-                        option2: formData.option2,
-                        option3: formData.option3,
-                        option4: formData.option4,
-                        correctOptionNumber: formData.correctOptionNumber,
-                    }),
-                }
-            );
+            await quizService.createQuestion(formData);
 
-            if (response.ok) {
-                adjustGradient();
-                setMessageAndState({
-                    success: true,
-                    message: 'Sucesss!',
-                });
-            } else {
-                const error = await response.text();
-                setMessageAndState({
-                    success: false,
-                    message: error,
-                });
-                console.error('Failed to create question:', error);
-            }
+            adjustGradient();
+            setMessageAndState({
+                success: true,
+                message: 'Sucesss!',
+            });
         } catch (exception) {
+            const message =
+                exception.response.data || exception.response.statusText;
+
             setMessageAndState({
                 success: false,
-                message: exception.message,
+                message: message,
             });
-            console.error('An error occured:', exception.message);
+            console.error('An error occured:', message);
         }
     };
 

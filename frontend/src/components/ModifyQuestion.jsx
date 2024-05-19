@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { formInputIsInvalid } from '../utils/createOrModifyQuestionUtils';
 import GetQuestionByIdForm from './GetQuestionByIdForm';
 import QuestionForm from './QuestionForm';
+import quizService from '../services/quizService';
 
 const ModifyQuestion = ({ adjustGradient }) => {
     const [getQuestionByIdButtonDisabled, setGetQuestionByIdButtonDisabled] =
@@ -44,52 +45,35 @@ const ModifyQuestion = ({ adjustGradient }) => {
         e.preventDefault();
 
         try {
-            const response = await fetch(
-                `https://localhost:7030/api/quiz/get/${questionId}`,
-                {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                }
-            );
+            const response = await quizService.getQuestionById(questionId);
 
-            if (response.ok) {
-                adjustGradient();
-                setGetQuestionMessageAndState({
-                    success: true,
-                    message: 'Sucesss!',
-                });
+            adjustGradient();
+            setGetQuestionMessageAndState({
+                success: true,
+                message: 'Sucesss!',
+            });
 
-                const deserializedResponse = await response.json();
+            const deserializedResponse = await response.data;
 
-                setFormData({
-                    questionType: deserializedResponse.questionType,
-                    question: deserializedResponse.question,
-                    option1: deserializedResponse.option1,
-                    option2: deserializedResponse.option2,
-                    option3: deserializedResponse.option3,
-                    option4: deserializedResponse.option4,
-                    correctOptionNumber:
-                        deserializedResponse.correctOptionNumber,
-                });
-                setCorrectOptionNumber(
-                    deserializedResponse.correctOptionNumber
-                );
-            } else {
-                const error = await response.text();
-                setGetQuestionMessageAndState({
-                    success: false,
-                    message: error,
-                });
-                console.error('Failed to get question:', error);
-            }
+            setFormData({
+                questionType: deserializedResponse.questionType,
+                question: deserializedResponse.question,
+                option1: deserializedResponse.option1,
+                option2: deserializedResponse.option2,
+                option3: deserializedResponse.option3,
+                option4: deserializedResponse.option4,
+                correctOptionNumber: deserializedResponse.correctOptionNumber,
+            });
+            setCorrectOptionNumber(deserializedResponse.correctOptionNumber);
         } catch (exception) {
+            const message =
+                exception.response.data || exception.response.statusText;
+
             setGetQuestionMessageAndState({
                 success: false,
-                message: exception.message,
+                message: message,
             });
-            console.error('An error occured:', exception.message);
+            console.error('An error occured:', message);
         }
     };
 
@@ -113,44 +97,22 @@ const ModifyQuestion = ({ adjustGradient }) => {
         e.preventDefault();
 
         try {
-            const response = await fetch(
-                `https://localhost:7030/api/quiz/patch/${questionId}`,
-                {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        question: formData.question,
-                        option1: formData.option1,
-                        option2: formData.option2,
-                        option3: formData.option3,
-                        option4: formData.option4,
-                        correctOptionNumber: formData.correctOptionNumber,
-                    }),
-                }
-            );
+            await quizService.modifyQuestion(questionId, formData);
 
-            if (response.ok) {
-                adjustGradient();
-                setModifyQuestionMessageAndState({
-                    success: true,
-                    message: 'Success!',
-                });
-            } else {
-                const error = await response.text();
-                setModifyQuestionMessageAndState({
-                    success: false,
-                    message: error,
-                });
-                console.error('Failed to modify question:', error);
-            }
+            adjustGradient();
+            setModifyQuestionMessageAndState({
+                success: true,
+                message: 'Success!',
+            });
         } catch (exception) {
+            const message =
+                exception.response.data || exception.response.statusText;
+
             setModifyQuestionMessageAndState({
                 success: false,
-                message: exception.message,
+                message: message,
             });
-            console.error('An error occured:', exception.message);
+            console.error('An error occured:', message);
         }
     };
 

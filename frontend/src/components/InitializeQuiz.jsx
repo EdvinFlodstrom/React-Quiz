@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import TakeQuiz from './TakeQuiz';
+import quizService from '../services/quizService';
 
 const InitializeQuiz = ({ adjustGradient }) => {
     const [initializeQuizButtonDisabled, setInitializeQuizButtonDisabled] =
         useState(true);
     const [quizStarted, setQuizStarted] = useState(false);
-    const [numberOfQuestions, setNumberOfQuestions] = useState(2);
+    const [amountOfQuestions, setamountOfQuestions] = useState(2);
     const [formData, setFormData] = useState({
         name: '',
-        numberOfQuestions: 2,
+        amountOfQuestions: 2,
         questionType: '',
     });
     const [errorMessage, setErrorMessage] = useState('');
@@ -16,8 +17,8 @@ const InitializeQuiz = ({ adjustGradient }) => {
     const handleFormChange = (e) => {
         const { name, value } = e.target;
 
-        if (name === 'numberOfQuestions') {
-            setNumberOfQuestions(value);
+        if (name === 'amountOfQuestions') {
+            setamountOfQuestions(value);
         }
 
         const updatedFormData = { ...formData, [name]: value };
@@ -27,10 +28,10 @@ const InitializeQuiz = ({ adjustGradient }) => {
 
     function formInputIsInvalid(updatedFormData) {
         const name = updatedFormData.name;
-        const numberOfQuestions = updatedFormData.numberOfQuestions;
+        const amountOfQuestions = updatedFormData.amountOfQuestions;
 
         if (name.length < 2 || name.length > 100) return true;
-        if (numberOfQuestions < 2 || numberOfQuestions > 30) return true;
+        if (amountOfQuestions < 2 || amountOfQuestions > 30) return true;
 
         return false;
     }
@@ -39,32 +40,16 @@ const InitializeQuiz = ({ adjustGradient }) => {
         e.preventDefault();
 
         try {
-            const response = await fetch(
-                'https://localhost:7030/api/quiz/initialize',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        playerName: formData.name,
-                        amountOfQuestions: formData.numberOfQuestions,
-                        questionType: formData.questionType,
-                    }),
-                }
-            );
+            await quizService.initializeQuiz(formData);
 
-            if (response.ok) {
-                adjustGradient();
-                setQuizStarted(true);
-            } else {
-                const error = await response.text();
-                setErrorMessage(error);
-                console.error('Failed to initialize quiz:', error);
-            }
+            adjustGradient();
+            setQuizStarted(true);
         } catch (exception) {
-            setErrorMessage(exception.message);
-            console.error('An error occured:', exception.message);
+            const message =
+                exception.response.data || exception.response.statusText;
+
+            setErrorMessage(message);
+            console.error('An error occured:', message);
         }
     };
 
@@ -94,13 +79,13 @@ const InitializeQuiz = ({ adjustGradient }) => {
                         </label>
                         <br />
                         <label
-                            htmlFor='numberOfQuestions'
+                            htmlFor='amountOfQuestions'
                             className='form-label'>
                             Number of Questions (2-30):
                             <input
                                 type='number'
-                                name='numberOfQuestions'
-                                value={numberOfQuestions}
+                                name='amountOfQuestions'
+                                value={amountOfQuestions}
                                 onChange={handleFormChange}
                                 className='form-input'
                                 min='2'

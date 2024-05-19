@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import quizService from '../services/quizService';
 import '../styles/timer.css';
 import '../styles/takeQuiz.css';
 
@@ -43,24 +44,9 @@ const TakeQuiz = ({ playerName }) => {
         });
         setQuestionButtonDisabled(true);
         try {
-            const response = await fetch(
-                'https://localhost:7030/api/quiz/get',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        playerName: playerName,
-                    }),
-                }
-            );
+            const response = await quizService.getQuestion(playerName);
 
-            if (!response.ok) {
-                throw new Error('Failed to get question');
-            }
-
-            const responseData = await response.json();
+            const responseData = await response.data;
 
             if (responseData.fourOptionQuestion) {
                 // Question data is received
@@ -89,31 +75,19 @@ const TakeQuiz = ({ playerName }) => {
         return new Promise((resolve) => setTimeout(resolve, ms));
     };
 
-    const handleAnswer = async (answer) => {
+    const handleAnswer = async (questionAnswer) => {
         setsubmitAnswerButtonDisabled(true);
         setTimerExpired(true);
         setTimerStarted(false);
         clearTimeout(timerRef.current);
+
         try {
-            const response = await fetch(
-                'https://localhost:7030/api/quiz/answer',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        playerName: playerName,
-                        questionAnswer: answer,
-                    }),
-                }
-            );
+            const response = await quizService.checkAnswer({
+                playerName,
+                questionAnswer,
+            });
 
-            if (!response.ok) {
-                throw new Error('Failed to check answer');
-            }
-
-            const responseData = await response.json();
+            const responseData = await response.data;
 
             if (responseData.correct) {
                 setBackGroundFlash('flashGreen');
@@ -126,12 +100,12 @@ const TakeQuiz = ({ playerName }) => {
 
             const correctOptionNumber = Number(responseData.correctOption);
             const correctOptionButtonKey = `option${correctOptionNumber}Button`;
-            const chosenOptionButtonKey = `option${answer}Button`;
+            const chosenOptionButtonKey = `option${questionAnswer}Button`;
             setCorrectOptionButton((prevButtons) => ({
                 ...prevButtons,
                 [correctOptionButtonKey]: 'take-quiz-options-button-flashGreen',
                 [chosenOptionButtonKey]:
-                    answer === correctOptionNumber
+                    questionAnswer === correctOptionNumber
                         ? 'take-quiz-options-button-flashGreen'
                         : 'take-quiz-options-button-flashRed',
             }));

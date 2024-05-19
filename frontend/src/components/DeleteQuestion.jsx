@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import GetQuestionByIdForm from './GetQuestionByIdForm';
 import QuestionForm from './QuestionForm';
+import quizService from '../services/quizService';
 
 const DeleteQuestion = ({ adjustGradient }) => {
     const [questionId, setQuestionId] = useState(0);
@@ -42,49 +43,34 @@ const DeleteQuestion = ({ adjustGradient }) => {
         e.preventDefault();
 
         try {
-            const response = await fetch(
-                `https://localhost:7030/api/quiz/get/${questionId}`,
-                {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                }
-            );
+            const response = await quizService.getQuestionById(questionId);
 
-            if (response.ok) {
-                adjustGradient();
-                setGetQuestionMessageAndState({
-                    success: true,
-                    message: 'Sucesss!',
-                });
+            adjustGradient();
+            setGetQuestionMessageAndState({
+                success: true,
+                message: 'Sucesss!',
+            });
 
-                const deserializedResponse = await response.json();
+            const deserializedResponse = await response.data;
 
-                setFormData({
-                    questionType: deserializedResponse.questionType,
-                    question: deserializedResponse.question,
-                    option1: deserializedResponse.option1,
-                    option2: deserializedResponse.option2,
-                    option3: deserializedResponse.option3,
-                    option4: deserializedResponse.option4,
-                    correctOptionNumber:
-                        deserializedResponse.correctOptionNumber,
-                });
-            } else {
-                const error = await response.text();
-                setGetQuestionMessageAndState({
-                    success: false,
-                    message: error,
-                });
-                console.error('Failed to get question:', error);
-            }
+            setFormData({
+                questionType: deserializedResponse.questionType,
+                question: deserializedResponse.question,
+                option1: deserializedResponse.option1,
+                option2: deserializedResponse.option2,
+                option3: deserializedResponse.option3,
+                option4: deserializedResponse.option4,
+                correctOptionNumber: deserializedResponse.correctOptionNumber,
+            });
         } catch (exception) {
+            const message =
+                exception.response.data || exception.response.statusText;
+
             setGetQuestionMessageAndState({
                 success: false,
-                message: exception.message,
+                message: message,
             });
-            console.error('An error occured:', exception.message);
+            console.error('An error occured:', message);
         }
     };
 
@@ -92,36 +78,22 @@ const DeleteQuestion = ({ adjustGradient }) => {
         e.preventDefault();
 
         try {
-            const response = await fetch(
-                `https://localhost:7030/api/quiz/delete/${questionId}`,
-                {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                }
-            );
+            const response = await quizService.deleteQuestion(questionId);
 
-            if (response.ok) {
-                adjustGradient();
-                setDeleteQuestionMessageAndState({
-                    success: true,
-                    message: 'Sucesss!',
-                });
-            } else {
-                const error = await response.text();
-                setDeleteQuestionMessageAndState({
-                    success: false,
-                    message: error,
-                });
-                console.error('Failed to delete question:', error);
-            }
+            adjustGradient();
+            setDeleteQuestionMessageAndState({
+                success: true,
+                message: 'Sucesss!',
+            });
         } catch (exception) {
+            const message =
+                exception.response.data || exception.response.statusText;
+
             setDeleteQuestionMessageAndState({
                 success: false,
-                message: exception.message,
+                message: message,
             });
-            console.error('An error occured:', exception.message);
+            console.error('An error occured:', message);
         }
     };
 
