@@ -78,7 +78,7 @@ const DeleteQuestion = ({ adjustGradient }) => {
         e.preventDefault();
 
         try {
-            const response = await quizService.deleteQuestion(questionId);
+            await quizService.deleteQuestion(questionId);
 
             adjustGradient();
             setDeleteQuestionMessageAndState({
