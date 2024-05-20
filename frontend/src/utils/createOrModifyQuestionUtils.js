@@ -20,7 +20,7 @@ export function formInputIsInvalid(updatedFormData) {
     return false;
 }
 
-export function propertiesAreValid(...properties) {
+function propertiesAreValid(...properties) {
     return properties.every(
         (property) =>
             property !== undefined && property !== null && property !== ''
