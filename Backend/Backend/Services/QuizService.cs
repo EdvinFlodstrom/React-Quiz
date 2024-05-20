@@ -5,6 +5,7 @@ using Backend.Infrastructure.Data;
 using Backend.Infrastructure.Models.Dtos;
 using Backend.Infrastructure.Models.Entities;
 using Backend.Infrastructure.Models.Requests;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 
@@ -342,19 +343,6 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
         {
             fourOptionQuestion.Question = FormatAndReturnQuestion(fourOptionQuestion.Question);
 
-            var existingQuestion = await _quizDbContext.FourOptionQuestions
-                .FirstOrDefaultAsync(q => q.Question == fourOptionQuestion.Question);
-
-            if (existingQuestion is not null)
-            {
-                return new()
-                {
-                    Question = null,
-                    Success = false,
-                    Error = new ArgumentException("The same question already exists in the database."),
-                };
-            }
-
             var floatingId = _quizDbContext.FloatingIds.FirstOrDefault();
 
             // If no IDs of deleted questions are present, count the number of questions and assign that + 1 as the ID.
@@ -374,13 +362,26 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
                 Error = null,
             };
         }
+        catch (DbUpdateException dbEx) when (dbEx.InnerException is SqliteException sqlEx && sqlEx.SqliteErrorCode == 19)
+        {
+            _logger.LogWarning(
+                LogWarningStringTemplate, 
+                "Database" , 
+                "Two identical questions may not be added to the database.");
+
+            return new()
+            {
+                Question = null,
+                Success = false,
+                Error = new ArgumentException("The same question already exists in the database."),
+            };
+        }
         catch (Exception ex)
         {
             _logger.LogWarning(
-                LogWarningStringTemplate
-                , ex is DbUpdateException
-                ? "Database" : "Regular"
-                , ex.Message);
+                LogWarningStringTemplate, 
+                "Regular", 
+                ex.Message);
 
             return new()
             {

@@ -26,6 +26,10 @@ public class QuizDbContext(DbContextOptions<QuizDbContext> options) : DbContext(
             .HasValue<SportsQuestion>("Sports")
             .HasValue<TechnologyQuestion>("Technology");
 
+        modelBuilder.Entity<FourOptionQuestion>()
+            .HasIndex(q => q.Question)
+            .IsUnique();
+
         modelBuilder.Entity<PlayerStatistics>()
             .ToTable(nameof(PlayerStatistics));
 
