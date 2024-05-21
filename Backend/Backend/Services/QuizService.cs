@@ -365,8 +365,8 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
         catch (DbUpdateException dbEx) when (dbEx.InnerException is SqliteException sqlEx && sqlEx.SqliteErrorCode == 19)
         {
             _logger.LogWarning(
-                LogWarningStringTemplate, 
-                "Database" , 
+                LogWarningStringTemplate,
+                "Database",
                 "Two identical questions may not be added to the database.");
 
             return new()
@@ -379,8 +379,8 @@ public class QuizService(QuizDbContext quizDbContext, IMapper mapper, ILogger<Qu
         catch (Exception ex)
         {
             _logger.LogWarning(
-                LogWarningStringTemplate, 
-                "Regular", 
+                LogWarningStringTemplate,
+                "Regular",
                 ex.Message);
 
             return new()
