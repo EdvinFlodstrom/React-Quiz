@@ -24,6 +24,7 @@ const TakeQuiz = ({ playerName }) => {
         option3Button: '',
         option4Button: '',
     });
+    const [timerDuration] = useState(10);
     let timerRef = useRef(null);
 
     const startTimer = () => {
@@ -32,7 +33,7 @@ const TakeQuiz = ({ playerName }) => {
             setTimerExpired(true);
             setTimerStarted(false);
             handleAnswer(0);
-        }, 10000);
+        }, timerDuration * 1000);
     };
 
     const handleGetQuestion = async () => {
@@ -143,8 +144,13 @@ const TakeQuiz = ({ playerName }) => {
                     <div className='timer-container'>
                         <div
                             className={`timer-bar ${
-                                timerStarted ? 'timer--decrease' : 'timer-bar'
-                            }`}></div>
+                                timerStarted ? '' : 'timer-bar'
+                            }`}
+                            style={{
+                                animation: timerStarted
+                                    ? `timerAnimation ${timerDuration}s linear forwards`
+                                    : 'none',
+                            }}></div>
                     </div>
                 </div>
 

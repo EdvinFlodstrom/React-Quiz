@@ -21,10 +21,6 @@
     background-color: oklch(32.74% 0.153 271.38 / 75%);
 }
 
-.timer--decrease {
-    animation: timerAnimation 10s linear forwards;
-}
-
 @keyframes timerAnimation {
     0% {
         width: 100%;
