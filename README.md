@@ -449,3 +449,7 @@ Not sure how I always seem to forget about code cleanups. So I ran one today, si
 2024-05-22
 -----------
 So, today I decided to refactor some more frontend code. I believe I mentioned previously that the functional and visual timers are separated, meaning to change the timer, it has to be changed at two places in the code. This was obviously not good, but I didn't bother fixing it at the time. Now, I have. I had to resort to adding some inline CSS to utilize a JavaScript variable (pretty sure there's a way to avoid this, but eh, not now), but it's at least a bit better. I suppose this makes the code a tad more readable and maintainable.
+
+2024-05-23
+-----------
+I made some of the most minor changes yet, today. I moved text in CSS. And I didn't even move it around on the page - I reduced the line spacing between the letters. Did it improve the readability of the quiz? I have literally no idea.
